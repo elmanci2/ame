@@ -1,0 +1,8 @@
+# Ignorar node_modules en la carpeta principal
+node_modules/
+
+# Ignorar node_modules en la carpeta 'back'
+back/node_modules/
+
+# Ignorar node_modules en la carpeta 'Ame_App'
+Ame_App/node_modules/

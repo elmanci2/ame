@@ -1,0 +1,347 @@
+[
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "EAS016",
+      "Nit": "890904996-1",
+      "Administradora": "Empresas Públicas de Medellín Departamento Médico",
+      "Aportes": " Empresas Públicas de Medellín Departamento Médico"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "EAS027",
+      "Nit": "800112806-2",
+      "Administradora": "Fondo de Pasivo Social de Ferrocarriles",
+      "Aportes": " Fondo de Ferrocarriles Nacionales de Colombia (EPS)"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "EPS001",
+      "Nit": "830113831-0",
+      "Administradora": "Aliansalud EPS",
+      "Aportes": " Aliansalud EPS (Antes Colmédica)"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "EPS002",
+      "Nit": "800130907-4",
+      "Administradora": "Salud Total S.A.",
+      "Aportes": " Salud Total"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "EPS005",
+      "Nit": "800251440-6",
+      "Administradora": "E.P.S Sanitas",
+      "Aportes": " Sanitas"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "EPS008",
+      "Nit": "860066942-7",
+      "Administradora": "Compensar Entidad Promotora de Salud",
+      "Aportes": " Compensar"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "EPS010",
+      "Nit": "800088702-2",
+      "Administradora": "EPS Sura",
+      "Aportes": " EPS Sura"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "EPS012",
+      "Nit": "890303093-5",
+      "Administradora": "Comfenalco Valle EPS",
+      "Aportes": " Comfenalco Valle"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "EPS017",
+      "Nit": "830003564-7",
+      "Administradora": "Famisanar",
+      "Aportes": " Famisanar"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "EPS018",
+      "Nit": "805001157-2",
+      "Administradora": "Servicio Occidental de Salud S.O.S. S.A.",
+      "Aportes": " S.O.S. Servicio Occidental de Salud S.A."
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "EPS037",
+      "Nit": "900156264-2",
+      "Administradora": "Nueva EPS",
+      "Aportes": " Nueva E.P.S."
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "EPS040",
+      "Nit": 900604350,
+      "Administradora": "Caja de Compensación Familiar de Antioquía - Comfama - Hoy Savia Salud EPS",
+      "Aportes": "Savia Salud"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "EPS041",
+      "Nit": 900156264,
+      "Administradora": "Nueva EPS S.A. Movilidad",
+      "Aportes": "Nueva EPS Movilidad"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "EPS042",
+      "Nit": "900226715-3",
+      "Administradora": "Cooperativa de Salud y Desarrollo Integral de la Zona Sur Oriental de Cartagena Ltda. Coosalud E.S.S.",
+      "Aportes": "Coosalud EPS"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "EPS046",
+      "Nit": "900914254-1",
+      "Administradora": "Fundación Salud MIA EPS",
+      "Aportes": "Salud MIA EPS"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "EPS048",
+      "Nit": "806008394-7",
+      "Administradora": "Asociación Mutual Ser Empresa Solidaria De Salud  Eps-S - Mutual Ser Eps-S",
+      "Aportes": "EPS Mutual Ser"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "MIN001",
+      "Nit": "901037916-1",
+      "Administradora": "Fondo de Solidaridad y Garantía Fosyga",
+      "Aportes": " Fosyga"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "MIN002",
+      "Nit": "901037916-1",
+      "Administradora": "Fondo de Solidaridad y Garantía Fosyga",
+      "Aportes": " Fosyga Régimen de Excepción"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "MIN003",
+      "Nit": "901037916-1",
+      "Administradora": "Fondo de Solidaridad y Garantía Fosyga",
+      "Aportes": " Fosyga Residente Exterior o Régimen Subsidiado"
+    },
+
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "EPSC22",
+      "Nit": 899999107,
+      "Administradora": "Entidad Administradora de Régimen Subsidiado Convida",
+      "Aportes": "  Convida"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "EPSC25",
+      "Nit": 891856000,
+      "Administradora": "Capresoca EPS",
+      "Aportes": "Capresoca"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "EPSC34",
+      "Nit": 900298372,
+      "Administradora": "Capital Salud EPSS S.A.S.",
+      "Aportes": "Capital Salud"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "EPSIC1",
+      "Nit": 824001398,
+      "Administradora": "Asociación de Cabildos Indígenas del Cesar “Dusakawi”",
+      "Aportes": "Dusakawi"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "EPSIC2",
+      "Nit": 812002376,
+      "Administradora": "Asociación de Cabildos Indígenas del Resguardo Indígena Zenú de San Andrés de Sotavento Córdoba - Sucre \"Manexka\"",
+      "Aportes": "Manexka"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "EPSIC3",
+      "Nit": 817001773,
+      "Administradora": "Asociación Indígena del Cauca - A.I.C.",
+      "Aportes": "A.I.C."
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "EPSIC4",
+      "Nit": 839000495,
+      "Administradora": "Entidad Promotora de Salud Anas Wayuu EPSI",
+      "Aportes": "Anas Wayuu"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "EPSIC5",
+      "Nit": 837000084,
+      "Administradora": "Entidad Promotora de Salud Mallamas EPSI",
+      "Aportes": "Mallamas"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "EPSIC6",
+      "Nit": 809008362,
+      "Administradora": "Entidad Promotora de Salud Pijaosalud EPSI",
+      "Aportes": "  Pijaosalud"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "ESSC07",
+      "Nit": 806008394,
+      "Administradora": "Asociación Mutual Ser Empresa Solidaría de Salud ESS",
+      "Aportes": "  Mutual Ser"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "ESSC18",
+      "Nit": 901021565,
+      "Administradora": "Sociedad Simplificada por Acciones Emssanar S.A.S.",
+      "Aportes": "  Emssanar"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "ESSC24",
+      "Nit": 900226715,
+      "Administradora": "Cooperativa de Salud y Desarrollo Integral de la Zona Sur Oriental de Cartagena Ltda. Coosalud E.S.S.",
+      "Aportes": "  Coosalud Movilidad"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "ESSC33",
+      "Nit": 804002105,
+      "Aportes": "Comparta"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "ESSC62",
+      "Nit": 900935126,
+      "Administradora": "Asociación Mutual La Esperanza Asmet Salud",
+      "Aportes": "  Asmet Salud"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "EPSS46",
+      "Nit": "900914254-1",
+      "Administradora": "Fundación Salud MIA EPS",
+      "Aportes": "Salud MIA EPS"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "EPSS47",
+      "Nit": "901438242 - 5",
+      "Administradora": "Salud Bolivar EPS",
+      "Aportes": "Salud Bolivar EPS"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "CCFC20",
+      "Nit": 891600091,
+      "Administradora": "Comfachoco – CCF del Chocó",
+      "Aportes": "  Comfachoco"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "CCFC33",
+      "Nit": "901543761-5",
+      "Administradora": "EPS FAMILIAR DE COLOMBIA S.A.S",
+      "Aportes": "Familiar de Colombia"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "CCFC50",
+      "Nit": 890500675,
+      "Administradora": "EPS-S Comfaoriente",
+      "Aportes": "Comfaoriente"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "CCFC55",
+      "Nit": "901543211-6",
+      "Administradora": "CAJACOPI EPS S.A.S. ",
+      "Aportes": "CAJACOPI EPS S.A.S. "
+    },
+
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "RES005",
+      "Nit": "890102257-3",
+      "Administradora": "Universidad del Atlántico",
+      "Aportes": " Universidad del Atlántico"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "RES006",
+      "Nit": "890203183-0",
+      "Administradora": "Universidad Industrial de Santander",
+      "Aportes": " Universidad Industrial de Santander"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "RES007",
+      "Nit": "890399010-6",
+      "Administradora": "Universidad del Valle",
+      "Aportes": " Universidad del Valle"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "RES008",
+      "Nit": "899999063-3",
+      "Administradora": "Universidad Nacional de Colombia",
+      "Aportes": " Universidad Nacional de Colombia"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "RES009",
+      "Nit": "891500319-2",
+      "Administradora": "Universidad del Cauca",
+      "Aportes": " Universidad del Cauca"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "RES010",
+      "Nit": "890480123-5",
+      "Administradora": "Universidad de Cartagena",
+      "Aportes": " Universidad de Cartagena"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "RES011",
+      "Nit": "890980040-8",
+      "Administradora": "Universidad de Antioquia",
+      "Aportes": " Universidad de Antioquia"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "RES012",
+      "Nit": "891080031-3",
+      "Administradora": "Universidad de Córdoba",
+      "Aportes": " Universidad de Córdoba"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "RES013",
+      "Nit": "800118954-1",
+      "Administradora": "Universidad de Nariño",
+      "Aportes": " Universidad de Nariño"
+    },
+    {
+      "Tipo Administradora": "EPS",
+      "Código": "RES014",
+      "Nit": "891800330-1",
+      "Administradora": "Universidad Pedagógica y Tecnológica de Colombia - UPTC",
+      "Aportes": " Universidad Pedagógica - UPTC"
+    }
+  ]
+

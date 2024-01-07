@@ -1,0 +1,1 @@
+export const secret_word = `_PALABRA_SECRETA_PARA_LOS_TOKENST`
