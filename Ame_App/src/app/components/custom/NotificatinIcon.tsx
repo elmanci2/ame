@@ -32,7 +32,7 @@ const NotificationIcon = () => {
   const navigate = useNavigation<any>();
 
   const handlePress = () => {
-    navigate.navigate('notification');
+    navigate.navigate('NotificationScream');
     return;
   };
 

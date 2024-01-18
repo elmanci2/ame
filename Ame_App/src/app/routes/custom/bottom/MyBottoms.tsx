@@ -7,6 +7,9 @@ import {
 import UserHomeScreen from '../../../screen/user/UserHomeScreen';
 import {CustomBottomComponent} from './CustomBottomComponent';
 import UserRemindersScreen from '../../../screen/user/UserRemindersScreen';
+import RequestService from '../../../screen/user/ RequestService';
+import {MiniHeader} from '../../../components/custom/MiniHeader';
+import VitalSigne from '../../../screen/user/VitalSigne';
 
 const Bottom = createBottomTabNavigator();
 
@@ -24,8 +27,16 @@ const MyBottom = () => {
     <Bottom.Navigator screenOptions={{...bottomConfig}} tabBar={CustomBottom}>
       <Bottom.Screen component={UserHomeScreen} name="Inicio" />
       <Bottom.Screen component={UserRemindersScreen} name="Medicamentos" />
-      <Bottom.Screen component={UserHomeScreen} name="Servicios" />
-      <Bottom.Screen component={UserHomeScreen} name="Signos" />
+      <Bottom.Screen
+        component={RequestService}
+        name="Servicios"
+        initialParams={{title: 'Solicitar servicio'}}
+      />
+      <Bottom.Screen
+        component={VitalSigne}
+        name="Signos"
+        initialParams={{title: 'Signos vitales'}}
+      />
     </Bottom.Navigator>
   );
 };

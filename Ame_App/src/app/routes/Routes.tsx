@@ -25,6 +25,7 @@ import {userRoutStackList} from './list/RoutesList';
 const StackConfig: StackNavigationOptions = {
   headerShown: false,
   gestureEnabled: true,
+  
 };
 
 const modalScreeConfig: StackNavigationOptions = {

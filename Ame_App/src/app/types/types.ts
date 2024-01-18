@@ -42,3 +42,16 @@ export type RoutListType = {
   components: ({route}: RoutListTypeProps) => React.JSX.Element;
   config?: StackNavigationOptions;
 };
+
+interface ServiceDate {
+  fecha: string;
+  hora: string;
+}
+
+export type Service = {
+  id: string;
+  location: any;
+  type: number;
+  serviceId: string;
+  date: ServiceDate;
+};

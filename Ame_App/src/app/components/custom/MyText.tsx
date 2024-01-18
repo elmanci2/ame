@@ -2,7 +2,7 @@ import {TextProps, Text} from 'react-native';
 import React, {memo, ReactNode} from 'react';
 import {TextStyle} from 'react-native';
 
-interface Props extends TextProps {
+export interface MyTextProps extends TextProps {
   fontSize?: number;
   color?: string;
   fontWeight?:
@@ -32,7 +32,7 @@ export const MyText = memo(
     textAlign = 'left', // Default textAlign is 'left'
     style,
     ...rest
-  }: Props) => {
+  }: MyTextProps) => {
     return (
       <Text style={[style, {color, fontWeight, fontSize, textAlign}]} {...rest}>
         {children}

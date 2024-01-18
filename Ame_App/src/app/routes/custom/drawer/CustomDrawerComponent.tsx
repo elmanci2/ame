@@ -21,29 +21,29 @@ const DrawerItemsList = [
     action: 'Home',
   },
   {
-    label: 'Buscar',
-    icon: 'search-outline',
-    action: 'search',
+    label: 'Solicitar servicio',
+    icon: 'hand-right-outline',
+    action: 'RequestService',
   },
   {
     label: 'Perfil',
     icon: 'person-outline',
-    action: 'userScreen',
+    action: 'UserProfile',
   },
   {
-    label: 'Favoritos',
-    icon: 'heart-outline',
-    action: 'favorites',
+    label: 'Acudientes',
+    icon: 'people-outline',
+    action: 'AcudientesList',
   },
   {
     label: 'Configuración',
     icon: 'settings-outline',
-    action: 'settings',
+    action: 'Settings',
   },
   {
     label: 'Acerca de',
     icon: 'information-circle-outline',
-    action: 'about',
+    action: 'AboutTheApp',
   },
 ];
 
@@ -81,7 +81,12 @@ const CustomDrawerItem = (props: DrawerContentComponentProps) => {
             key={index}
             label={item.label}
             icon={({color, size}) => IconsItemDrawer({color, size, item})}
-            onPress={() => props.navigation.navigate(item.action)}
+            onPress={() => {
+              props.navigation.navigate(item.action);
+              setTimeout(() => {
+                props.navigation.closeDrawer();
+              }, 700);
+            }}
           />
         </View>
       ))}
@@ -107,7 +112,7 @@ export const CustomDrawerComponent = (props: DrawerContentComponentProps) => {
           <UserIcon width={40} height={40} />
           <View>
             <Text style={[styles.text, styles.hola]}>Hola</Text>
-            <Text style={[styles.text, styles.name]}>marx </Text>
+            <Text style={[styles.text, styles.name]}>marx</Text>
           </View>
         </View>
         {isOpen && <NotificationIcon />}

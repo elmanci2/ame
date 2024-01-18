@@ -1,16 +1,22 @@
 import {StyleSheet, View} from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import MyInput from '../components/custom/MyInput';
 import CustomScreen from '../components/custom/CustomScreen';
 import {DowIndicator} from '../components/custom/DowIndicator';
-import {CloseBottom} from '../components/custom/CloseBottom';
 import {MyText} from '../components/custom/MyText';
 import {colors} from '../../constants/Constants';
+import RenderItemDropDown from '../components/custom/DropDown/RenderItemDropDown';
+import {FlatList} from 'react-native-gesture-handler';
+import {RoutListTypeProps} from '../types/types';
 
-interface Props {}
+const DropDownPikerScreen = ({route, navigation}: RoutListTypeProps) => {
+  const [onFilter, setOnFilter] = useState('');
+  const {data, screen} = route.params;
 
-const DropDownPikerScreen = ({route}: Props) => {
-  const {data} = route.params;
+  const result = data?.filter((item: {label: string}) => {
+    return item.label.toLowerCase().includes(onFilter.toLowerCase());
+  });
+
   return (
     <CustomScreen>
       <DowIndicator />
@@ -18,9 +24,16 @@ const DropDownPikerScreen = ({route}: Props) => {
         <View>
           <MyInput
             {...{
+              textInputProps: {
+                autoFocus: true,
+              },
               placeholder: '¿Qué buscas?',
               style: {
                 width: '100%',
+              },
+              onChangeText(e) {
+                setOnFilter(e);
+                return;
               },
             }}
           />
@@ -36,7 +49,16 @@ const DropDownPikerScreen = ({route}: Props) => {
           }}>
           Elige un elemento
         </MyText>
-        <View></View>
+        <View {...{style: {flex: 1}}}>
+          <FlatList
+            contentContainerStyle={styles.flatListContainer}
+            style={styles.flatList}
+            data={result}
+            renderItem={({item}) => (
+              <RenderItemDropDown {...{item, navigation, screen}} />
+            )}
+          />
+        </View>
       </View>
     </CustomScreen>
   );
@@ -48,5 +70,16 @@ const styles = StyleSheet.create({
   itemContainer: {
     marginTop: 30,
     marginHorizontal: 4,
+    flex: 1,
+  },
+
+  flatListContainer: {
+    gap: 10,
+    paddingBottom: 30,
+    marginHorizontal: 3,
+  },
+
+  flatList: {
+    flex: 1,
   },
 });

@@ -1,5 +1,5 @@
 import {StatusBar, StyleSheet, TouchableOpacity, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import CustomScreen from '../../components/custom/CustomScreen';
 import {colors} from '../../../constants/Constants';
 import {MyText} from '../../components/custom/MyText';
@@ -10,6 +10,7 @@ import useRemainingDaysInMonth from '../../hook/useRemainingDaysInMonth';
 import ReminderList from '../../components/screen/users/reminder/ReminderList';
 import {GlobalStyle} from '../../styles/styles';
 import useRemainingMonths from '../../hook/useRemainingMonths';
+import LoadScreen from '../LoadScreen';
 
 const currentDate = new Date();
 const month = currentDate.toLocaleString('default', {month: 'long'});
@@ -20,10 +21,21 @@ const UserRemindersScreen = ({navigation}: any) => {
     num: 1,
     month: month,
   });
+  const [loading, setLoading] = useState(true);
   const [selectDay, setSelectDay] = useState<number>(dayNumber);
   const remainingDays = useRemainingDaysInMonth(selectMonth.num);
 
   const months = useRemainingMonths();
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+  }, []);
+
+  if (loading) {
+    return <LoadScreen />;
+  }
 
   return (
     <CustomScreen>

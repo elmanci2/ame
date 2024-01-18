@@ -7,6 +7,7 @@ import {View} from 'moti';
 import {MyText} from '../../components/custom/MyText';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {colors} from '../../../constants/Constants';
+import Logo from '../../components/custom/Logo';
 
 export default function RequestService({route, navigation}: RoutListTypeProps) {
   const {title} = route.params;
@@ -17,14 +18,15 @@ export default function RequestService({route, navigation}: RoutListTypeProps) {
 
   return (
     <CustomScreen>
+      <View style={styles.logo}>
+        <Logo />
+      </View>
       <Title {...{title}} />
 
       <View style={styles.container}>
         <TouchableOpacity
           style={styles.item}
-          onPress={() =>
-            go(/* 'MedicationCollection' */ 'DropDownPikerScreen')
-          }>
+          onPress={() => go('MedicationCollection')}>
           <View style={styles.imgContainer}>
             <Image
               resizeMode="contain"
@@ -40,7 +42,9 @@ export default function RequestService({route, navigation}: RoutListTypeProps) {
           <Entypo name="chevron-right" color={colors.tertiary} size={50} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.item}>
+        <TouchableOpacity
+          style={styles.item}
+          onPress={() => go('ClaimMedication')}>
           <View style={styles.imgContainer1}>
             <View style={styles.img1}>
               <Image
@@ -59,7 +63,7 @@ export default function RequestService({route, navigation}: RoutListTypeProps) {
           </View>
 
           <MyText fontWeight="700" fontSize={18} color={colors.icon}>
-            {'Recolección \nMedicamentos'}
+            {'Organización \nMedicamentos'}
           </MyText>
 
           <Entypo name="chevron-right" color={colors.tertiary} size={50} />
@@ -70,6 +74,10 @@ export default function RequestService({route, navigation}: RoutListTypeProps) {
 }
 
 const styles = StyleSheet.create({
+  logo: {
+    alignSelf: 'center',
+    marginVertical: 10,
+  },
   container: {
     paddingHorizontal: 10,
     marginTop: 40,

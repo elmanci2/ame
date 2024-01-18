@@ -1,5 +1,6 @@
-import {Image, StyleSheet, View} from 'react-native';
+import {Image, StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
+import {useNavigation} from '@react-navigation/native';
 
 interface Props {
   width?: number;
@@ -8,13 +9,18 @@ interface Props {
 
 const UserIcon = ({height, width}: Props) => {
   const containerStyle = height || width ? {width, height} : styles.contend;
+
+  const navigation = useNavigation<any>();
+
   return (
-    <View style={containerStyle}>
+    <TouchableOpacity
+      style={containerStyle}
+      onPress={() => navigation.navigate('UserProfile')}>
       <Image
         source={require('../../../assets/usuario.png')}
         style={styles.img}
       />
-    </View>
+    </TouchableOpacity>
   );
 };
 

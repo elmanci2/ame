@@ -14,7 +14,7 @@ export const UserHomeGridArray: GridItemType[] = [
   },
   {
     label: 'Solicitar servicio',
-    route: 'RequestService',
+    route: 'Servicios',
     icon: require('../../../../../assets/img/icon/user/home/grid2.png'),
     color: colors.tertiary,
   },
@@ -26,7 +26,7 @@ export const UserHomeGridArray: GridItemType[] = [
   },
   {
     label: 'Mis signos \n vitales',
-    route: 'home',
+    route: 'Signos',
     icon: require('../../../../../assets/img/icon/user/home/grid4.png'),
     color: colors.tertiary,
   },
