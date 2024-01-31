@@ -1,7 +1,0 @@
-<resources>
-    <string name="app_name">Ame App</string>
-
-    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">
-        AIzaSyBmskw4iWQ2DZCS0ulFuoNIkeJ8IoYj-70</string>
-
-</resources>

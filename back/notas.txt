@@ -1,3 +1,0 @@
-{
-	"authorization":"bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRjMjA5ZDZmLWQ3MDAtNDFjOC1hMTUxLTk2YzBiYzRiYWY1MyIsImlhdCI6MTY5NzEyMzc3OH0.qBr5Hqc2Jb1Co2dkb3dZaXnnILPJxqoN4WNcjmCXA9I"
-}
