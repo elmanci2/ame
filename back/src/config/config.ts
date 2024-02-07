@@ -9,4 +9,8 @@ export const config = {
     authToken: `${process.env.authToken}`,
     phone: "+17658197039",
   },
+
+  jwt: {
+    secretKey:`${process.env.secretKey}`,
+  },
 };

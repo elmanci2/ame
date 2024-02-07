@@ -3,8 +3,12 @@ import { generateOTP } from "./util/util";
 import { sendSMS } from "../services/sms/sms";
 import { allQueryAsync, queryAsync } from "../db/util/util";
 import { user_db as db, data_db as data } from "../db/db";
-//import { UserData } from "../types/types";
 import { v4 as uuidv4 } from "uuid";
+import { BcryptDecrypt, BcryptEncrypt } from "./util/bcrypt";
+import { generate_token } from "./util/token";
+
+const user_id = uuidv4();
+
 export const otp_validate = async (req: Request, res: Response) => {
   const otp = generateOTP();
   const { phone } = req.body;
@@ -19,19 +23,19 @@ export const otp_validate = async (req: Request, res: Response) => {
   });
 };
 
-export const email_number_validation = async (req: Request, res: Response) => {
-  const { email, phoneNumber } = req.body;
+export const validate_email = async (
+  email: string,
+  phoneNumber: string
+): Promise<string | null> => {
   try {
     const existingUserWithEmail = await queryAsync(
       db,
       "SELECT email FROM usuarios WHERE email = ?",
-      [email]
+      [email.toLowerCase()]
     );
 
     if (existingUserWithEmail) {
-      return res
-        .status(400)
-        .json({ error: "Correo electrónico ya registrado." });
+      return "Correo electrónico ya registrado.";
     }
 
     const existingUserWithPhone = await queryAsync(
@@ -41,20 +45,77 @@ export const email_number_validation = async (req: Request, res: Response) => {
     );
 
     if (existingUserWithPhone) {
-      return res
-        .status(400)
-        .json({ error: "Número de teléfono ya registrado." });
+      return "Número de teléfono ya registrado.";
     }
-    res.status(200).json({ success: true });
+
+    return null; // No hay problemas de validación
   } catch (error: any) {
     console.error("Error de validación:", error.message);
-    res.status(500).json({ error: "Error interno del servidor." });
+    return "Error interno del servidor.";
   }
 };
+
+export const login = async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).send("Campos 'email' y 'password' son requeridos");
+    }
+
+    const selectQuery =
+      "SELECT email, password , type FROM usuarios WHERE email = ?";
+
+    const search_user = await queryAsync(db, selectQuery, [
+      email.toLowerCase(),
+    ]);
+
+    if (search_user) {
+      const check_password = await BcryptDecrypt(
+        search_user.password,
+        password
+      );
+
+      if (check_password) {
+        const tk = await generate_token();
+
+        if (!tk) {
+          return res
+            .status(500)
+            .set("Error interno del servidor al generar token");
+        }
+        return res.status(200).json({ type: search_user.type, ...tk });
+      } else {
+        return res.status(400).send("Credenciales incorrectas");
+      }
+    } else {
+      return res.status(404).send("Usuario no encontrado");
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send("Error interno del servidor");
+  }
+};
+
+export const email_number_validation = async (
+  req: Request | any,
+  res: Response | any
+) => {
+  const { email, phoneNumber } = req.body;
+
+  const validationError = await validate_email(email, phoneNumber);
+
+  if (validationError) {
+    return res.status(400).send(validationError);
+  }
+
+  return res.status(200).json({ success: true });
+};
+
 export const create_new_user = async (req: Request, res: Response) => {
-  const nuevoUsuario = req.body;
-  console.log(nuevoUsuario);
-  const insertQuery = `
+  try {
+    const nuevoUsuario = req.body;
+    const insertQuery = `
   INSERT INTO usuarios (
       id_usuario, address, barrio, city, country, date, document,
       documentType, email, lastName, name, password, phoneNumber,
@@ -62,47 +123,60 @@ export const create_new_user = async (req: Request, res: Response) => {
   ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 `;
 
-  // Determinar qué campo de apellido usar (lastName o lasName)
-  const apellido =
-    nuevoUsuario.lastName !== null
-      ? nuevoUsuario.lastName
-      : nuevoUsuario.lasName;
+    const validationError = await validate_email(
+      nuevoUsuario?.email,
+      nuevoUsuario?.phoneNumber
+    );
 
-  const user_id = uuidv4();
-  // Parámetros para la consulta SQL
-  const params = [
-    user_id, // Agregando el ID generado
-    nuevoUsuario.address,
-    nuevoUsuario.barrio,
-    nuevoUsuario.city,
-    nuevoUsuario.country,
-    nuevoUsuario.date,
-    nuevoUsuario.document,
-    nuevoUsuario.documentType,
-    nuevoUsuario.email,
-    apellido || null,
-    nuevoUsuario.name,
-    nuevoUsuario.password,
-    nuevoUsuario.phoneNumber,
-    nuevoUsuario.state,
-    nuevoUsuario.verified || 0,
-    nuevoUsuario.active || 1,
-    nuevoUsuario.photo || null,
-    nuevoUsuario.type || null,
-  ];
-
-  // Imprimir los parámetros antes de ejecutar la consulta
-  console.log("Parámetros de la consulta:", params);
-
-  // Ejecutar la consulta SQL para insertar un nuevo usuario
-  db.run(insertQuery, params, (err) => {
-    if (err) {
-      console.error("Error al insertar el nuevo usuario:", err.message);
-      res.status(500).send("Error al insertar el nuevo usuario.");
-    } else {
-      res.status(201).json({ success: true });
+    if (validationError) {
+      return res.status(400).send(validationError);
     }
-  });
+
+    // Determinar qué campo de apellido usar (lastName o lasName)
+    const apellido =
+      nuevoUsuario.lastName !== null
+        ? nuevoUsuario.lastName
+        : nuevoUsuario.lasName;
+
+    const password = await BcryptEncrypt(nuevoUsuario.password);
+
+    // Parámetros para la consulta SQL
+    const params = [
+      user_id, // Agregando el ID generado
+      nuevoUsuario.address,
+      nuevoUsuario.barrio,
+      nuevoUsuario.city,
+      nuevoUsuario.country,
+      nuevoUsuario.date,
+      nuevoUsuario.document,
+      nuevoUsuario.documentType,
+      nuevoUsuario.email.toLowerCase(),
+      apellido || null,
+      nuevoUsuario.name,
+      password,
+      nuevoUsuario.phoneNumber,
+      nuevoUsuario.state,
+      nuevoUsuario.verified || 0,
+      nuevoUsuario.active || 1,
+      nuevoUsuario.photo || null,
+      nuevoUsuario.type,
+    ];
+
+    const tk = await generate_token();
+
+    if (!tk) res.status(500).send("internal server  error");
+
+    db.run(insertQuery, params, (err) => {
+      if (err) {
+        console.error("Error al insertar el nuevo usuario:", err.message);
+        res.status(500).json("Error al insertar el nuevo usuario.");
+      } else {
+        res.status(201).json({ type: nuevoUsuario.type, ...tk });
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 };
 
 export const get_countries = async (req: Request, res: Response) => {
@@ -131,7 +205,7 @@ export const get_cities = async (req: Request, res: Response) => {
   });
 };
 
-const documentosIdentificacion = [
+const documentosIdentificación = [
   {
     label: "Cédula de Ciudadanía",
     value: "CC",
@@ -177,5 +251,5 @@ const documentosIdentificacion = [
 ];
 
 export const get_document_type = async (req: Request, res: Response) => {
-  res.send(documentosIdentificacion);
+  res.send(documentosIdentificación);
 };

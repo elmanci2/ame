@@ -5,12 +5,13 @@ interface Props {
   width?: number;
   height?: number;
   style?: ViewStyle;
+  center?: boolean;
 }
 
-const Logo = ({height, width, style}: Props) => {
+const Logo = ({height, width, style, center = false}: Props) => {
   const containerStyle = height || width ? {width, height} : styles.contend;
   return (
-    <View style={[containerStyle, style]}>
+    <View style={[containerStyle, style, center && {alignSelf: 'center'}]}>
       <Image
         source={require('../../../assets/logo/ame_logo.png')}
         style={styles.img}

@@ -13,6 +13,8 @@ import LoadModalScreen from '../LoadModalScreen';
 import {addInfo} from '../../redux/RegisterSlider';
 import {useDispatch, useSelector} from 'react-redux';
 import {usePost} from '../../hook/http/usePost';
+import {Toast} from 'react-native-toast-message/lib/src/Toast';
+import {addTk} from '../../redux/tokenSlice';
 
 const Password = ({navigation}: RoutListTypeProps) => {
   const [password, setPassword] = useState<any>({
@@ -32,21 +34,23 @@ const Password = ({navigation}: RoutListTypeProps) => {
   const {data, error, loading, postRequest} = usePost('create-user', info);
 
   const register = async () => {
-    Dispatch(
-      addInfo({
-        password: password.p1,
-        type,
-      }),
-    );
+    try {
+      Dispatch(
+        addInfo({
+          password: password.p1,
+          type,
+        }),
+      );
+      await postRequest();
 
-    await postRequest();
-
-    if (data.success) {
-      navigation.navigate('home');
+      Dispatch(addTk(data?.tk));
+    } catch (error: any) {
+      Toast.show({
+        type: 'error',
+        text2: error.message,
+      });
     }
   };
-
-  console.log(data);
 
   return (
     <CustomScreen>

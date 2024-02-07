@@ -8,6 +8,7 @@ import NextBottomRegister from './components/NextBottomRegister';
 import {RoutListTypeProps} from '../../types/types';
 import {getOtpNumber} from '../../util/otp';
 import {usePost} from '../../hook/http/usePost';
+import useSecondCounter from '../../hook/useMinuteCounter';
 
 const code = 1245;
 const ValidatePhone = ({route, navigation}: RoutListTypeProps) => {
@@ -25,6 +26,9 @@ const ValidatePhone = ({route, navigation}: RoutListTypeProps) => {
   });
   const {data, loading, postRequest} = usePost('otp', {phone: `+57${phone}`});
   const active = !loading && getOtpNumber(otp) === Number(data?.otp);
+  /*   const {seconds, isFinished} = useSecondCounter(10, () => {
+    console.log('Timer has ended');
+  }); */
 
   useEffect(() => {
     postRequest();
@@ -105,6 +109,17 @@ const ValidatePhone = ({route, navigation}: RoutListTypeProps) => {
             />
           </View>
         </View>
+        {/* 
+        <View style={styles.getNewOtpText}>
+          <MyText fontSize={17} fontWeight="500" color={colors.texto_bold}>
+            Se reenviará en:
+            <MyText color={colors.secundario} fontSize={17} fontWeight="500">
+              {' '}
+              {seconds}
+            </MyText>{' '}
+            segundos
+          </MyText>
+        </View> */}
 
         <NextBottomRegister
           active={active}
@@ -143,5 +158,9 @@ const styles = StyleSheet.create({
   },
   texts: {
     marginVertical: 30,
+  },
+
+  getNewOtpText: {
+    alignSelf: 'center',
   },
 });

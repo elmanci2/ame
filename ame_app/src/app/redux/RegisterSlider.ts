@@ -3,7 +3,7 @@ import {RegisterType} from '../types/types';
 
 type Types = {
   info: RegisterType;
-  type: number;
+  type: string;
 };
 
 const initialState: Types = {
@@ -16,12 +16,12 @@ const initialState: Types = {
     city: '',
     country: '',
     state: '',
-    date: "",
-    documentType: "",
-    document: "",
-    password:""
+    date: '',
+    documentType: '',
+    document: '',
+    password: '',
   },
-  type: 1,
+  type: 'Usuario',
 };
 
 export const RegisterSlice = createSlice({

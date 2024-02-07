@@ -1,6 +1,12 @@
 import {Dimensions} from 'react-native';
 const {height, width} = Dimensions.get('window');
 
+export const user_roles = {
+  user: 'Usuario',
+  delivery: 'Repartidor',
+  visitor: 'Visitante',
+};
+
 export const colors = {
   primary: '#f5fbff',
   white: 'white',
@@ -19,6 +25,7 @@ export const dimensions = {
 const constants = {
   colors,
   dimensions,
+  user_roles,
 };
 
 export default constants;

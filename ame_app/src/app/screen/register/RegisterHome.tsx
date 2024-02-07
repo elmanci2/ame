@@ -1,5 +1,5 @@
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import CustomScreen from '../../components/custom/CustomScreen';
 import Logo from '../../components/custom/Logo';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -13,18 +13,18 @@ import {useDispatch} from 'react-redux';
 import {addInfo, type as types} from '../../redux/RegisterSlider';
 import LoadModalScreen from '../LoadModalScreen';
 import {usePost} from '../../hook/http/usePost';
-import Toast from '../../components/custom/Toas';
 import PhoneInput from '../../components/custom/PhoneInput';
 import {useFetch} from '../../hook/http/useFetch';
 import LoadScreen from '../LoadScreen';
 import ErrorScreen from '../ErrorScreen';
 import {useWifi} from '../../hook/network/useWifi';
 import ErrorWifi from '../ErrorWifi';
+import Toast, {BaseToast, ErrorToast} from 'react-native-toast-message';
+import {toastConfig} from '../../components/custom/Toas';
 
 const RegisterHome = ({route, navigation}: RoutListTypeProps) => {
   const {type, select} = route?.params ?? {};
   const Dispatch = useDispatch();
-  const toastRef = useRef();
 
   const {isConnected} = useWifi();
 
@@ -47,6 +47,7 @@ const RegisterHome = ({route, navigation}: RoutListTypeProps) => {
     'email_validate',
     postData,
   );
+
   const phoneNumber: any = Number(info.phoneNumber);
 
   const validateNumber = /^\d+$/.test(phoneNumber);
@@ -60,37 +61,29 @@ const RegisterHome = ({route, navigation}: RoutListTypeProps) => {
     Dispatch(types(type));
   }, []);
 
+  // toas
+
   const next = async () => {
     if (active) {
       try {
         await postRequest();
-        if (data.success) {
-          Dispatch(addInfo(info));
-          navigation.navigate('otp_phone', {phone: info.phoneNumber});
-        } else {
-          //@ts-ignore
-          toastRef.current.show({
-            type: 'error',
-            text: 'Error',
-            message: data.error,
-          });
-        }
+        Dispatch(addInfo(info));
+        navigation.navigate('otp_phone', {phone: info.phoneNumber});
       } catch (error: any) {
         //@ts-ignore
-        /*  toastRef.current.show({
+        Toast.show({
           type: 'error',
-          text: 'Error',
-          message: error.message,
-        }); */
+          text1: 'Error',
+          text2: error?.message
+            ?.replace('HTTP error! Status: 400, Message:', '')
+            ?.trim(),
+        });
       }
     }
 
     return;
   };
 
-console.log(data);
-
-  
   if (load) {
     return <LoadScreen />;
   } else if (errorCo) {
@@ -102,7 +95,7 @@ console.log(data);
   return (
     <CustomScreen>
       <SafeAreaView style={styles.body}>
-        <Toast ref={toastRef} />
+      
         <ScrollView>
           <Logo style={styles.logo} />
           <View style={styles.textContainer}>
@@ -152,6 +145,7 @@ console.log(data);
 
             <PhoneInput
               error={!validateNumber}
+              /* @ts-ignore */
               data={countries?.countries as any}
               value={select && select}
               onChangeText={e => setInfo({...info, phoneNumber: e})}

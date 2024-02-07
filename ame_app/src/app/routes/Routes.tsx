@@ -6,7 +6,7 @@ import {
 } from '@react-navigation/drawer';
 
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {colors} from '../../constants/Constants';
+import {colors, user_roles} from '../../constants/Constants';
 import {CustomDrawerComponent} from './custom/drawer/CustomDrawerComponent';
 import AnimatedScreen from '../animation/AnimatedScreen';
 
@@ -18,8 +18,15 @@ import {
 
 import BottomScreen from './custom/bottom/BottomScreen';
 import AddReminderScreen from '../screen/AddReminderScreen';
-import {LoginRouteLIst, userRoutStackList} from './list/RoutesList';
+import {
+  LoginRouteLIst,
+  userRoutStackList,
+  userRouteLIst,
+} from './list/RoutesList';
 import AddAcudiente from '../screen/user/AddAcudiente';
+import {Toast} from 'react-native-toast-message/lib/src/Toast';
+import {toastConfig} from '../components/custom/Toas';
+import {useSelector} from 'react-redux';
 
 // stack
 
@@ -36,9 +43,17 @@ const modalScreeConfig: StackNavigationOptions = {
 const Stack = createStackNavigator();
 
 const MyStack = () => {
+  const {tk, type} = useSelector((state: any) => state.tk);
+
+  const renderList =
+    tk && type === user_roles.user ? userRouteLIst : LoginRouteLIst;
+
+  console.log('tk ' + tk);
+
   return (
     <Stack.Navigator screenOptions={{...StackConfig}}>
-      {userRoutStackList.map((item, index) => (
+      {tk && <Stack.Screen name="home" component={MyDrawer} />}
+      {renderList.map((item, index) => (
         <Stack.Screen
           options={{...item.config}}
           key={index}
@@ -47,8 +62,6 @@ const MyStack = () => {
           initialParams={{title: item.config?.title || ''}}
         />
       ))}
-
-      <Stack.Screen name="home" component={MyDrawer} />
 
       <Stack.Screen name="AddAcudiente" component={AddAcudiente} />
     </Stack.Navigator>
@@ -74,14 +87,14 @@ const drawerConfig = {
 };
 
 const CustomDrawer = (props: DrawerContentComponentProps) => {
-  return <CustomDrawerComponent {...props} />;
+  return;
 };
 
 const MyDrawer = () => {
   return (
     <Drawer.Navigator
       screenOptions={{drawerType: 'slide', ...drawerConfig} as any}
-      drawerContent={CustomDrawer}>
+      drawerContent={Props => <CustomDrawerComponent {...Props} />}>
       <Drawer.Screen name="Home" component={BottomScreen} />
       <Drawer.Screen name="animated">{() => <AnimatedScreen />}</Drawer.Screen>
     </Drawer.Navigator>
@@ -92,6 +105,7 @@ const Routes = () => {
   return (
     <NavigationContainer>
       <MyStack />
+      <Toast config={toastConfig} />
     </NavigationContainer>
   );
 };

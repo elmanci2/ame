@@ -8,7 +8,6 @@ import {MyText} from './MyText';
 
 type Props = {
   data: {
-    
     label: string;
     value: string;
   }[];
@@ -19,7 +18,6 @@ type Props = {
 };
 
 const PhoneInput = ({data, value, onChangeText, error}: Props) => {
- 
   return (
     <View
       style={{

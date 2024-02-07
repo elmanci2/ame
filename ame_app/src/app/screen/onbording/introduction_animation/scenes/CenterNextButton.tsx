@@ -3,6 +3,8 @@ import {StyleSheet, Text, Animated} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import NextButtonArrow from './components/NextButtonArrow';
 import {colors} from '../../../../../constants/Constants';
+import MyPressable from '../../../../components/custom/MyPressable';
+import {useNavigation} from '@react-navigation/native';
 
 interface Props {
   onNextClick: () => void;
@@ -40,6 +42,8 @@ const CenterNextButton: React.FC<Props> = ({
   onNextClick,
   animationController,
 }) => {
+  const navigation = useNavigation<any>();
+
   const opacity = useRef<Animated.Value>(new Animated.Value(0));
   const currentOpacity = useRef<number>(0);
 
@@ -116,7 +120,9 @@ const CenterNextButton: React.FC<Props> = ({
         <Text style={{color: 'grey', fontFamily: 'WorkSans-Regular'}}>
           ¿Ya tienes una cuenta?{'  '}
         </Text>
-        <Text style={styles.loginText}>Iniciar</Text>
+        <MyPressable onPress={() => navigation.navigate('Login')}>
+          <Text style={styles.loginText}>Iniciar</Text>
+        </MyPressable>
       </Animated.View>
     </Animated.View>
   );

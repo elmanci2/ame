@@ -9,48 +9,17 @@ import {
   DrawerContentComponentProps,
 } from '@react-navigation/drawer';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {colors, dimensions} from '../../../../constants/Constants';
+import {colors, dimensions, user_roles} from '../../../../constants/Constants';
 import UserIcon from '../../../components/custom/UserIcon';
 import NotificationIcon from '../../../components/custom/NotificatinIcon';
 import {Text} from 'moti';
-
-const DrawerItemsList = [
-  {
-    label: 'Inicio',
-    icon: 'home-outline',
-    action: 'Home',
-  },
-  {
-    label: 'Solicitar servicio',
-    icon: 'hand-right-outline',
-    action: 'RequestService',
-  },
-  {
-    label: 'Perfil',
-    icon: 'person-outline',
-    action: 'UserProfile',
-  },
-  {
-    label: 'Acudientes',
-    icon: 'people-outline',
-    action: 'AcudientesList',
-  },
-  {
-    label: 'Configuración',
-    icon: 'settings-outline',
-    action: 'Settings',
-  },
-  {
-    label: 'Acerca de',
-    icon: 'information-circle-outline',
-    action: 'AboutTheApp',
-  },
-];
+import {useSelector} from 'react-redux';
+import {deliveryDrawerLIst, userDrawerLIst} from '../../list/DrawerRoutelist';
 
 type iconProps = {
   color: string;
   size: number;
-  item?: (typeof DrawerItemsList)[0];
+  item?: (typeof userDrawerLIst)[0];
 };
 
 const IconsItemDrawer = ({color, size, item}: iconProps) => {
@@ -65,11 +34,16 @@ const IconsItemDrawer = ({color, size, item}: iconProps) => {
 
 const CustomDrawerItem = (props: DrawerContentComponentProps) => {
   // active item
+  const {type} = useSelector((state: any) => state.tk);
+
   const activeItem = props.state.routes[props.state.index].name;
+
+  const renderDrawerList =
+    type === user_roles.user ? userDrawerLIst : deliveryDrawerLIst;
 
   return (
     <View style={styles.itemListContainer}>
-      {DrawerItemsList.map((item, index) => (
+      {renderDrawerList.map((item, index) => (
         <View style={styles.itemListContend} key={index}>
           {activeItem === item.action && <View style={styles.activeDrawer} />}
           <DrawerItem
@@ -100,9 +74,14 @@ const CustomDrawerItem = (props: DrawerContentComponentProps) => {
   );
 };
 
-export const CustomDrawerComponent = (props: DrawerContentComponentProps) => {
+export const CustomDrawerComponent = (
+  props: DrawerContentComponentProps,
+  {user_type}: {user_type: string},
+) => {
   const stateDrawer = useDrawerStatus();
   const isOpen = stateDrawer === 'open';
+
+  console.log('popo ' + user_type);
 
   const stylesOpe = {width: isOpen ? dimensions.width - 30 : dimensions.width};
   return (

@@ -3,21 +3,15 @@ import express from "express";
 import cors from "cors";
 import rt from "./routes/routes";
 import morgan from "morgan";
-import http from "http";
-import { Server } from "socket.io";
+import adm_rt from "./admin/routes/admin.Routes";
+import { admin_permission_validate } from "./admin/middlewares/admin.middlewares";
+
 const app = express();
-
-const server = http.createServer(app);
-
-const io = new Server(server);
-
-io.on("connection", () => {
-  console.log("soke connection");
-});
-
 app.use(express.json());
 app.use(cors());
 app.use(morgan("dev"));
 app.use(rt);
+// admin
+app.use("/ame_admin", admin_permission_validate, adm_rt);
 
-export  { app, server };
+export default app;

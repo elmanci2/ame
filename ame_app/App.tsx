@@ -9,7 +9,7 @@ import {QueryClient, QueryClientProvider} from 'react-query';
 import {Provider} from 'react-redux';
 import {store} from './src/app/redux/store';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {SafeAreaView} from 'react-native-safe-area-context';
+
 
 const queryClient = new QueryClient();
 function App(): JSX.Element {
@@ -35,11 +35,8 @@ function App(): JSX.Element {
     <Provider store={store}>
       <GestureHandlerRootView style={flex}>
         <QueryClientProvider client={queryClient}>
-          {/* @ts-ignore */}
-          <SafeAreaView style={{flex:1}}>
-            <StatusBar backgroundColor={colors.primary} />
-            <Routes />
-          </SafeAreaView>
+          <StatusBar backgroundColor={colors.primary} />
+          <Routes />
         </QueryClientProvider>
       </GestureHandlerRootView>
     </Provider>

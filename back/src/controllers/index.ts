@@ -5,7 +5,8 @@ import {
   get_countries,
   get_state,
   get_cities,
-  get_document_type
+  get_document_type,
+  login
 } from "./controllers";
 import { generateOTP } from "./util/util";
 
@@ -17,6 +18,7 @@ const controllers = {
   get_state,
   get_countries,
   get_document_type,
+  login,
   util: {
     generateOTP,
   },

@@ -29,6 +29,7 @@ import Document from '../../screen/register/Document';
 import Password from '../../screen/register/Password';
 import UserHomeScreen from '../../screen/user/UserHomeScreen';
 import AddReminderScreen from '../../screen/AddReminderScreen';
+import Login from '../../screen/register/auth/Login';
 
 const header = {
   header: MiniHeader,
@@ -45,108 +46,7 @@ const modalHorizontalScreeConfig: StackNavigationOptions = {
   cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
 };
 
-export const userRouteLIst: RoutListType[] = [
-  {name: 'onboarding', components: IntroductionAnimationScreen},
-
-  {
-    name: 'home_register',
-    components: RegisterHome,
-    config: {...modalHorizontalScreeConfig},
-  },
-
-  {
-    name: 'PaymentsAndServices',
-    components: PaymentsAndServices,
-    config: {...header, title: 'Mis servicios y pagos'},
-  },
-  {
-    name: 'RequestService',
-    components: RequestService,
-    config: {...header, title: 'Solicitar servicio'},
-  },
-  {
-    name: 'MedicationCollection',
-    components: MedicationCollection,
-    config: {...header, title: 'recolección \n de medicamentos'},
-  },
-  {
-    name: 'MapaCollection',
-    components: MapaCollection,
-    config: {...modalScreeConfig},
-  },
-
-  {
-    name: 'ClaimMedication',
-    components: ClaimMedication,
-    config: {...header},
-  },
-  {
-    name: 'ServicePreview',
-    components: ServicePreview,
-    config: {...modalScreeConfig},
-  },
-  {
-    name: 'AcudientesList',
-    components: AcudientesList,
-    config: {...modalScreeConfig, title: 'Mis Acudientes'},
-  },
-];
-/* export const VisitorRouteLIst: RoutListType[] = [];
-export const DeliveryRouteLIst: RoutListType[] = []; */
-
-export const LoginRouteLIst: RoutListType[] = [
-  
-  {
-    name: 'preRegister',
-    components: PreRegister,
-    config: {
-      ...modalScreeConfig,
-    },
-  },
-
-  {
-    name: 'otp_phone',
-    components: ValidatePhone,
-    config: {
-      ...modalScreeConfig,
-    },
-  },
-
-  {
-    name: 'register_location',
-    components: Location,
-    config: {
-      ...modalHorizontalScreeConfig,
-    },
-  },
-
-  {
-    name: 'Document',
-    components: Document,
-    config: {
-      ...modalHorizontalScreeConfig,
-    },
-  },
-  {
-    name: 'Password',
-    components: Password,
-    config: {
-      ...modalScreeConfig,
-    },
-  },
-
-  /*  {
-    name: 'DropDownPikerScreen',
-    components: DropDownPikerScreen,
-    config: {
-      ...modalScreeConfig,
-    },
-  }, */
-];
-
 export const userRoutStackList: RoutListType[] = [
-  ...userRouteLIst,
-  ...LoginRouteLIst,
   {
     name: 'addReminder',
     components: AddReminderScreen,
@@ -202,4 +102,102 @@ export const userRoutStackList: RoutListType[] = [
     components: UserProfile,
     config: {...modalScreeConfig, title: 'Mi cuenta'},
   },
+];
+
+export const userRouteLIst: RoutListType[] = [
+  {
+    name: 'PaymentsAndServices',
+    components: PaymentsAndServices,
+    config: {...header, title: 'Mis servicios y pagos'},
+  },
+  {
+    name: 'RequestService',
+    components: RequestService,
+    config: {...header, title: 'Solicitar servicio'},
+  },
+  {
+    name: 'MedicationCollection',
+    components: MedicationCollection,
+    config: {...header, title: 'recolección \n de medicamentos'},
+  },
+  {
+    name: 'MapaCollection',
+    components: MapaCollection,
+    config: {...modalScreeConfig},
+  },
+
+  {
+    name: 'ClaimMedication',
+    components: ClaimMedication,
+    config: {...header},
+  },
+  {
+    name: 'ServicePreview',
+    components: ServicePreview,
+    config: {...modalScreeConfig},
+  },
+  {
+    name: 'AcudientesList',
+    components: AcudientesList,
+    config: {...modalScreeConfig, title: 'Mis Acudientes'},
+  },
+];
+/* export const VisitorRouteLIst: RoutListType[] = [];
+export const DeliveryRouteLIst: RoutListType[] = []; */
+
+export const LoginRouteLIst: RoutListType[] = [
+  {name: 'onboarding', components: IntroductionAnimationScreen},
+  {
+    name: 'Login',
+    components: Login,
+    config: {
+      ...modalScreeConfig,
+    },
+  },
+  {
+    name: 'preRegister',
+    components: PreRegister,
+    config: {
+      ...modalScreeConfig,
+    },
+  },
+
+  {
+    name: 'home_register',
+    components: RegisterHome,
+    config: {...modalHorizontalScreeConfig},
+  },
+
+  {
+    name: 'otp_phone',
+    components: ValidatePhone,
+    config: {
+      ...modalScreeConfig,
+    },
+  },
+
+  {
+    name: 'register_location',
+    components: Location,
+    config: {
+      ...modalHorizontalScreeConfig,
+    },
+  },
+
+  {
+    name: 'Document',
+    components: Document,
+    config: {
+      ...modalHorizontalScreeConfig,
+    },
+  },
+  {
+    name: 'Password',
+    components: Password,
+    config: {
+      ...modalScreeConfig,
+    },
+  },
+
+  ...userRoutStackList,
 ];
