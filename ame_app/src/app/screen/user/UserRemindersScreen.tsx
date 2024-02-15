@@ -11,12 +11,16 @@ import ReminderList from '../../components/screen/users/reminder/ReminderList';
 import {GlobalStyle} from '../../styles/styles';
 import useRemainingMonths from '../../hook/useRemainingMonths';
 import LoadScreen from '../LoadScreen';
+import {RoutListTypeProps} from '../../types/types';
 
 const currentDate = new Date();
 const month = currentDate.toLocaleString('default', {month: 'long'});
 const dayNumber = currentDate.getDate();
 
-const UserRemindersScreen = ({navigation}: any) => {
+const UserRemindersScreen = ({navigation, route}: RoutListTypeProps) => {
+  const {title} = route?.params ?? {};
+
+
   const [selectMonth, setSelectMonth] = useState({
     num: 1,
     month: month,
@@ -43,7 +47,7 @@ const UserRemindersScreen = ({navigation}: any) => {
         <StatusBar backgroundColor={colors.white} />
         <View style={styles.menu}>
           <MyText fontWeight="800" fontSize={17} color={colors.texto_bold}>
-            Mis medicamentos
+            {title}
           </MyText>
           <ActionBottom
             action={() => navigation.navigate('addReminder')}

@@ -9,6 +9,9 @@ import {QueryClient, QueryClientProvider} from 'react-query';
 import {Provider} from 'react-redux';
 import {store} from './src/app/redux/store';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {PersistGate} from 'redux-persist/integration/react';
+import {persistStore} from 'redux-persist';
+
 
 
 const queryClient = new QueryClient();
@@ -31,15 +34,19 @@ function App(): JSX.Element {
     };
   }, []);
   const flex = {flex: 1};
+  const persistor = persistStore(store);
+  
   return (
-    <Provider store={store}>
-      <GestureHandlerRootView style={flex}>
-        <QueryClientProvider client={queryClient}>
-          <StatusBar backgroundColor={colors.primary} />
-          <Routes />
-        </QueryClientProvider>
-      </GestureHandlerRootView>
-    </Provider>
+    <PersistGate {...{persistor}}>
+      <Provider {...{store}}>
+        <GestureHandlerRootView style={flex}>
+          <QueryClientProvider client={queryClient}>
+            <StatusBar backgroundColor={colors.primary} />
+            <Routes />
+          </QueryClientProvider>
+        </GestureHandlerRootView>
+      </Provider>
+    </PersistGate>
   );
 }
 

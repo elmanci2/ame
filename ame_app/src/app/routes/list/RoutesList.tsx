@@ -30,6 +30,11 @@ import Password from '../../screen/register/Password';
 import UserHomeScreen from '../../screen/user/UserHomeScreen';
 import AddReminderScreen from '../../screen/AddReminderScreen';
 import Login from '../../screen/register/auth/Login';
+import SearchUsers from '../../screen/medical/SearchUsers';
+import PatientSignesPreview from '../../screen/medical/PatientSignesPreview';
+import SignesPreview from '../../screen/medical/SignesPreview';
+import UserRemindersScreen from '../../screen/user/UserRemindersScreen';
+import GetServicePreview from '../../screen/GetServicePreview';
 
 const header = {
   header: MiniHeader,
@@ -46,7 +51,7 @@ const modalHorizontalScreeConfig: StackNavigationOptions = {
   cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
 };
 
-export const userRoutStackList: RoutListType[] = [
+export const globalRoutes: RoutListType[] = [
   {
     name: 'addReminder',
     components: AddReminderScreen,
@@ -102,6 +107,20 @@ export const userRoutStackList: RoutListType[] = [
     components: UserProfile,
     config: {...modalScreeConfig, title: 'Mi cuenta'},
   },
+
+  {
+    name: 'UserRemindersScreen',
+    components: UserRemindersScreen,
+    config: {...modalScreeConfig},
+  },
+
+  {
+    name: 'GetServicePreview',
+    components: GetServicePreview,
+    config: {
+      ...modalScreeConfig,
+    },
+  },
 ];
 
 export const userRouteLIst: RoutListType[] = [
@@ -141,9 +160,20 @@ export const userRouteLIst: RoutListType[] = [
     components: AcudientesList,
     config: {...modalScreeConfig, title: 'Mis Acudientes'},
   },
+
+  ...globalRoutes,
 ];
-/* export const VisitorRouteLIst: RoutListType[] = [];
-export const DeliveryRouteLIst: RoutListType[] = []; */
+export const VisitorRouteLIst: RoutListType[] = [
+  {name: 'PatientSignesPreview', components: PatientSignesPreview},
+  {name: 'SearchUser', components: SearchUsers, config: {...modalScreeConfig}},
+  {
+    name: 'SignesPreview',
+    components: SignesPreview,
+    config: {...modalScreeConfig},
+  },
+  ...globalRoutes,
+];
+export const DeliveryRouteLIst: RoutListType[] = [];
 
 export const LoginRouteLIst: RoutListType[] = [
   {name: 'onboarding', components: IntroductionAnimationScreen},
@@ -199,5 +229,5 @@ export const LoginRouteLIst: RoutListType[] = [
     },
   },
 
-  ...userRoutStackList,
+  ...globalRoutes,
 ];

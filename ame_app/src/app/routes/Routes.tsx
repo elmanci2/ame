@@ -19,8 +19,9 @@ import {
 import BottomScreen from './custom/bottom/BottomScreen';
 import AddReminderScreen from '../screen/AddReminderScreen';
 import {
+  DeliveryRouteLIst,
   LoginRouteLIst,
-  userRoutStackList,
+  VisitorRouteLIst,
   userRouteLIst,
 } from './list/RoutesList';
 import AddAcudiente from '../screen/user/AddAcudiente';
@@ -46,7 +47,13 @@ const MyStack = () => {
   const {tk, type} = useSelector((state: any) => state.tk);
 
   const renderList =
-    tk && type === user_roles.user ? userRouteLIst : LoginRouteLIst;
+    tk && type === user_roles.user
+      ? VisitorRouteLIst
+      : type === user_roles.visitor
+      ? userRouteLIst
+      : type === user_roles.delivery
+      ? DeliveryRouteLIst
+      : LoginRouteLIst;
 
   console.log('tk ' + tk);
 

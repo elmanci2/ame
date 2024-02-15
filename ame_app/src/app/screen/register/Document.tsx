@@ -13,7 +13,7 @@ import {RoutListTypeProps} from '../../types/types';
 import YesNoComponent from '../../components/custom/YesNoComponent';
 import {useFetch} from '../../hook/http/useFetch';
 import LoadScreen from '../LoadScreen';
-import ErrorScreen from '../ErrorScreen';
+import ErrorScreen from '../error/ErrorScreen';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import {useDispatch, useSelector} from 'react-redux';
 import {formatDate} from '../../util/dateFormate';

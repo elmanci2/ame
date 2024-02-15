@@ -4,6 +4,7 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
+  TextStyle,
 } from 'react-native';
 import React, {memo} from 'react';
 import {MyText} from '../MyText';
@@ -12,9 +13,10 @@ import {useNavigation} from '@react-navigation/native';
 
 type RenderItemProp = {
   item: GridItemType;
+  color?: string;
 };
 
-const RenderItem = memo(({item}: RenderItemProp) => {
+const RenderItem = memo(({item, color}: RenderItemProp) => {
   const navigate = useNavigation<any>();
   return (
     <TouchableOpacity
@@ -25,7 +27,7 @@ const RenderItem = memo(({item}: RenderItemProp) => {
       </View>
       <MyText
         textAlign="center"
-        color="white"
+        color={color ?? 'white'}
         fontSize={16}
         fontWeight="600"
         key={item.route}>
@@ -35,7 +37,7 @@ const RenderItem = memo(({item}: RenderItemProp) => {
   );
 });
 
-const GridMenu = ({items}: {items: GridItemType[]}) => {
+const GridMenu = ({items, color}: {items: GridItemType[]; color?: string}) => {
   return (
     <View style={styles.body}>
       <FlatList
@@ -44,7 +46,7 @@ const GridMenu = ({items}: {items: GridItemType[]}) => {
         keyExtractor={item => item?.label}
         numColumns={2}
         data={items}
-        renderItem={({item}) => <RenderItem {...{item}} />}
+        renderItem={({item}) => <RenderItem {...{item, color}} />}
       />
     </View>
   );
@@ -62,6 +64,7 @@ const styles = StyleSheet.create({
     gap: 30,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingBottom:5
   },
 
   Wrapper: {
@@ -92,6 +95,7 @@ const styles = StyleSheet.create({
   },
 
   img: {
+    resizeMode: 'contain',
     width: '100%',
     height: '100%',
   },

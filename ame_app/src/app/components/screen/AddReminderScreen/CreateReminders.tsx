@@ -6,6 +6,7 @@ import useCreateReminder from '../../../hook/useCreateReminder';
 import {Reminder} from '../../../types/types';
 import {useNavigation} from '@react-navigation/native';
 import useScheduledNotification from '../../../hook/useScheduledNotification';
+import NextBottomRegister from '../../../screen/register/components/NextBottomRegister';
 
 interface Props {
   reminder: Reminder;
@@ -19,18 +20,11 @@ const CreateReminders = memo(({reminder}: Props) => {
 
   const action = () => {
     addNewReminder();
-   // scheduleNotification();
     navigation.goBack();
   };
   return (
     <>
-      <ActionBottom
-        noStylesText
-        textStyles={styles.textBtn}
-        containerStyles={styles.actinBtn}
-        text="Crear"
-        action={() => action()}
-      />
+      <NextBottomRegister active text="Crear" action={() => action()} />
     </>
   );
 });

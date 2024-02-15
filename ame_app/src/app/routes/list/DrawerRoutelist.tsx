@@ -51,3 +51,13 @@ export const deliveryDrawerLIst: DrawerListType[] = [
   },
   ...globalDrawerLIst,
 ];
+
+export const visitorDrawerLIst: DrawerListType[] = [
+  {
+    label: 'Inicio',
+    icon: 'home-outline',
+    action: 'Home',
+  },
+  ...globalDrawerLIst,
+];
+

@@ -1,5 +1,5 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import CustomScreen from '../../../components/custom/CustomScreen';
 import {DowIndicator} from '../../../components/custom/DowIndicator';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -38,11 +38,16 @@ const Login = () => {
 
   const {data, loading, postRequest} = usePost('login', postData);
 
+  useEffect(() => {
+    if (data?.tk) {
+      Dispatcher(addTk(data?.tk));
+      Dispatcher(addType(data?.type));
+    }
+  }, [data, loading]);
+
   const next = async () => {
     try {
       await postRequest();
-      Dispatcher(addTk(data?.tk));
-      Dispatcher(addType(data?.type));
       return null;
     } catch (error: any) {
       Toast.show({

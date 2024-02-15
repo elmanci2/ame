@@ -1,6 +1,7 @@
-import {Modal, StyleSheet, TouchableOpacity, View} from 'react-native';
-import React from 'react';
+import {Modal, StyleSheet, TouchableOpacity, Animated} from 'react-native';
+import React, {useEffect, useRef} from 'react';
 import {colors} from '../../../constants/Constants';
+import {MotiView} from 'moti';
 
 const blur_color = 'rgba(0, 0, 0, 0.22)';
 
@@ -20,13 +21,32 @@ export default function BottomModal({
   };
 
   return (
-    <Modal transparent visible={showModal}>
+    <Modal
+      transparent
+      visible={showModal}
+      statusBarTranslucent
+      onRequestClose={() => {
+        closeModal();
+      }}>
       <TouchableOpacity
         activeOpacity={0.9}
         style={styles.touch}
         onPress={closeModal}
       />
-      <View style={styles.modalContainer}>{children}</View>
+      <MotiView
+        from={{
+          translateY: 300,
+        }}
+        animate={{
+          translateY: showModal ? 0 : 300,
+        }}
+        transition={{
+          type: 'timing',
+          duration: 370,
+        }}
+        style={[styles.modalContainer]}>
+        {children}
+      </MotiView>
     </Modal>
   );
 }

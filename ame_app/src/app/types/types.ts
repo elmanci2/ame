@@ -5,13 +5,13 @@ export interface Reminder {
   id: number;
   mensaje: string;
   medicamento: string;
-  dosis: number;
+  dosis: string;
   unidad: string;
   type: string;
   color: string;
   date: string;
   time: string;
-  repeat: number;
+  repeat: string;
   formate: string;
   originalTime: {
     time: string;
@@ -75,3 +75,10 @@ export interface INitial_Register {
 }
 
 export interface RegisterType extends Register_AddressType, INitial_Register {}
+
+export type patientsType = {
+  photo?: string;
+  name?: string;
+  document?: string;
+  edad?: number;
+};

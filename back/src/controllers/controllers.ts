@@ -6,6 +6,8 @@ import { user_db as db, data_db as data } from "../db/db";
 import { v4 as uuidv4 } from "uuid";
 import { BcryptDecrypt, BcryptEncrypt } from "./util/bcrypt";
 import { generate_token } from "./util/token";
+import { Reminder, VitalSigns } from "../types/types";
+import { Errors } from "../errors/error";
 
 const user_id = uuidv4();
 
@@ -64,7 +66,7 @@ export const login = async (req: Request, res: Response) => {
     }
 
     const selectQuery =
-      "SELECT email, password , type FROM usuarios WHERE email = ?";
+      "SELECT email, password , type , id_usuario FROM usuarios WHERE email = ?";
 
     const search_user = await queryAsync(db, selectQuery, [
       email.toLowerCase(),
@@ -77,7 +79,7 @@ export const login = async (req: Request, res: Response) => {
       );
 
       if (check_password) {
-        const tk = await generate_token();
+        const tk = await generate_token(search_user?.id_usuario);
 
         if (!tk) {
           return res
@@ -162,7 +164,7 @@ export const create_new_user = async (req: Request, res: Response) => {
       nuevoUsuario.type,
     ];
 
-    const tk = await generate_token();
+    const tk = await generate_token(user_id);
 
     if (!tk) res.status(500).send("internal server  error");
 
@@ -252,4 +254,293 @@ const documentosIdentificación = [
 
 export const get_document_type = async (req: Request, res: Response) => {
   res.send(documentosIdentificación);
+};
+
+export const search_users = async (req: Request, res: Response) => {
+  try {
+    const searchTerm = req.query.term;
+
+    if (!searchTerm) {
+      return res
+        .status(400)
+        .json({ error: "Se requiere un término de búsqueda" });
+    }
+
+    const searchQuery = `
+      SELECT *
+      FROM usuarios
+      WHERE (name LIKE ? OR lastName LIKE ?) AND type = 'Usuario';
+    `;
+
+    const params = [`%${searchTerm}%`, `%${searchTerm}%`];
+
+    // Ejecuta la consulta en la base de datos
+    db.all(searchQuery, params, (err, rows) => {
+      if (err) {
+        console.error("Error al buscar usuarios:", err.message);
+        return res.status(500).json({ error: "Error al buscar usuarios." });
+      }
+
+      res.status(200).json(rows); // Devuelve los resultados de la búsqueda
+    });
+  } catch (error) {
+    console.error("Error en la función de búsqueda de usuarios:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+};
+
+// vital sing
+
+export const addVitalSigns = async (
+  id: string | any,
+  vitalSigns: VitalSigns,
+  by?: string
+) => {
+  try {
+    if (!id || !vitalSigns) throw new Error("parámetros inválidos");
+
+    const { heart_rate, blood_pressure, blood_sugar_level, weight } =
+      vitalSigns;
+
+    const Query = `
+  INSERT INTO vital_signes (
+    creation_date,
+    heart_rate,
+    blood_pressure,
+    blood_sugar_level,
+    weight,
+    patient_id,
+    add_by
+  ) VALUES (
+    CURRENT_TIMESTAMP,
+    ?,
+    ?,
+    ?,
+    ?,
+    ?,
+    ?
+  )
+`;
+
+    db.run(Query, [
+      heart_rate,
+      blood_pressure,
+      blood_sugar_level,
+      weight,
+      id,
+      by ? by : id,
+    ]);
+
+    return true;
+  } catch (error) {
+    if (!id || !vitalSigns) throw new Error("parámetros inválidos");
+  }
+};
+
+export const generateVitalSignsUser = async (req: Request, res: Response) => {
+  try {
+    //@ts-ignore
+    const user = req["user"];
+    const data = req.body;
+
+    if (!user || !user.user_id || !data) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid user or data 2" });
+    }
+
+    const save = await addVitalSigns(user.user_id, data);
+
+    if (save) {
+      return res.status(200).json({ success: true });
+    } else {
+      return res.status(500).send("Failed to save vital signs");
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send(Errors.internalError);
+  }
+};
+
+export const generateVitalSignsVisitor = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    //@ts-ignore
+    const user = req["user"];
+    const data = req.body;
+    const { id } = req.query;
+    console.log(id);
+
+    if (!user.user_id || !data || !id) {
+      return res.status(400).send("Usuario o datos no válidos");
+    }
+
+    const save = await addVitalSigns(id, data, user?.user_id);
+
+    if (save) {
+      return res.status(200).json({ success: true });
+    } else {
+      return res.status(500).send("Failed to save vital signs");
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send(Errors.internalError);
+  }
+};
+
+export const get_history_signes = async (req: Request, res: Response) => {
+  try {
+    //@ts-ignore
+    const user = req.user;
+    if (!user) {
+      return res.status(401).send(Errors.unauthorized);
+    }
+
+    const query = "SELECT * FROM vital_signes WHERE patient_id = ?";
+
+    const results = await allQueryAsync(data, query, [user.user_id]);
+
+    res.status(200).json(results);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send(Errors.internalError);
+  }
+};
+
+export const get_history_signes_visitor = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    //@ts-ignore
+    const { id } = req.query;
+    console.log(id);
+
+    if (!id) {
+      return res.status(401).send(Errors.unauthorized);
+    }
+
+    const query = "SELECT * FROM vital_signes WHERE patient_id = ?";
+
+    const results = await allQueryAsync(db, query, [id]);
+
+    res.status(200).json(results);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send(Errors.internalError);
+  }
+};
+
+// reminder
+
+const addReminder = async (
+  id: string | any,
+  reminderData: Reminder,
+  by?: string
+) => {
+  try {
+    if (!id || !reminderData) {
+      throw new Error("Parámetros inválidos");
+    }
+
+    const {
+      notification_id,
+      mensaje,
+      medicamento,
+      dosis,
+      unidad,
+      type,
+      color,
+      date,
+      time,
+      repeat,
+      formate,
+      originalTime,
+      patient_id,
+    } = reminderData;
+
+    const query = `
+      INSERT INTO reminders (
+        creation_date,
+        notification_id,
+        mensaje,
+        medicamento,
+        dosis,
+        unidad,
+        type,
+        color,
+        date,
+        time,
+        repeat,
+        formate,
+        originalTime,
+        patient_id,
+        add_by
+      ) VALUES (
+        CURRENT_TIMESTAMP,
+        ?,
+        ?,
+        ?,
+        ?,
+        ?,
+        ?,
+        ?,
+        ?,
+        ?,
+        ?,
+        ?,
+        ?,
+        ?,
+        ?
+      )
+    `;
+
+    db.run(query, [
+      notification_id,
+      mensaje,
+      medicamento,
+      dosis,
+      unidad,
+      type,
+      color,
+      date,
+      time,
+      repeat,
+      formate,
+      originalTime,
+      patient_id,
+      by || id,
+    ]);
+
+    return true;
+  } catch (error) {
+    throw new Error("Error al agregar el recordatorio");
+  }
+};
+
+export const generateReminderVisitor = async (req: Request, res: Response) => {
+  try {
+    //@ts-ignore
+    const user = req["user"];
+    const data = req.body;
+    const { id } = req.query;
+    console.log(id);
+
+    if (!user.user_id || !data || !id) {
+      return res.status(400).send("Usuario o datos no válidos");
+    }
+
+    const save = await addReminder(id, data, user?.user_id);
+
+    if (save) {
+      return res.status(200).json({ success: true });
+    } else {
+      return res.status(500).send("Failed to save reminder");
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send(Errors.internalError);
+  }
 };

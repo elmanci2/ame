@@ -4,12 +4,13 @@ import {
   BottomTabNavigationOptions,
   createBottomTabNavigator,
 } from '@react-navigation/bottom-tabs';
-import UserHomeScreen from '../../../screen/user/UserHomeScreen';
 import {CustomBottomComponent} from './CustomBottomComponent';
-import UserRemindersScreen from '../../../screen/user/UserRemindersScreen';
-import RequestService from '../../../screen/user/ RequestService';
-import {MiniHeader} from '../../../components/custom/MiniHeader';
-import VitalSigne from '../../../screen/user/VitalSigne';
+import {
+  MedicalStack,
+  UserBottomRouteList,
+} from '../../list/BottomTabsRouteList';
+import {useSelector} from 'react-redux';
+import {user_roles} from '../../../../constants/Constants';
 
 const Bottom = createBottomTabNavigator();
 
@@ -23,20 +24,21 @@ const CustomBottom = (props: BottomTabBarProps) => {
 };
 
 const MyBottom = () => {
+  const {tk, type} = useSelector((state: any) => state.tk);
+
+  const renderList =
+    tk && type !== user_roles.user ? UserBottomRouteList : MedicalStack;
+
   return (
     <Bottom.Navigator screenOptions={{...bottomConfig}} tabBar={CustomBottom}>
-      <Bottom.Screen component={UserHomeScreen} name="Inicio" />
-      <Bottom.Screen component={UserRemindersScreen} name="Medicamentos" />
-      <Bottom.Screen
-        component={RequestService}
-        name="Servicios"
-        initialParams={{title: 'Solicitar servicio'}}
-      />
-      <Bottom.Screen
-        component={VitalSigne}
-        name="Signos"
-        initialParams={{title: 'Signos vitales'}}
-      />
+      {renderList.map(item => (
+        <Bottom.Screen
+          key={item?.name}
+          component={item.components}
+          name={item?.name}
+          initialParams={{title: item.config?.title}}
+        />
+      ))}
     </Bottom.Navigator>
   );
 };

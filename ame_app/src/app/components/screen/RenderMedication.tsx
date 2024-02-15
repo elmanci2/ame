@@ -1,7 +1,7 @@
 import React from 'react';
 
-const RenderMedication = () => {
+export const RenderMedication = () => {
   return <div>RenderMedication</div>;
 };
 
-export default RenderMedication;
+

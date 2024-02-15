@@ -1,12 +1,12 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import CustomScreen from '../components/custom/CustomScreen';
-import Logo from '../components/custom/Logo';
+import CustomScreen from '../../components/custom/CustomScreen';
+import Logo from '../../components/custom/Logo';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {MyText} from '../components/custom/MyText';
-import {colors} from '../../constants/Constants';
+import {MyText} from '../../components/custom/MyText';
+import {colors} from '../../../constants/Constants';
 import LottieView from 'lottie-react-native';
-import NextBottomRegister from './register/components/NextBottomRegister';
+import NextBottomRegister from '../register/components/NextBottomRegister';
 /* import IntentLauncher, { IntentConstant } from 'react-native-intent-launcher' */
 const ErrorWifi = () => {
  /*  IntentLauncher.startActivity({
@@ -28,7 +28,7 @@ const ErrorWifi = () => {
         <LottieView
           autoPlay
           style={styles.lottie}
-          source={require('../animation/lottie/erro_net.json')}
+          source={require('../../animation/lottie/erro_net.json')}
         />
         {/* <NextBottomRegister
           {...{

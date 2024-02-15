@@ -15,6 +15,7 @@ import {Image} from 'moti';
 const NoSignes = ({go, title}: any) => {
   return (
     <CustomScreen>
+      <Logo center style={{marginVertical: 20}} />
       <View style={styles.lottieContainer}>
         <Title {...{title}} />
         <LottieView

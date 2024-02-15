@@ -6,16 +6,16 @@ import sqlite3 from "sqlite3";
 const db = new sqlite3.Database("./src/db/db_users.db");
 
 /* const addCountry = (
-  value: number,
-  label: string,
-  id_country: number
-): Promise<number> => {
+  value number,
+  label string,
+  id_country number
+) Promise<number> => {
   return new Promise((resolve, reject) => {
     const insertCountryQuery =
       "INSERT INTO states (value, label , id_country ) VALUES (?, ? , ? )";
     db.run(insertCountryQuery, [value, label , id_country], function (err) {
       if (err) {
-        console.error("Error al agregar un país:", err.message);
+        console.error("Error al agregar un país", err.message);
         reject(err);
       }
       resolve(this.lastID);
@@ -24,9 +24,9 @@ const db = new sqlite3.Database("./src/db/db_users.db");
 };
 
 export const addCountriesFromArray = async (
-  countries: { value: number; label: string; id_country: number }[]
-): Promise<number[]> => {
-  const addedCountryIds: number[] = [];
+  countries { value number; label string; id_country number }[]
+) Promise<number[]> => {
+  const addedCountryIds number[] = [];
 
   for (const country of countries) {
     console.log('add ' + country );
@@ -38,8 +38,8 @@ export const addCountriesFromArray = async (
         country.id_country
       );
       addedCountryIds.push(countryId);
-    } catch (error: any) {
-      console.error("Error al agregar un país desde el array:", error.message);
+    } catch (error any) {
+      console.error("Error al agregar un país desde el array", error.message);
     }
   }
 
@@ -59,7 +59,7 @@ export const addCountriesFromArray = async (
 // Ejecuta la consulta SQL
 db.run(createTableQuery, (err) => {
   if (err) {
-    console.error("Error al crear la tabla back_account:", err.message);
+    console.error("Error al crear la tabla back_account", err.message);
   } else {
     console.log("Tabla states creada exitosamente.");
   }
@@ -71,23 +71,23 @@ db.run(createTableQuery, (err) => {
   //@ts-ignore
   addCountriesFromArray(countries?.states)
     .then((addedCountryIds) => {
-      console.log("Países agregados con éxito. IDs:", addedCountryIds);
+      console.log("Países agregados con éxito. IDs", addedCountryIds);
     })
     .catch((error) => {
-      console.error("Error al agregar países desde el array:", error.message);
+      console.error("Error al agregar países desde el array", error.message);
     });
 } else {
   console.error("El contenido de countries.json no es un array válido.");
 }
  */
 
-/* const deleteTable = (tableName:string) => {
+/* const deleteTable = (tableNamestring) => {
   return new Promise((resolve, reject) => {
     const deleteTableQuery = `DROP TABLE IF EXISTS ${tableName}`;
 
     db.run(deleteTableQuery, function (err) {
       if (err) {
-        console.error(`Error al eliminar la tabla ${tableName}: ${err.message}`);
+        console.error(`Error al eliminar la tabla ${tableName} ${err.message}`);
         reject(err);
         return;
       }
@@ -115,7 +115,7 @@ const sqlQuery = "ALTER TABLE cities ADD COLUMN cit TEXT";
 // Ejecutar la consulta
 db.run(sqlQuery, (err) => {
   if (err) {
-    console.error("Error al agregar la columna:", err.message);
+    console.error("Error al agregar la columna", err.message);
   } else {
     console.log('Columna "code" agregada correctamente.');
   }
@@ -124,14 +124,14 @@ db.run(sqlQuery, (err) => {
   db.close();
 }); */
 
-/* function agregarCodigoPais(value:number, code:string) {
+/* function agregarCodigoPais(valuenumber, codestring) {
   // Consulta SQL para agregar el código a la fila del país específico
   const sqlQuery = 'UPDATE countries SET code = ? WHERE value = ?';
 
   // Ejecutar la consulta
   db.run(sqlQuery, [code, value], (err) => {
     if (err) {
-      console.error('Error al agregar el código:', err.message);
+      console.error('Error al agregar el código', err.message);
     } else {
       console.log(`Código ${code} agregado correctamente para el país con valor ${value}.`);
     }
@@ -144,7 +144,6 @@ for (const pais of countries?.countries) {
   agregarCodigoPais(pais.value, pais.code);
 }
  */
-
 
 // Conectar a la base de datos (si no existe, se creará)
 
@@ -171,10 +170,10 @@ for (const pais of countries?.countries) {
     );
 `; */
 
-// Ejecutar la consulta SQL para crear la tabla
-db.run(`ALTER TABLE usuarios ADD COLUMN type TEXT;`, (err:any) => {
+/* // Ejecutar la consulta SQL para crear la tabla
+db.run(`ALTER TABLE usuarios ADD COLUMN type TEXT;`, (errany) => {
   if (err) {
-    console.error("Error al crear la tabla:", err.message);
+    console.error("Error al crear la tabla", err.message);
   } else {
     console.log("Tabla usuarios creada con éxito.");
   }
@@ -182,3 +181,34 @@ db.run(`ALTER TABLE usuarios ADD COLUMN type TEXT;`, (err:any) => {
   // Cerrar la conexión a la base de datos
   db.close();
 });
+ */
+
+
+
+
+
+
+
+db.run(`
+  CREATE TABLE IF NOT EXISTS reminders (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    creation_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    notification_id TEXT,
+    mensaje TEXT,
+    medicamento TEXT,
+    dosis TEXT,
+    unidad TEXT,
+    type TEXT,
+    color TEXT,
+    date TEXT,
+    time TEXT,
+    repeat TEXT,
+    formate TEXT,
+    originalTime TEXT,
+    patient_id TEXT,
+    add_by TEXT
+  )
+`);
+
+
+//db.run(`DROP TABLE IF EXISTS vital_signes`);

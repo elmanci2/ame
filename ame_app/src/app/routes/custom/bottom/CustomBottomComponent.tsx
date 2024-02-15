@@ -7,13 +7,16 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {MotiView} from 'moti';
 
 // Objeto para mapear los íconos directamente
 const iconMap = {
+  Recordatorio:{component: AntDesign, name: 'clockcircleo'},
   Inicio: {component: Feather, name: 'home'},
   Medicamentos: {component: Fontisto, name: 'pills'},
   Servicios: {component: Ionicons, name: 'notifications-outline'},
+  Pagos: {component: FontAwesome, name: 'credit-card'},
   default: {component: MaterialIcons, name: 'timeline'},
 };
 

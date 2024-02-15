@@ -13,8 +13,13 @@ import {colors, dimensions, user_roles} from '../../../../constants/Constants';
 import UserIcon from '../../../components/custom/UserIcon';
 import NotificationIcon from '../../../components/custom/NotificatinIcon';
 import {Text} from 'moti';
-import {useSelector} from 'react-redux';
-import {deliveryDrawerLIst, userDrawerLIst} from '../../list/DrawerRoutelist';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+  deliveryDrawerLIst,
+  userDrawerLIst,
+  visitorDrawerLIst,
+} from '../../list/DrawerRoutelist';
+import {addTk} from '../../../redux/tokenSlice';
 
 type iconProps = {
   color: string;
@@ -36,10 +41,12 @@ const CustomDrawerItem = (props: DrawerContentComponentProps) => {
   // active item
   const {type} = useSelector((state: any) => state.tk);
 
+  const dispatcher = useDispatch();
+
   const activeItem = props.state.routes[props.state.index].name;
 
   const renderDrawerList =
-    type === user_roles.user ? userDrawerLIst : deliveryDrawerLIst;
+    type !== user_roles.user ? userDrawerLIst : visitorDrawerLIst;
 
   return (
     <View style={styles.itemListContainer}>
@@ -68,7 +75,7 @@ const CustomDrawerItem = (props: DrawerContentComponentProps) => {
       <DrawerItem
         label="Salir"
         icon={({color, size}) => IconsItemDrawer({color, size})}
-        onPress={() => console.log('logout')}
+        onPress={() => dispatcher(addTk(undefined))}
       />
     </View>
   );
@@ -80,8 +87,6 @@ export const CustomDrawerComponent = (
 ) => {
   const stateDrawer = useDrawerStatus();
   const isOpen = stateDrawer === 'open';
-
-  console.log('popo ' + user_type);
 
   const stylesOpe = {width: isOpen ? dimensions.width - 30 : dimensions.width};
   return (

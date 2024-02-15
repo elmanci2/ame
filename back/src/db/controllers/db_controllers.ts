@@ -105,4 +105,7 @@ export function createUser(userData: UserData): void {
 }
 
 
+export function createVitalSing() {
+  
+}
 

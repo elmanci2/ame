@@ -41,8 +41,11 @@ export const usePost = (url:string , requestData:any) => {
 
 import {useState} from 'react';
 import {config} from '../../../config/config';
+import {useSelector} from 'react-redux';
 
-export const usePost = (url: string, requestData: any) => {
+export const usePost = (url: string, requestData: any, header?: any) => {
+  const token = useSelector((state: any) => state.tk);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<any>(null);
   const [data, setData] = useState<any>(null);
@@ -56,7 +59,8 @@ export const usePost = (url: string, requestData: any) => {
       const response = await fetch(config.http.requestUrl + url, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json', // Asegúrate de ajustar el tipo de contenido según tus necesidades
+          'Content-Type': 'application/json',
+          tk: JSON.stringify(token),
         },
         body: JSON.stringify(requestData),
       });
@@ -71,10 +75,10 @@ export const usePost = (url: string, requestData: any) => {
 
       // Manejar la respuesta como sea necesario
       const responseData = await response.json();
-    //  console.log('Post request successful:', responseData);
+      //  console.log('Post request successful:', responseData);
       setData(responseData);
       return responseData;
-    } catch (error) {
+    } catch (error: any) {
       // Manejar errores
       console.error('Error making post request:', error);
       setError(error.message || 'An error occurred');

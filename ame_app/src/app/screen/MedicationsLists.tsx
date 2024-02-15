@@ -15,7 +15,7 @@ export const MedicationsLists = () => {
   const offset = (1 - 1) * itemsPerPage;
   const url = `${apiUrl}?$query=SELECT * ORDER BY :id ASC LIMIT ${itemsPerPage} OFFSET ${offset}`;
 
-  const {data, loading} = useFetch(url, 'medicineList');
+  const {data, loading} = useFetch(url, 'medicineList', false);
 
   if (loading) {
     return <LoadScreen />;

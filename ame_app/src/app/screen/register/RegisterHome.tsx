@@ -16,9 +16,9 @@ import {usePost} from '../../hook/http/usePost';
 import PhoneInput from '../../components/custom/PhoneInput';
 import {useFetch} from '../../hook/http/useFetch';
 import LoadScreen from '../LoadScreen';
-import ErrorScreen from '../ErrorScreen';
+import ErrorScreen from '../error/ErrorScreen';
 import {useWifi} from '../../hook/network/useWifi';
-import ErrorWifi from '../ErrorWifi';
+import ErrorWifi from '../error/ErrorWifi';
 import Toast, {BaseToast, ErrorToast} from 'react-native-toast-message';
 import {toastConfig} from '../../components/custom/Toas';
 

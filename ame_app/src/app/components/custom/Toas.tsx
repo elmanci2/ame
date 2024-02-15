@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {BaseToastProps, ToastConfig} from 'react-native-toast-message';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {colors} from '../../../constants/Constants';
 
 const errorReplacePatterns = [
@@ -10,6 +11,7 @@ const errorReplacePatterns = [
 ];
 
 const error_border = 'rgb(255, 35, 64)';
+const success_border = 'rgb(4, 161, 75)';
 const iconSiZe = 30;
 export const toastConfig: ToastConfig = {
   error: ({text1, text2}: BaseToastProps) => {
@@ -30,6 +32,29 @@ export const toastConfig: ToastConfig = {
       </View>
     );
   },
+
+  success: ({text1, text2}: BaseToastProps) => {
+    const modifiedText = text2
+      ? errorReplacePatterns.reduce(
+          (modified, pattern) => modified.replace(pattern, ''),
+          text2,
+        )
+      : '';
+
+    return (
+      <View style={[style.body, style.success]}>
+        <MaterialCommunityIcons
+          name="check-all"
+          size={iconSiZe}
+          color={success_border}
+        />
+        <View style={style.textContainer}>
+          <Text style={style.title}>{text1 ?? 'Correcto'}</Text>
+          <Text style={style.text}>{modifiedText}</Text>
+        </View>
+      </View>
+    );
+  },
 };
 
 const style = StyleSheet.create({
@@ -42,13 +67,18 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 13,
+    borderWidth: 1,
+    elevation: 9,
   },
 
   error: {
-    borderWidth: 1,
     borderColor: error_border,
     shadowColor: error_border,
-    elevation: 9,
+  },
+
+  success: {
+    borderColor: success_border,
+    shadowColor: success_border,
   },
 
   title: {

@@ -2,12 +2,12 @@ import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {ScrollView} from 'react-native-gesture-handler';
-import CustomScreen from '../components/custom/CustomScreen';
+import CustomScreen from '../../components/custom/CustomScreen';
 import LottieView from 'lottie-react-native';
-import {MyText} from '../components/custom/MyText';
-import {colors} from '../../constants/Constants';
-import NextBottomRegister from './register/components/NextBottomRegister';
-import Logo from '../components/custom/Logo';
+import {MyText} from '../../components/custom/MyText';
+import {colors} from '../../../constants/Constants';
+import NextBottomRegister from '../register/components/NextBottomRegister';
+import Logo from '../../components/custom/Logo';
 
 const ErrorScreen = ({reload}: {reload: () => void}) => {
   return (
@@ -26,7 +26,7 @@ const ErrorScreen = ({reload}: {reload: () => void}) => {
           autoPlay
           loop
           style={styles.lottie}
-          source={require('../animation/lottie/erro.json')}
+          source={require('../../animation/lottie/erro.json')}
         />
         <NextBottomRegister
           {...{

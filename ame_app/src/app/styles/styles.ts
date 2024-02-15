@@ -1,5 +1,11 @@
+import { ViewStyle } from 'react-native';
 import {colors} from '../../constants/Constants';
 export const GlobalStyle: any = {
+  
+  img:{
+    width:"100%",
+    height:"100%"
+  },
   container: {
     gap: 30,
     marginTop: 25,
