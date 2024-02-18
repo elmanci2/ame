@@ -35,6 +35,8 @@ import PatientSignesPreview from '../../screen/medical/PatientSignesPreview';
 import SignesPreview from '../../screen/medical/SignesPreview';
 import UserRemindersScreen from '../../screen/user/UserRemindersScreen';
 import GetServicePreview from '../../screen/GetServicePreview';
+import ServiceRutePreview from '../../screen/ServiceRutePreview';
+import Takin from '../../screen/Trakin';
 
 const header = {
   header: MiniHeader,
@@ -117,6 +119,21 @@ export const globalRoutes: RoutListType[] = [
   {
     name: 'GetServicePreview',
     components: GetServicePreview,
+    config: {
+      ...modalScreeConfig,
+    },
+  },
+
+  {
+    name: 'ServiceRutePreview',
+    components: ServiceRutePreview,
+    config: {
+      ...modalHorizontalScreeConfig,
+    },
+  },
+  {
+    name: 'Takin',
+    components: Takin,
     config: {
       ...modalScreeConfig,
     },

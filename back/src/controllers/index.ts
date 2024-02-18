@@ -11,6 +11,7 @@ import {
   generateVitalSignsVisitor,
   search_users,
   get_history_signes_visitor,
+  getUserInfo
 } from "./controllers";
 import { generateOTP } from "./util/util";
 
@@ -27,6 +28,7 @@ const controllers = {
   generateVitalSignsUser,
   generateVitalSignsVisitor,
   get_history_signes_visitor,
+  getUserInfo,
   util: {
     generateOTP,
   },

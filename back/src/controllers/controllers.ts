@@ -544,3 +544,11 @@ export const generateReminderVisitor = async (req: Request, res: Response) => {
     return res.status(500).send(Errors.internalError);
   }
 };
+
+export const getUserInfo = async (req: Request, res: Response) => {
+  try {
+    //@ts-ignore
+    const user = req["user"];
+    return user;
+  } catch (error) {}
+};

@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react';
 import {useQuery} from 'react-query';
 import {config} from '../../../config/config';
+import {useSelector} from 'react-redux';
 
 export const useFetch = (
   url: string,
@@ -9,14 +10,24 @@ export const useFetch = (
 ) => {
   const [data, setData] = useState([]);
 
+  const token = useSelector((state: any) => state.tk);
+
   const {
     data: queryData,
     isLoading,
     error,
     refetch,
   } = useQuery(['fetchData', url], async () => {
+    const headers = {
+      tk: JSON.stringify(token), // Pasar el token como encabezado de autorización
+      'Content-Type': 'application/json', // Otras cabeceras opcionales
+    };
+
     const response = await fetch(
       activeUrl ? config.http.requestUrl + url : url,
+      {
+        headers: headers,
+      },
     );
     console.log(config.http.requestUrl + url);
 

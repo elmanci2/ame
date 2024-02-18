@@ -3,13 +3,17 @@
         "acba",
         "acudiente",
         "Acudientes",
+        "APIKEY",
         "AUTOINCREMENT",
         "azucar",
         "cardiaco",
+        "Copago",
         "netinfo",
         "presion",
         "Reintentar",
         "Sywr",
-        "twilio"
-    ]
+        "twilio",
+        "Wtiy"
+    ],
+    "java.configuration.updateBuildConfiguration": "interactive"
 }

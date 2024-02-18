@@ -3,7 +3,12 @@ import React from 'react';
 import ActionBottom from '../../../components/custom/ActionBottom';
 import {colors} from '../../../../constants/Constants';
 
-const NextBottomRegister = ({action, active = false ,text = "Continuar"}: any) => {
+const NextBottomRegister = ({
+  action,
+  active = false,
+  text = 'Continuar',
+  color,
+}: any) => {
   const faction = active && action ? action : null;
 
   return (
@@ -17,7 +22,11 @@ const NextBottomRegister = ({action, active = false ,text = "Continuar"}: any) =
           containerStyles: {
             justifyContent: 'center',
             borderRadius: 10,
-            backgroundColor: active ? colors.tertiary : colors.icon,
+            backgroundColor: color
+              ? color
+              : active
+              ? colors.tertiary
+              : colors.icon,
           },
           textStyles: {
             padding: 15,

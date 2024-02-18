@@ -5,7 +5,7 @@ import Logo from '../components/custom/Logo';
 import MapView, {Marker} from 'react-native-maps';
 import MapaServiceCard from '../components/custom/MapaServiceCard';
 
-const photo = 'https://images.unsplash.com/photo-1571501679680-de32f1e7aad4'
+const photo = 'https://images.unsplash.com/photo-1571501679680-de32f1e7aad4';
 const GetServices = () => {
   const [users] = useState([
     {
@@ -16,7 +16,10 @@ const GetServices = () => {
       latitude: 40.7128,
       longitude: -74.006,
       age: 25,
-      photo
+      photo,
+      eps: 'sura',
+      copago: '2,000',
+      time: '45 min',
     },
     {
       id: 2,
@@ -26,7 +29,10 @@ const GetServices = () => {
       latitude: 40.7128,
       longitude: -74.0055,
       age: 30,
-      photo
+      photo,
+      eps: 'sura',
+      copago: '2,000',
+      time: '45 min',
     },
     {
       id: 3,
@@ -36,7 +42,10 @@ const GetServices = () => {
       latitude: 40.7127,
       longitude: -74.006,
       age: 22,
-      photo
+      eps: 'sura',
+      copago: '2,000',
+      time: '45 min',
+      photo,
     },
     {
       id: 4,
@@ -46,7 +55,10 @@ const GetServices = () => {
       latitude: 40.7129,
       longitude: -74.006,
       age: 28,
-      photo
+      photo,
+      eps: 'sura',
+      copago: '2,000',
+      time: '45 min',
     },
     {
       id: 5,
@@ -56,7 +68,10 @@ const GetServices = () => {
       latitude: 40.713,
       longitude: -74.006,
       age: 35,
-      photo
+      photo,
+      eps: 'sura',
+      copago: '2,000',
+      time: '45 min',
     },
   ]);
 

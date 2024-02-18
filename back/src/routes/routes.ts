@@ -14,7 +14,8 @@ const {
   search_users,
   generateVitalSignsUser,
   generateVitalSignsVisitor,
-  get_history_signes_visitor
+  get_history_signes_visitor,
+  getUserInfo,
 } = controllers;
 const rt = Router();
 
@@ -36,10 +37,18 @@ rt.post("/create-user", create_new_user);
 rt.post("/login", login);
 
 // POST
-// vital sing 
+// vital sing
 rt.post("/user-generate-vital-sing", authentication, generateVitalSignsUser);
-rt.post("/visitor-generate-vital-sing", authentication, generateVitalSignsVisitor);
+rt.post(
+  "/visitor-generate-vital-sing",
+  authentication,
+  generateVitalSignsVisitor
+);
 // GET
-rt.get("/history-vita-signes" ,  get_history_signes_visitor)
+rt.get("/history-vita-signes", get_history_signes_visitor);
+
+//GET
+// users
+rt.get("/user-info", authentication, getUserInfo);
 
 export default rt;
