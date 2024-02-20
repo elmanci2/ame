@@ -3,13 +3,17 @@ import React from 'react';
 import CustomScreen from '../../components/custom/CustomScreen';
 import {DowIndicator} from '../../components/custom/DowIndicator';
 import {Title} from '../../components/custom/Title';
-import {RoutListTypeProps} from '../../types/types';
+import {RoutListTypeProps, UserData} from '../../types/types';
 import {GlobalStyle} from '../../styles/styles';
 import {colors, default_image} from '../../../constants/Constants';
 import {MyText} from '../../components/custom/MyText';
+import {useSelector} from 'react-redux';
 
 const UserProfile = ({route}: RoutListTypeProps) => {
   const {title} = route.params;
+  const {name, lastName, document, documentType, photo}: UserData = useSelector(
+    (state: any) => state?.Info?.info,
+  );
 
   return (
     <CustomScreen>
@@ -21,19 +25,22 @@ const UserProfile = ({route}: RoutListTypeProps) => {
       <View>
         <View style={styles.info_1}>
           <View style={styles.imgContainer}>
-            <Image style={GlobalStyle.img} source={{uri: default_image}} />
+            <Image
+              style={GlobalStyle.img}
+              source={{uri: photo ?? default_image}}
+            />
           </View>
           <View style={styles.info_1_text}>
             <MyText fontSize={24} fontWeight="500" color={colors.texto_bold}>
-              {'juan alfonza salazar'}
+              {name} 
             </MyText>
 
             <View style={styles.info_1_text_2}>
               <MyText fontSize={16} fontWeight="500" color={colors.texto_ling}>
-                {55} anos
+                Edad: {55}
               </MyText>
               <MyText fontSize={16} fontWeight="500" color={colors.texto_ling}>
-                cc : 12000020
+                {documentType} : {document}
               </MyText>
             </View>
           </View>

@@ -8,6 +8,7 @@ import {CustomBottomComponent} from './CustomBottomComponent';
 import {
   MedicalStack,
   UserBottomRouteList,
+  DeliveryRouteLIst,
 } from '../../list/BottomTabsRouteList';
 import {useSelector} from 'react-redux';
 import {user_roles} from '../../../../constants/Constants';
@@ -27,7 +28,11 @@ const MyBottom = () => {
   const {tk, type} = useSelector((state: any) => state.tk);
 
   const renderList =
-    tk && type !== user_roles.user ? UserBottomRouteList : MedicalStack;
+    tk && type === user_roles.user
+      ? UserBottomRouteList
+      : user_roles.visitor
+      ? MedicalStack
+      : DeliveryRouteLIst;
 
   return (
     <Bottom.Navigator screenOptions={{...bottomConfig}} tabBar={CustomBottom}>

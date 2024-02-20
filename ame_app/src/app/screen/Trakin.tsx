@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {Dimensions, StyleSheet, View} from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { Dimensions, StyleSheet, View } from 'react-native';
 import MapboxGL, {
   PointAnnotation,
   UserLocation,
@@ -9,13 +9,13 @@ import MapboxGL, {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Geolocation from '@react-native-community/geolocation';
 
-const metersToLongitudeDegrees = (meters: any, latitude: any) => {
+const metersToLongitudeDegrees = (meters, latitude) => {
   const earthEquatorialRadius = 6378137; // in meters
   const degreesPerPixel = 360 / (2 * Math.PI * earthEquatorialRadius);
   return meters * degreesPerPixel * Math.cos((latitude * Math.PI) / 180);
 };
 
-const metersToLatitudeDegrees = (meters: any) => {
+const metersToLatitudeDegrees = (meters) => {
   const metersPerDegreeLat =
     111132.92 - 559.82 * Math.cos(2 * meters) + 1.175 * Math.cos(4 * meters);
   return meters / metersPerDegreeLat;
@@ -32,17 +32,13 @@ Geolocation.setRNConfiguration({
 });
 
 const Takin = () => {
-  const [routeDirections, setRouteDirections] = useState<any | null>(null);
-  const [coords, setCoords] = useState<[number, number]>([12.48839, 50.72724]);
-  const [distance, setDistance] = useState<any>(null);
-  const [duration, setDuration] = useState<any>(null);
-  const [destinationCoords, setDestinationCoords] = useState<[number, number]>([
-    0, 0,
-  ]);
-
+  const [routeDirections, setRouteDirections] = useState(null);
+  const [coords, setCoords] = useState([12.48839, 50.72724]);
+  const [destinationCoords, setDestinationCoords] = useState([0, 0]);
   const [routeCorners, setRouteCorners] = useState([]);
+  const userLocationRef = useRef(null);
 
-  function calculateRouteCorners(routeCoordinates: any) {
+  function calculateRouteCorners(routeCoordinates) {
     const corners = [];
     for (let i = 1; i < routeCoordinates.length - 1; i++) {
       const prevCoord = routeCoordinates[i - 1];
@@ -52,11 +48,11 @@ const Takin = () => {
       // Calcular el ángulo entre los segmentos de la ruta
       const anglePrev = Math.atan2(
         currCoord[1] - prevCoord[1],
-        currCoord[0] - prevCoord[0],
+        currCoord[0] - prevCoord[0]
       );
       const angleNext = Math.atan2(
         nextCoord[1] - currCoord[1],
-        nextCoord[0] - currCoord[0],
+        nextCoord[0] - currCoord[0]
       );
       const angleDiff = Math.abs(angleNext - anglePrev);
 
@@ -67,26 +63,10 @@ const Takin = () => {
     }
     return corners;
   }
-  const [loading, setLoading] = useState(true);
-  const [selectedRouteProfile, setselectedRouteProfile] =
-    useState<string>('walking');
-
-  async function getPermissionLocation() {
-    try {
-      const geo = await Geolocation.getCurrentPosition(
-        location =>
-          setCoords([location.coords.longitude, location.coords.latitude]),
-        err => console.log(err),
-        {enableHighAccuracy: true},
-      );
-    } catch (error) {
-      console.error('Error getting location', error);
-    }
-  }
 
   useEffect(() => {
     Geolocation.getCurrentPosition(info => {
-      const {longitude, latitude} = info.coords;
+      const { longitude, latitude } = info.coords;
       setCoords([longitude, latitude]);
 
       // Calculate destination coordinates 200 meters away
@@ -96,20 +76,56 @@ const Takin = () => {
         longitude + deltaLongitude,
         latitude + deltaLatitude,
       ];
-      setDestinationCoords(newDestinationCoords as any);
+      setDestinationCoords(newDestinationCoords);
     });
   }, []);
 
   useEffect(() => {
+    if (userLocationRef.current) {
+      const { longitude, latitude } = userLocationRef.current;
+      const index = routeCorners.findIndex(
+        corner => corner[0] === longitude && corner[1] === latitude
+      );
+      if (index !== -1 && index < routeCorners.length - 1) {
+        // Rotar el mapa hacia la siguiente esquina
+        const nextCorner = routeCorners[index + 1];
+        MapboxGL.animateCamera({
+          centerCoordinate: nextCorner,
+          duration: 1000,
+        });
+      }
+    }
+  }, [userLocationRef.current, routeCorners]);
+
+  function onUserLocationUpdate(location) {
+    userLocationRef.current = location.coords;
+  }
+
+  const [loading, setLoading] = useState(true);
+  const [selectedRouteProfile, setselectedRouteProfile] = useState('walking');
+
+  async function getPermissionLocation() {
+    try {
+      const geo = await Geolocation.getCurrentPosition(
+        location =>
+          setCoords([location.coords.longitude, location.coords.latitude]),
+        err => console.log(err),
+        { enableHighAccuracy: true }
+      );
+    } catch (error) {
+      console.error('Error getting location', error);
+    }
+  }
+
+  useEffect(() => {
     getPermissionLocation();
-    //console.log(store.longitude);
     if (selectedRouteProfile !== null) {
       createRouterLine(coords, selectedRouteProfile);
     }
   }, [selectedRouteProfile]);
 
-  function makeRouterFeature(coordinates: [number, number][]): any {
-    let routerFeature = {
+  function makeRouterFeature(coordinates:any) {
+    return {
       type: 'FeatureCollection',
       features: [
         {
@@ -122,13 +138,9 @@ const Takin = () => {
         },
       ],
     };
-    return routerFeature;
   }
 
-  async function createRouterLine(
-    coords: [number, number],
-    routeProfile: string,
-  ): Promise<void> {
+  async function createRouterLine(coords, routeProfile) {
     const startCoords = `${coords[0]},${coords[1]}`;
     const endCoords = `${[destinationCoords, destinationCoords]}`;
     const geometries = 'geojson';
@@ -137,12 +149,6 @@ const Takin = () => {
     try {
       let response = await fetch(url);
       let json = await response.json();
-
-      const data = json.routes.map((data: any) => {
-        console.log(data);
-        setDistance((data.distance / 1000).toFixed(2));
-        setDuration((data.duration / 3600).toFixed(2));
-      });
 
       let coordinates = json['routes'][0]['geometry']['coordinates'];
       let destinationCoordinates =
@@ -154,7 +160,7 @@ const Takin = () => {
 
       setDestinationCoords(destinationCoordinates);
       if (coordinates.length) {
-        const routerFeature = makeRouterFeature([...coordinates]);
+        const routerFeature = makeRouterFeature(coordinates);
         setRouteDirections(routerFeature);
       }
       setLoading(false);
@@ -165,17 +171,11 @@ const Takin = () => {
   }
 
   return (
-    <View style={{flex: 1}}>
-      <View style={{flex: 1}}>
-        <MapboxGL.MapView
-          style={styles.map}
-          zoomEnabled={true}
-          rotateEnabled={true}
-          onDidFinishLoadingMap={async () => {
-            await createRouterLine(coords, selectedRouteProfile);
-          }}>
+    <View style={{ flex: 1 }}>
+      <View style={{ flex: 1 }}>
+        <MapboxGL.MapView style={styles.map}>
           <MapboxGL.Camera
-            zoomLevel={25}
+            zoomLevel={22}
             centerCoordinate={coords}
             animationMode={'flyTo'}
             animationDuration={1000}
@@ -194,28 +194,19 @@ const Takin = () => {
           {destinationCoords && (
             <MapboxGL.PointAnnotation
               id="destinationPoint"
-              coordinate={destinationCoords}>
+              coordinate={destinationCoords}
+            >
               <View style={styles.destinationIcon}>
                 <Ionicons name="storefront" size={24} color="#E1710A" />
               </View>
             </MapboxGL.PointAnnotation>
           )}
 
-          {routeCorners.map((corner, index) => (
-            <MapboxGL.PointAnnotation
-              key={index}
-              id={`corner-${index}`}
-              coordinate={corner}>
-              <View style={styles.cornerIcon}>
-                <Ionicons name="md-pin" size={24} color="#E1710A" />
-              </View>
-            </MapboxGL.PointAnnotation>
-          ))}
-
           <MapboxGL.UserLocation
             animated={true}
             androidRenderMode={'gps'}
             showsUserHeadingIndicator={true}
+            onUpdate={onUserLocationUpdate}
           />
         </MapboxGL.MapView>
       </View>

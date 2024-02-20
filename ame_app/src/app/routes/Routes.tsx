@@ -28,6 +28,7 @@ import AddAcudiente from '../screen/user/AddAcudiente';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import {toastConfig} from '../components/custom/Toas';
 import {useSelector} from 'react-redux';
+import {use_Get_users_info} from '../hook/info/use_Get_users_info';
 
 // stack
 
@@ -46,11 +47,13 @@ const Stack = createStackNavigator();
 const MyStack = () => {
   const {tk, type} = useSelector((state: any) => state.tk);
 
+  use_Get_users_info();
+
   const renderList =
     tk && type === user_roles.user
-      ? VisitorRouteLIst
-      : type === user_roles.visitor
       ? userRouteLIst
+      : type === user_roles.visitor
+      ? VisitorRouteLIst
       : type === user_roles.delivery
       ? DeliveryRouteLIst
       : LoginRouteLIst;

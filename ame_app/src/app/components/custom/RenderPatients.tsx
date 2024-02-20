@@ -7,82 +7,96 @@ import {GlobalStyle} from '../../styles/styles';
 import Feather from 'react-native-vector-icons/Feather';
 import {patientsType} from '../../types/types';
 import {useNavigation} from '@react-navigation/native';
+import {useDispatch} from 'react-redux';
+import {add_select_user_reminder} from '../../redux/utilSlice';
 
-export const RenderPatients = memo(
-  ({data, modal, onSelect, screen, Action, not = false, onName}: any) => {
-    const navigation = useNavigation<any>();
-    const action = (item: any) => {
-      modal(true);
-      onSelect && onSelect(item?.id);
-      onName && onName(item?.name);
-    };
+export const RenderPatients = ({
+  data,
+  modal,
+  onSelect,
+  screen,
+  Action,
+  not = false,
+  onName,
+}: any) => {
+  const dispatcher = useDispatch();
 
-    const Preview = (item: patientsType) => {
-      if (!not) {
-        navigation.navigate(screen, {item: item});
-      } else {
-        Action && Action();
-      }
-    };
+  const getPatientId = (id: string) => {
+    dispatcher(add_select_user_reminder(id));
+  };
 
-    return (
-      <FlatList
-        contentContainerStyle={styles.flatList}
-        data={data}
-        renderItem={({item}) => {
-          return (
-            <TouchableOpacity
-              style={styles.itemContainer}
-              onPress={() => Preview(item)}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <View style={styles.imgContend}>
-                  <Image
-                    style={GlobalStyle.img}
-                    source={{uri: item?.photo ?? default_image}}
-                  />
-                </View>
+  const navigation = useNavigation<any>();
+  const action = (item: any) => {
+    getPatientId(item?.id);
+    modal(true);
+    onSelect && onSelect(item?.id);
+    onName && onName(item?.name);
+  };
 
-                <View style={styles.textContend}>
-                  <MyText
-                    {...{
-                      fontSize: 16,
-                      fontWeight: '500',
-                      color: colors.texto_bold,
-                    }}>
-                    {item.name} {item.lastName}
-                  </MyText>
+  const Preview = (item: patientsType) => {
+    getPatientId(item?.id as string);
+    if (!not) {
+      navigation.navigate(screen, {item: item});
+    } else {
+      Action && Action();
+    }
+  };
 
-                  <MyText
-                    {...{
-                      fontSize: 14,
-                      fontWeight: '500',
-                      color: colors.texto_bold,
-                    }}>
-                    {item.documentType} {item?.document}
-                  </MyText>
-                  <MyText
-                    {...{
-                      fontSize: 12,
-                      fontWeight: '500',
-                      color: colors.texto_bold,
-                    }}>
-                    Edad : {item?.edad}
-                  </MyText>
-                </View>
+  return (
+    <FlatList
+      contentContainerStyle={styles.flatList}
+      data={data}
+      renderItem={({item}) => {
+        return (
+          <TouchableOpacity
+            style={styles.itemContainer}
+            onPress={() => Preview(item)}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <View style={styles.imgContend}>
+                <Image
+                  style={GlobalStyle.img}
+                  source={{uri: item?.photo ?? default_image}}
+                />
               </View>
 
-              <TouchableOpacity
-                style={{width: 30}}
-                onPress={() => action(item)}>
-                <Feather name="more-vertical" size={20} color={'black'} />
-              </TouchableOpacity>
+              <View style={styles.textContend}>
+                <MyText
+                  {...{
+                    fontSize: 16,
+                    fontWeight: '500',
+                    color: colors.texto_bold,
+                  }}>
+                  {item.name} {item.lastName}
+                </MyText>
+
+                <MyText
+                  {...{
+                    fontSize: 14,
+                    fontWeight: '500',
+                    color: colors.texto_bold,
+                  }}>
+                  {item.documentType} {item?.document}
+                </MyText>
+                <MyText
+                  {...{
+                    fontSize: 12,
+                    fontWeight: '500',
+                    color: colors.texto_bold,
+                  }}>
+                  Edad : {item?.edad}
+                </MyText>
+              </View>
+            </View>
+
+            <TouchableOpacity style={{width: 30}} onPress={() => action(item)}>
+              <Feather name="more-vertical" size={20} color={'black'} />
             </TouchableOpacity>
-          );
-        }}
-      />
-    );
-  },
-);
+          </TouchableOpacity>
+        );
+      }}
+    />
+  );
+};
 
 const styles = StyleSheet.create({
   itemContainer: {

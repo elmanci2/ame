@@ -81,4 +81,41 @@ export type patientsType = {
   name?: string;
   document?: string;
   edad?: number;
+  id?:string
 };
+
+
+export interface UserData {
+  active: number;
+  address: string;
+  barrio: string;
+  city: number;
+  country: number;
+  date: string;
+  document: string;
+  documentType: string;
+  email: string;
+  id_usuario: string;
+  lastName: string;
+  name: string;
+  password: string;
+  phoneNumber: string;
+  photo: null | string;
+  state: number;
+  type: string;
+  verified: number;
+}
+
+export interface VitalSignType {
+  add_by: string;
+  blood_pressure: {
+    en: string;
+    sobre: string;
+  };
+  blood_sugar_level: string;
+  creation_date: string;
+  heart_rate: string;
+  id: number;
+  patient_id: string;
+  weight: string;
+}

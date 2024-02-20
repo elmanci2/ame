@@ -5,13 +5,14 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import {colors} from '../../../../constants/Constants';
 import {Reminder} from '../../../types/types';
+
 interface Props {
   setReminder: React.Dispatch<React.SetStateAction<Reminder>>;
   reminder: Reminder;
 }
 
 const FooterAddReminder = ({setReminder, reminder}: Props) => {
-  const currentDate = new Date();
+  const currentDate = new Date(); // Obtener la fecha y hora actual
 
   const [showDataPiker, setShowDataPiker] = useState(false);
   const [showTime, setShowTime] = useState(false);
@@ -27,39 +28,32 @@ const FooterAddReminder = ({setReminder, reminder}: Props) => {
         ...reminder,
         date: selected.toISOString(),
       });
-      setShowDataPiker(false);
     }
   };
 
   const handleTimeChange = (event: any, selected: any) => {
     setShowTime(false);
     if (selected !== undefined) {
+      // Crear una nueva instancia de Date con la hora seleccionada
+      const selectedTime = new Date(selected);
+
+      // Actualizar el recordatorio con la nueva hora seleccionada
       setReminder({
         ...reminder,
-        time: selected.toLocaleTimeString([], {
+        time: selectedTime.toLocaleTimeString('en-CO', {
           hour: '2-digit',
           minute: '2-digit',
-          hour12: true,
+          hour12: true, // Usar formato de 12 horas (AM/PM)
         }),
         originalTime: {
-          time: selected.toISOString(),
+          time: selectedTime.toISOString(), // Guardar la hora seleccionada en formato ISO
         },
       });
-      setShowTime(false);
     }
   };
 
-  // Obtener la fecha actual y establecerla como la fecha mínima permitida
-
-  const minimumDate = new Date(
-    currentDate.getFullYear(),
-    currentDate.getMonth(),
-    currentDate.getDate(),
-  );
-
   const minimumDateTime = new Date(currentDate); // Copia de la fecha y hora actual
-  const fecha = new Date(reminder.date);
-  const formattedCurrentDate = `${fecha.getDate()}/${
+  const formattedCurrentDate = `${currentDate.getDate()}/${
     currentDate.getMonth() + 1
   }/${currentDate.getFullYear()}`;
 
@@ -82,10 +76,10 @@ const FooterAddReminder = ({setReminder, reminder}: Props) => {
 
             {showDataPiker && (
               <RNDateTimePicker
-                mode="date" // Cambiado a modo "date" para seleccionar solo días y meses
+                mode="date"
                 value={currentDate}
                 display="compact"
-                minimumDate={minimumDate}
+                minimumDate={currentDate} // Use currentDate as minimum date
                 onChange={handleDateChange}
                 onTouchCancel={() => setShowDataPiker(false)}
               />
@@ -125,31 +119,6 @@ const FooterAddReminder = ({setReminder, reminder}: Props) => {
 export default FooterAddReminder;
 
 const styles = StyleSheet.create({
-  renderMedicine: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: colors.white,
-    bottom: 0,
-  },
-
-  container: {
-    gap: 30,
-    marginTop: 25,
-    width: '95%',
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-    alignSelf: 'center',
-  },
-
-  inputsContainer: {
-    gap: 12,
-    width: '100%',
-  },
-
-  gap: {
-    gap: 10,
-  },
-
   multiInputs: {
     width: '100%',
     justifyContent: 'space-between',
@@ -160,14 +129,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 10,
   },
-
-  full: {
-    flex: 1,
-  },
-
   width: {width: '100%'},
-
-  pikerStyles: {width: '70%', alignSelf: 'center', gap: 20},
+  gap: {gap: 10},
   colorPikerBtn: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -177,21 +140,5 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 10,
   },
-  colorPreview: {
-    width: 25,
-    height: 25,
-    borderRadius: 50,
-  },
-
-  top: {
-    marginTop: 10,
-  },
-
-  textBtn: {
-    fontSize: 24,
-    color: colors.white,
-    fontWeight: '700',
-    textAlign: 'center',
-    alignSelf: 'center',
-  },
+  top: {marginTop: 10},
 });

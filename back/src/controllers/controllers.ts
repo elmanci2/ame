@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { generateOTP } from "./util/util";
-import { sendSMS } from "../services/sms/sms";
+//import { sendSMS } from "../services/sms/sms";
 import { allQueryAsync, queryAsync } from "../db/util/util";
 import { user_db as db, data_db as data } from "../db/db";
 import { v4 as uuidv4 } from "uuid";
@@ -9,17 +9,15 @@ import { generate_token } from "./util/token";
 import { Reminder, VitalSigns } from "../types/types";
 import { Errors } from "../errors/error";
 
-const user_id = uuidv4();
-
 export const otp_validate = async (req: Request, res: Response) => {
   const otp = generateOTP();
-  const { phone } = req.body;
-  console.log(phone);
-
+  //const { phone } = req.body;
+  console.log(otp);
+  /* 
   await sendSMS({
     to: phone,
     body: `su código de validación de ame es: ${otp}`,
-  });
+  }); */
   res.send({
     otp,
   });
@@ -125,6 +123,8 @@ export const create_new_user = async (req: Request, res: Response) => {
   ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 `;
 
+    const user_id = uuidv4();
+
     const validationError = await validate_email(
       nuevoUsuario?.email,
       nuevoUsuario?.phoneNumber
@@ -163,6 +163,8 @@ export const create_new_user = async (req: Request, res: Response) => {
       nuevoUsuario.photo || null,
       nuevoUsuario.type,
     ];
+
+    console.log(params);
 
     const tk = await generate_token(user_id);
 
@@ -409,6 +411,32 @@ export const get_history_signes = async (req: Request, res: Response) => {
   }
 };
 
+export const get_signes = async (req: Request, res: Response) => {
+  try {
+    //@ts-ignore
+    const user = req.user;
+    if (!user) {
+      return res.status(401).send(Errors.unauthorized);
+    }
+
+    const query =
+      "SELECT * FROM vital_signes WHERE patient_id = ? ORDER BY creation_date DESC LIMIT 1";
+
+    const results = await allQueryAsync(db, query, [user.user_id]);
+
+    if (results.length === 0) {
+      return res
+        .status(404)
+        .send("No se encontraron signos vitales para este usuario.");
+    }
+
+    res.status(200).json(results[0]);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send(Errors.internalError);
+  }
+};
+
 export const get_history_signes_visitor = async (
   req: Request,
   res: Response
@@ -458,7 +486,6 @@ const addReminder = async (
       repeat,
       formate,
       originalTime,
-      patient_id,
     } = reminderData;
 
     const query = `
@@ -497,7 +524,7 @@ const addReminder = async (
       )
     `;
 
-    db.run(query, [
+    const params = [
       notification_id,
       mensaje,
       medicamento,
@@ -510,9 +537,11 @@ const addReminder = async (
       repeat,
       formate,
       originalTime,
-      patient_id,
-      by || id,
-    ]);
+      id,
+      by,
+    ];
+
+    db.run(query, params);
 
     return true;
   } catch (error) {
@@ -526,7 +555,6 @@ export const generateReminderVisitor = async (req: Request, res: Response) => {
     const user = req["user"];
     const data = req.body;
     const { id } = req.query;
-    console.log(id);
 
     if (!user.user_id || !data || !id) {
       return res.status(400).send("Usuario o datos no válidos");
@@ -545,10 +573,133 @@ export const generateReminderVisitor = async (req: Request, res: Response) => {
   }
 };
 
+export const generateReminderUser = async (req: Request, res: Response) => {
+  try {
+    //@ts-ignore
+    const user = req["user"];
+    const data = req.body;
+
+    if (!user.user_id || !data) {
+      return res.status(400).send("Usuario o datos no válidos");
+    }
+
+    const save = await addReminder(user?.user_id, data, user?.user_id);
+
+    if (save) {
+      return res.status(200).json({ success: true });
+    } else {
+      return res.status(500).send("Failed to save reminder");
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send(Errors.internalError);
+  }
+};
+
+export const deleteReminder = async (userId: number, reminderId: number) => {
+  return new Promise((resolve, reject) => {
+    // Ejecutar la consulta DELETE
+    db.run(
+      "DELETE FROM reminders WHERE patient_id = ? AND id = ?",
+      [userId, reminderId],
+      function (err) {
+        if (err) {
+          console.error("Error al eliminar el recordatorio:", err);
+          reject(err);
+        } else {
+          // Comprobar si se eliminó alguna fila
+          if (this.changes > 0) {
+            resolve(true); // Se eliminó exitosamente
+          } else {
+            resolve(false); // No se encontró el recordatorio o no pertenece al usuario
+          }
+        }
+      }
+    );
+  });
+};
+
+export const deleteReminderUser = async (req: Request, res: Response) => {
+  try {
+    //@ts-ignore
+    const user = req["user"];
+    const { id } = req.body; // Suponiendo que el ID del recordatorio se pasa como un parámetro en la URL
+
+    console.log(id);
+    
+
+    if (!user.user_id || !id) {
+      return res.status(400).send("Usuario o ID de recordatorio no válido");
+    }
+
+    const deleted = await deleteReminder(user.user_id, id);
+
+    if (deleted) {
+      return res.status(200).json({ success: true });
+    } else {
+      return res
+        .status(404)
+        .send("El recordatorio no se encontró o no pertenece al usuario");
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send("Error interno del servidor");
+  }
+};
+
+export const getUserRemindersList = async (req: Request, res: Response) => {
+  try {
+    //@ts-ignore
+    const user = req.user;
+    if (!user) {
+      return res.status(401).send(Errors.unauthorized);
+    }
+
+    const query = "SELECT * FROM reminders WHERE patient_id = ?";
+
+    const results = await allQueryAsync(db, query, [user.user_id]);
+
+    res.status(200).json(results);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send(Errors.internalError);
+  }
+};
+
+export const getVisitorReminderList = async (req: Request, res: Response) => {
+  try {
+    //@ts-ignore
+    const { id } = req.query;
+
+    console.log(id);
+
+    if (!id) {
+      return res.status(401).send(Errors.unauthorized);
+    }
+
+    const query = "SELECT * FROM reminders WHERE patient_id = ?";
+
+    const results = await allQueryAsync(db, query, [id]);
+    console.log(results);
+
+    res.status(200).json(results);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send(Errors.internalError);
+  }
+};
+
 export const getUserInfo = async (req: Request, res: Response) => {
   try {
     //@ts-ignore
     const user = req["user"];
-    return user;
+
+    const selectQuery = `SELECT * FROM usuarios WHERE id_usuario = ?`;
+
+    const result = await queryAsync(db, selectQuery, [user?.user_id]);
+
+    res.status(200).send(result);
+
+    return result;
   } catch (error) {}
 };

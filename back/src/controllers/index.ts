@@ -11,11 +11,18 @@ import {
   generateVitalSignsVisitor,
   search_users,
   get_history_signes_visitor,
-  getUserInfo
+  getUserInfo,
+  get_signes,
+  generateReminderVisitor,
+  generateReminderUser,
+  getUserRemindersList,
+  getVisitorReminderList,
+  deleteReminderUser
 } from "./controllers";
 import { generateOTP } from "./util/util";
 
 const controllers = {
+  get_signes,
   get_cities,
   otp_validate,
   email_number_validation,
@@ -29,6 +36,11 @@ const controllers = {
   generateVitalSignsVisitor,
   get_history_signes_visitor,
   getUserInfo,
+  generateReminderVisitor,
+  getVisitorReminderList,
+  generateReminderUser,
+  getUserRemindersList,
+  deleteReminderUser,
   util: {
     generateOTP,
   },

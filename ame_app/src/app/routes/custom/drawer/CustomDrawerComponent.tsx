@@ -46,7 +46,11 @@ const CustomDrawerItem = (props: DrawerContentComponentProps) => {
   const activeItem = props.state.routes[props.state.index].name;
 
   const renderDrawerList =
-    type !== user_roles.user ? userDrawerLIst : visitorDrawerLIst;
+    type === user_roles.user
+      ? userDrawerLIst
+      : user_roles.visitor
+      ? visitorDrawerLIst
+      : deliveryDrawerLIst;
 
   return (
     <View style={styles.itemListContainer}>
@@ -75,7 +79,7 @@ const CustomDrawerItem = (props: DrawerContentComponentProps) => {
       <DrawerItem
         label="Salir"
         icon={({color, size}) => IconsItemDrawer({color, size})}
-        onPress={() => dispatcher(addTk(undefined))}
+        onPress={() => dispatcher(addTk(undefined as any))}
       />
     </View>
   );

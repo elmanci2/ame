@@ -1,12 +1,13 @@
-import {useEffect, useState} from 'react';
-import {useQuery} from 'react-query';
-import {config} from '../../../config/config';
-import {useSelector} from 'react-redux';
+import { useEffect, useState } from 'react';
+import { useQuery } from 'react-query';
+import { config } from '../../../config/config';
+import { useSelector } from 'react-redux';
 
 export const useFetch = (
   url: string,
   id: string,
   activeUrl: boolean = true,
+  updateDate: boolean = false, 
 ) => {
   const [data, setData] = useState([]);
 
@@ -29,7 +30,6 @@ export const useFetch = (
         headers: headers,
       },
     );
-    console.log(config.http.requestUrl + url);
 
     if (!response.ok) {
       throw new Error(
@@ -46,5 +46,15 @@ export const useFetch = (
     }
   }, [queryData]);
 
-  return {data, loading: isLoading, error, refetch};
+  // Temporizador para refrescar los datos cada dos segundos si updateDate está activo
+  useEffect(() => {
+    if (updateDate) {
+      const interval = setInterval(() => {
+        refetch();
+      }, 2000);
+      return () => clearInterval(interval);
+    }
+  }, [updateDate, refetch]);
+
+  return { data, loading: isLoading, error, refetch };
 };

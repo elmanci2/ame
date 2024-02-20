@@ -3,7 +3,7 @@ import React from 'react';
 import CustomScreen from '../../components/custom/CustomScreen';
 import {Title} from '../../components/custom/Title';
 import Logo from '../../components/custom/Logo';
-import {RoutListTypeProps} from '../../types/types';
+import {RoutListTypeProps, VitalSignType} from '../../types/types';
 import LottieView from 'lottie-react-native';
 import {MyText} from '../../components/custom/MyText';
 import ActionBottom from '../../components/custom/ActionBottom';
@@ -11,6 +11,9 @@ import {useSelector} from 'react-redux';
 import {colors} from '../../../constants/Constants';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import {Image} from 'moti';
+import {useFetch} from '../../hook/http/useFetch';
+import {useWifi} from '../../hook/network/useWifi';
+import LoadScreen from '../LoadScreen';
 
 const NoSignes = ({go, title}: any) => {
   return (
@@ -25,7 +28,7 @@ const NoSignes = ({go, title}: any) => {
           style={styles.lottie}
         />
         <MyText textAlign="center" fontSize={20} fontWeight="400">
-          Aún No tienes signos vitales
+          Aún no tienes signos vitales
         </MyText>
 
         <ActionBottom
@@ -43,18 +46,25 @@ const NoSignes = ({go, title}: any) => {
 const VitalSigne = ({route, navigation}: RoutListTypeProps) => {
   const {title} = route.params;
   const signes = useSelector((state: any) => state.signe.signe);
+  const {data, loading} = useFetch('get-signes', 'get-signes');
+  const wifi = useWifi();
 
   const go = () => {
     navigation.navigate('GenerateVitalSigns');
   };
 
-  const isSignes = Boolean(
-    Object.keys(signes).length === 0 && signes.constructor === Object,
-  );
+  const {blood_pressure, blood_sugar_level, heart_rate, weight}: any = data;
 
-  if (isSignes) {
+  const pressure = JSON.parse(blood_pressure ?? '{}');
+
+  
+  if (data?.length < 0) {
+    return <NoSignes go={go} title={title} />;
+  } else if (wifi?.isConnected === false && Object.keys(signes).length === 0) {
     return <NoSignes go={go} title={title} />;
   }
+
+  //  if (wifi && loading) return <LoadScreen />;
 
   return (
     <CustomScreen>
@@ -82,7 +92,7 @@ const VitalSigne = ({route, navigation}: RoutListTypeProps) => {
             />
             <View>
               <MyText color={colors.tertiary} fontWeight="600" fontSize={20}>
-                {signes.Ritmo_cardiaco}
+                {heart_rate ?? signes?.Ritmo_cardiaco}
               </MyText>
               <MyText fontSize={15}>RITMO CARDIACO</MyText>
             </View>
@@ -97,7 +107,8 @@ const VitalSigne = ({route, navigation}: RoutListTypeProps) => {
             </View>
             <View>
               <MyText color={colors.tertiary} fontWeight="600" fontSize={20}>
-                {`${signes.presion.en} / ${signes.presion.sobre}`}
+                {`${pressure?.en} / ${pressure?.sobre}` ??
+                  `${signes?.presion?.en} / ${signes?.presion?.sobre}`}
               </MyText>
               <MyText fontSize={15}>PRESIÓN ARTERIAL</MyText>
             </View>
@@ -112,7 +123,7 @@ const VitalSigne = ({route, navigation}: RoutListTypeProps) => {
             </View>
             <View>
               <MyText color={colors.tertiary} fontWeight="600" fontSize={20}>
-                {signes.azucar}
+                {blood_sugar_level ?? signes?.azucar}
               </MyText>
               <MyText fontSize={15}>NIVEL DE AZÚCAR</MyText>
             </View>
@@ -128,7 +139,7 @@ const VitalSigne = ({route, navigation}: RoutListTypeProps) => {
             </View>
             <View>
               <MyText color={colors.tertiary} fontWeight="600" fontSize={20}>
-                {signes.peso}
+                {weight ?? signes?.peso}
               </MyText>
               <MyText fontSize={15}>PESO</MyText>
             </View>

@@ -17,6 +17,12 @@ const AddReminderScreen = () => {
     hour12: true,
   });
 
+const fechaActualUTC = new Date();
+const diferenciaHoraria = -5 * 60 * 60 * 1000;
+const fechaActualUTC5 = new Date(fechaActualUTC.getTime() + diferenciaHoraria);
+const fechaHoraISO = fechaActualUTC5.toISOString();
+
+
   const [reminder, setReminder] = useState({
     id: Math.floor(Math.random() * 100000),
     mensaje: 'No olvidar tomara este medicamento',
@@ -25,12 +31,12 @@ const AddReminderScreen = () => {
     unidad: 'mg',
     type: 'tableta',
     color: colors.tertiary,
-    date: new Date().toISOString(),
+    date: fechaHoraISO,
     time: currentTime,
     repeat: 2,
     formate: 'hour',
     originalTime: {
-      time: '',
+      time: new Date(),
     },
   });
 

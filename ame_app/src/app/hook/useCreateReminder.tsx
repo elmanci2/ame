@@ -1,13 +1,32 @@
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {addReminder} from '../redux/ReminderSlice';
-import {Reminder} from '../types/types';
+import {Reminder, UserData} from '../types/types';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
-const useCreateReminder = (reminder: Reminder) => {
+import {usePost} from './http/usePost';
+import {user_roles} from '../../constants/Constants';
+const useCreateReminder = (reminder?: Reminder) => {
   const dispatch = useDispatch();
+  const {
+    util,
+    tk: {type},
+  } = useSelector((state: any) => state);
 
-  const addNewReminder = async () => {
+  
+
+  const renderRute =
+    type === user_roles.user
+      ? 'user-add-reminder'
+      : `visitor-add-reminder?id=${util.select_user_reminder}`;
+
+      console.log(renderRute);
+  const {data, loading, error, postRequest} = usePost(renderRute, reminder);
+
+  //console.log(select_user_reminder);
+
+  const addNewReminder = async (reminder?:Reminder) => {
     try {
       if (reminder) {
+        await postRequest();
         dispatch(addReminder(reminder));
         Toast.show({
           type: 'success',

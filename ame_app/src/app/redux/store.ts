@@ -9,6 +9,8 @@ import VitalSignSlider from './VitalsigneSlice';
 import RegisterSlice from './RegisterSlider';
 import serviceListSlice from './tokenSlice';
 import PatientsSlice from './PatientsSlice';
+import InfoAdd from './InfoSlice';
+import UtilSlice from './utilSlice';
 
 // Correct import statement for PersistConfig
 import {PersistConfig} from 'redux-persist/es/types';
@@ -16,7 +18,7 @@ import {PersistConfig} from 'redux-persist/es/types';
 const persist: PersistConfig<any> = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['reminder', 'tk', 'signe', 'Patients'],
+  whitelist: ['reminder', 'tk', 'signe', 'Patients', 'Info'],
 };
 
 const rootReducers = combineReducers({
@@ -26,6 +28,8 @@ const rootReducers = combineReducers({
   register: RegisterSlice,
   tk: serviceListSlice,
   Patients: PatientsSlice,
+  Info: InfoAdd,
+  util: UtilSlice,
 });
 
 const persistReducers = persistReducer(persist, rootReducers);

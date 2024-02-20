@@ -37,6 +37,7 @@ import UserRemindersScreen from '../../screen/user/UserRemindersScreen';
 import GetServicePreview from '../../screen/GetServicePreview';
 import ServiceRutePreview from '../../screen/ServiceRutePreview';
 import Takin from '../../screen/Trakin';
+import UserReminderList from '../../screen/medical/UserReminderList';
 
 const header = {
   header: MiniHeader,
@@ -186,6 +187,11 @@ export const VisitorRouteLIst: RoutListType[] = [
   {
     name: 'SignesPreview',
     components: SignesPreview,
+    config: {...modalScreeConfig},
+  },
+  {
+    name: 'UserReminderList',
+    components: UserReminderList,
     config: {...modalScreeConfig},
   },
   ...globalRoutes,

@@ -11,6 +11,7 @@ import {store} from './src/app/redux/store';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {PersistGate} from 'redux-persist/integration/react';
 import {persistStore} from 'redux-persist';
+import { use_Get_users_info } from './src/app/hook/info/use_Get_users_info';
 
 
 

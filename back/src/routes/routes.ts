@@ -16,6 +16,12 @@ const {
   generateVitalSignsVisitor,
   get_history_signes_visitor,
   getUserInfo,
+  get_signes,
+  generateReminderVisitor,
+  getVisitorReminderList,
+  getUserRemindersList,
+  generateReminderUser,
+  deleteReminderUser,
 } = controllers;
 const rt = Router();
 
@@ -44,8 +50,23 @@ rt.post(
   authentication,
   generateVitalSignsVisitor
 );
+
+//POST
+//reminder
+rt.post("/visitor-add-reminder", authentication, generateReminderVisitor);
+rt.post("/user-add-reminder", authentication, generateReminderUser);
+
+//GET
+rt.get("/visitor-reminder-list", getVisitorReminderList);
+rt.get("/user-reminder-ist", authentication, getUserRemindersList);
+
+//delete
+
+rt.post("/user-delete-reminder", authentication, deleteReminderUser);
+
 // GET
 rt.get("/history-vita-signes", get_history_signes_visitor);
+rt.get("/get-signes", authentication, get_signes);
 
 //GET
 // users

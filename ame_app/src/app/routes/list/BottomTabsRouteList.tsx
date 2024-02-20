@@ -9,6 +9,28 @@ import UserRemindersScreen from '../../screen/user/UserRemindersScreen';
 import VitalSigne from '../../screen/user/VitalSigne';
 import {RoutListType} from '../../types/types';
 
+
+export const DeliveryRouteLIst: RoutListType[] = [
+  {components: HomeVisitorScreen, name: 'Inicio'},
+  {
+    components: GenerateSignesVisitorScreen,
+    name: 'Signos',
+    config: {
+      title: 'Generar signos vitales',
+    },
+  },
+
+  {components: GetServices, name: 'Servicios'},
+  {
+    components: RecordatorioVisitorScreen,
+    name: 'Recordatorio',
+    config: {
+      title: 'Recordatorios',
+    },
+  },
+];
+
+
 export const MedicalStack: RoutListType[] = [
   {components: HomeVisitorScreen, name: 'Inicio'},
   {

@@ -36,7 +36,6 @@ const RecordatorioVisitorScreen = ({route, navigation}: RoutListTypeProps) => {
     }
   };
 
-  console.log(userName);
 
   const action = () => {
     navigation.navigate('SearchUser');
@@ -134,7 +133,10 @@ const RecordatorioVisitorScreen = ({route, navigation}: RoutListTypeProps) => {
             <TouchableOpacity
               style={styles.reminderItem}
               onPress={() => {
-                navigation.navigate('UserRemindersScreen', {title: userName});
+                navigation.navigate('UserReminderList', {
+                  name: userName,
+                  id: patientsId,
+                });
                 setShowModal2(false);
               }}>
               <View style={styles.icon}>

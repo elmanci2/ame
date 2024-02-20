@@ -1,26 +1,31 @@
-import {StatusBar, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  FlatList,
+  StatusBar,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import CustomScreen from '../../components/custom/CustomScreen';
+import {DowIndicator} from '../../components/custom/DowIndicator';
 import {colors} from '../../../constants/Constants';
-import {MyText} from '../../components/custom/MyText';
-import ActionBottom from '../../components/custom/ActionBottom';
-import Entypo from 'react-native-vector-icons/Entypo';
-import {FlatList} from 'react-native';
-import useRemainingDaysInMonth from '../../hook/useRemainingDaysInMonth';
 import ReminderList from '../../components/screen/users/reminder/ReminderList';
+import {MyText} from '../../components/custom/MyText';
 import {GlobalStyle} from '../../styles/styles';
+import ActionBottom from '../../components/custom/ActionBottom';
 import useRemainingMonths from '../../hook/useRemainingMonths';
+import useRemainingDaysInMonth from '../../hook/useRemainingDaysInMonth';
 import LoadScreen from '../LoadScreen';
 import {RoutListTypeProps} from '../../types/types';
-import useMonthNumber from '../../hook/useMonthNumber';
-import { getMonthNumber } from '../../util/getMonthNumber';
+import Entypo from 'react-native-vector-icons/Entypo';
+import {getMonthNumber} from '../../util/getMonthNumber';
 
-const currentDate = new Date();
-const month = currentDate.toLocaleString('default', {month: 'long'});
-const dayNumber = currentDate.getDate();
+const UserReminderList = ({route, navigation}: RoutListTypeProps) => {
+  const {name, id} = route?.params ?? {};
 
-const UserRemindersScreen = ({navigation, route}: RoutListTypeProps) => {
-  const {title} = route?.params ?? {};
+  console.log(id);
+  
 
   const currentDate = new Date();
   const month = currentDate.toLocaleString('default', {month: 'long'});
@@ -43,11 +48,10 @@ const UserRemindersScreen = ({navigation, route}: RoutListTypeProps) => {
 
   const months = useRemainingMonths();
 
-
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
-    }, 2400);
+    }, 2000);
   }, []);
 
   if (loading) {
@@ -60,7 +64,7 @@ const UserRemindersScreen = ({navigation, route}: RoutListTypeProps) => {
         <StatusBar backgroundColor={colors.white} />
         <View style={styles.menu}>
           <MyText fontWeight="800" fontSize={17} color={colors.texto_bold}>
-            {title}
+            {name ?? ''}
           </MyText>
           <ActionBottom
             action={() => navigation.navigate('addReminder')}
@@ -98,8 +102,8 @@ const UserRemindersScreen = ({navigation, route}: RoutListTypeProps) => {
 
         <View style={styles.day}>
           {/*    <MyText fontSize={20} fontWeight="500" color={colors.secundario}>
-            Dia
-          </MyText> */}
+              Dia
+            </MyText> */}
           <FlatList
             data={remainingDays}
             contentContainerStyle={{gap: GlobalStyle.gap.gap + 7}}
@@ -134,13 +138,13 @@ const UserRemindersScreen = ({navigation, route}: RoutListTypeProps) => {
         </View>
       </View>
       <View style={styles.reminderContainer}>
-        <ReminderList day={selectDay} month={selectMonth.num} />
+        <ReminderList day={selectDay} month={selectMonth.num} userId={id} />
       </View>
     </CustomScreen>
   );
 };
 
-export default UserRemindersScreen;
+export default UserReminderList;
 
 const styles = StyleSheet.create({
   reminderContainer: {

@@ -1,57 +1,113 @@
-import {Notifications} from 'react-native-notifications';
+import notifee, {
+  RepeatFrequency,
+  TimestampTrigger,
+  TriggerType,
+} from '@notifee/react-native';
 import {Reminder} from '../types/types';
+import {Toast} from 'react-native-toast-message/lib/src/Toast';
+import {changeDate} from '../util/Tiem';
 
 const useScheduledNotification = (notificationData: Reminder) => {
-  const scheduleNotification = () => {
-    const {date, medicamento, mensaje, originalTime} = notificationData;
+  const {date, medicamento, mensaje, originalTime, time} = notificationData;
 
-    try {
-      if (!date || !originalTime || !originalTime.time) {
-        throw new Error(
-          'La fecha o la hora original no están definidas para la notificación programada',
-        );
-      }
+  /*  const timestamp = cambiarHoraAFecha(date, time);
+  console.log(convertirHoraAModo24(time));
+ */
 
-      // Parsea la fecha y la hora
-      const selectedDate = new Date(date);
-      const selectedTime = new Date(originalTime.time);
+  console.log(new Date(originalTime.time).getTime());
 
-      // Combina la fecha y la hora
-      const combinedDateTime = new Date(
-        Date.UTC(
-          selectedDate.getUTCFullYear(),
-          selectedDate.getUTCMonth(),
-          selectedDate.getUTCDate(),
-          selectedTime.getUTCHours(),
-          selectedTime.getUTCMinutes(),
-          selectedTime.getUTCSeconds(),
-          selectedTime.getUTCMilliseconds(),
-        ),
-      );
+  async function displayNotification(title: string, body: string) {
+    const channelId = await notifee.createChannel({
+      id: 'default',
+      name: 'Default Channel',
+    });
 
-      // Verifica que la fecha combinada sea en el futuro
-      if (combinedDateTime <= new Date()) {
-        throw new Error('La fecha combinada está en el pasado o presente');
-      }
+    await notifee.requestPermission();
 
-      var fechaActual = new Date();
+    const notificationId = notifee.displayNotification({
+      title: title,
+      body: body,
+      android: {
+        channelId,
+      },
+    });
+    return notificationId;
+  }
 
-      // Suma dos minutos a la fecha actual
-      fechaActual.setMinutes(fechaActual.getMinutes() + 2);
+  async function displayTriggerNotification(
+    date: string,
+    repeatFrequency: RepeatFrequency | undefined = undefined,
+  ) {
+    const channelId = await notifee.createChannel({
+      id: 'default',
+      name: 'Default Channel',
+    });
 
-      // Configura la notificación programada
-      Notifications.postLocalNotification({
-        body: mensaje,
+
+    console.log("agregada");
+    
+
+    const timestamp = new Date(date).getTime();
+
+    const trigger: TimestampTrigger = {
+      type: TriggerType.TIMESTAMP,
+      timestamp: timestamp,
+      alarmManager: true,
+      repeatFrequency: repeatFrequency,
+    };
+
+    const triggerNotificationId = await notifee.createTriggerNotification(
+      {
         title: medicamento,
-        sound: 'chime.aiff',
-        fireDate: fechaActual,
-      } as any);
-    } catch (error: any) {
-      console.error('Error al programar la notificación:', error.message);
-    }
-  };
+        body: mensaje,
+        android: {
+          channelId,
+        },
+      },
+      trigger,
+    );
 
-  return {scheduleNotification};
+   
+    
+    return triggerNotificationId;
+  }
+
+  async function getTriggerNotificationIds() {
+    const triggerNotificationIds = await notifee.getTriggerNotificationIds();
+    return triggerNotificationIds;
+  }
+
+  // cancel all or specific trigger notifications
+  async function cancelTriggerNotifications(
+    notificationIds: string[] | undefined,
+  ) {
+    await notifee.cancelTriggerNotifications(notificationIds);
+  }
+
+  // cancel all notifications
+  async function cancelAllNotifications(): Promise<void> {
+    await notifee.cancelAllNotifications();
+  }
+
+  // cancel notification via notificationId or tag
+  async function cancelNotification(
+    notificationId: string,
+    tag: string | undefined = undefined,
+  ) {
+    await notifee.cancelNotification(notificationId, tag);
+  }
+
+  // There are way more methods I didn't cover here that can help you in various scenarios
+  // See https://notifee.app/react-native/reference
+
+  return {
+    displayNotification,
+    displayTriggerNotification,
+    getTriggerNotificationIds,
+    cancelTriggerNotifications,
+    cancelAllNotifications,
+    cancelNotification,
+  };
 };
 
 export default useScheduledNotification;

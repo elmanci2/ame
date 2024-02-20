@@ -1,5 +1,5 @@
 import {FlatList} from 'react-native';
-import React, {Fragment, useState} from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import RenderReminder from './RenderReminder';
 import {useSelector, useDispatch} from 'react-redux';
 import {GlobalStyle} from '../../../../styles/styles';
@@ -10,46 +10,61 @@ import {View} from 'moti';
 import DeleteModal from '../../../custom/modal/DeleteModal';
 import {deleteReminder} from '../../../../redux/ReminderSlice';
 import {getDayAndMonth} from '../../../../../function/function';
+import {useFetch} from '../../../../hook/http/useFetch';
+import {useWifi} from '../../../../hook/network/useWifi';
+import {usePost} from '../../../../hook/http/usePost';
 
 interface Props {
-  day: number;
-  month: number;
+  day?: number;
+  month?: number;
+  reminders?: Reminder[];
+  userId?: string;
+  onLoad?: (load: boolean) => void;
 }
 
-function getCurrentDay(): number {
-  const currentDate = new Date();
-  return currentDate.getUTCDate();
-}
-
-function getCurrentMonth(): number {
-  const currentDate = new Date();
-  return currentDate.getUTCMonth() + 1; // Months in JavaScript are zero-based
-}
-
-const ReminderList = ({
-  day = getCurrentDay(),
-  month = getCurrentMonth(),
-}: Props) => {
-  const selector = useSelector((state: any) => state.reminder.reminder);
+const ReminderList = ({day, month, reminders = [], userId, onLoad}: Props) => {
+  //const {reminder} = useSelector((state: any) => state);
 
   const dispatcher = useDispatch();
-
   const [selectReminder, setSelectReminder] = useState(0);
-
+  const [filteredReminders, setFilteredReminders] = useState<Reminder[]>([]);
   const [showModal, setShowModal] = useState(false);
+  const [initialDay, setDay] = useState<number>(getCurrentDay());
+  const [initialMonth, setMonth] = useState<number>(getCurrentMonth());
 
-  const deleteReminders = () => {
+  const getRoute = userId
+    ? `visitor-reminder-list?id=${userId}`
+    : 'user-reminder-ist';
+
+  const wifi = useWifi().isConnected;
+  const {data, loading, error, refetch} = useFetch(
+    getRoute,
+    getRoute,
+    true,
+    true,
+  );
+
+  const {postRequest , data:deleteData} = usePost(`user-delete-reminder`, {id: selectReminder});
+
+  const deleteReminders = async () => {
+    await postRequest();
+    console.log(deleteData);
     dispatcher(deleteReminder(selectReminder));
     setShowModal(false);
     return null;
   };
-  const filteredReminders: Array<Reminder> = selector.filter(
-    (item: Reminder) => {
-      const {day: reminderDay, month: reminderMonth} =
-        getDayAndMonth(item.date) || {};
-      return reminderDay === day && reminderMonth === month;
-    },
-  );
+
+  useEffect(() => {
+    onLoad && onLoad(loading);
+    const result: Reminder[] = data
+      ? data.filter((item: Reminder) => {
+          const {day: reminderDay, month: reminderMonth} =
+            getDayAndMonth(item.date) || {};
+          return reminderDay === day && reminderMonth === month;
+        })
+      : [];
+    setFilteredReminders(result);
+  }, [day, month, data, loading]);
 
   const onClose = () => {
     setShowModal(false);
@@ -81,5 +96,15 @@ const ReminderList = ({
     </Fragment>
   );
 };
+
+function getCurrentDay(): number {
+  const currentDate = new Date();
+  return currentDate.getUTCDate();
+}
+
+function getCurrentMonth(): number {
+  const currentDate = new Date();
+  return currentDate.getUTCMonth() + 1;
+}
 
 export default ReminderList;
