@@ -16,9 +16,11 @@ import {CloseBottom} from '../../components/custom/CloseBottom';
 import Feather from 'react-native-vector-icons/Feather';
 import DeleteModal from '../../components/custom/modal/DeleteModal';
 import useServices from '../../hook/services/useServices';
+import {use_Get_users_info} from '../../hook/info/use_Get_users_info';
 
 const UserHomeScreen = (props: any) => {
   const service: [] = useSelector((state: any) => state.service.service);
+  use_Get_users_info('');
 
   const {remove} = useServices();
   const [showModal, setShowModal] = useState(false);

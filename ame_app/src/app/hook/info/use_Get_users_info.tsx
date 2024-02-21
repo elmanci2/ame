@@ -4,7 +4,7 @@ import {useDispatch} from 'react-redux';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import { addInfoUser } from '../../redux/InfoSlice';
 
-export const use_Get_users_info = () => {
+export const use_Get_users_info = (tk:any) => {
   const {data, error, loading} = useFetch('user-info', 'user-info');
   const dispatcher = useDispatch();
   React.useEffect(() => {
@@ -18,7 +18,7 @@ export const use_Get_users_info = () => {
         text2: 'Error al obtener tu información',
       });
     }
-  }, [loading, data]);
+  }, [loading, data , tk]);
 
   return {data};
 };

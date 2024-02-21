@@ -24,16 +24,12 @@ const CreateReminders = memo(({reminder}: Props) => {
   const {addNewReminder} = useCreateReminder({...reminder});
 
   const initialDate = changeDate(reminder.date, reminder.originalTime.time);
-  const finalDate = '2024-02-23T08:00:00.000Z';
-
-  // Definir el número de intervalos
-  const intervals = '4h';
+  const intervals = `${reminder.repeat}h`;
 
   const {calculateIntervals} = useMultipleReminder(
     {addNewReminder, notification: displayTriggerNotification},
     {
       initialDateTime: new Date(initialDate)?.toISOString() ?? '',
-      finalDate,
     },
     intervals,
     reminder,
@@ -43,8 +39,8 @@ const CreateReminders = memo(({reminder}: Props) => {
     try {
       cancelAllNotifications();
       calculateIntervals();
-      /*  addNewReminder();
-      navigation.goBack(); */
+      addNewReminder();
+      navigation.goBack();
     } catch (error: any) {
       Toast.show({
         type: 'error',

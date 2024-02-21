@@ -7,8 +7,11 @@ import {VisitorGritMenu as items} from './config/gridLayaut';
 import {colors} from '../../../constants/Constants';
 import {GlobalStyle} from '../../styles/styles';
 import {MyText} from '../../components/custom/MyText';
+import {use_Get_users_info} from '../../hook/info/use_Get_users_info';
 
 const HomeVisitorScreen = (props: any) => {
+  use_Get_users_info('');
+
   return (
     <CustomScreen>
       <HederComponent {...props} />

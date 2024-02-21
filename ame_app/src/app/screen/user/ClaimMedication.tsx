@@ -1,11 +1,13 @@
 import {StyleSheet, Text} from 'react-native';
 import React from 'react';
 import CustomScreen from '../../components/custom/CustomScreen';
+import Mapa from '../../components/custom/Mapa';
+import MapaCollection from './MapaCollection';
 
-const ClaimMedication = () => {
+const ClaimMedication = ({navigation}) => {
   return (
     <CustomScreen>
-      <Text>ClaimMedication</Text>
+      <MapaCollection title={'organizar medicamento'} navigation={navigation} />
     </CustomScreen>
   );
 };

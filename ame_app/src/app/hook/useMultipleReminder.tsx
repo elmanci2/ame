@@ -114,7 +114,7 @@ import {Reminder} from '../types/types';
 import useCreateReminder from './useCreateReminder';
 
 interface methods {
-  addNewReminder: (reminder: Reminder) => void;
+  addNewReminder: () => void;
   notification: (date: string) => void;
 }
 
@@ -199,16 +199,13 @@ const useMultipleReminder = (
 
     let currentDateTime = startDate.getTime();
     let currentHour = startDate.getHours();
+    /* addNewReminder(); */
     while (currentDateTime < endDate.getTime()) {
       const notificationDate = new Date(currentDateTime);
       const notificationDateISOString = notificationDate.toISOString();
       const time12HoursFormat = formatTime12Hours(notificationDate);
       notification(notificationDateISOString);
-      addNewReminder({
-        ...reminder,
-        date: notificationDateISOString,
-        time: time12HoursFormat,
-      });
+
       // Añade el intervalo de tiempo para el siguiente recordatorio
       currentDateTime += intervalDuration;
       // Calcula la hora para el siguiente recordatorio

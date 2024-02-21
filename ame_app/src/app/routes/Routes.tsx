@@ -47,7 +47,10 @@ const Stack = createStackNavigator();
 const MyStack = () => {
   const {tk, type} = useSelector((state: any) => state.tk);
 
-  use_Get_users_info();
+    use_Get_users_info(tk);
+
+    
+
 
   const renderList =
     tk && type === user_roles.user
@@ -57,8 +60,6 @@ const MyStack = () => {
       : type === user_roles.delivery
       ? DeliveryRouteLIst
       : LoginRouteLIst;
-
-  console.log('tk ' + tk);
 
   return (
     <Stack.Navigator screenOptions={{...StackConfig}}>

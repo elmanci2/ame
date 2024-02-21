@@ -51,7 +51,6 @@ export const usePost = (url: string, requestData: any, header?: any) => {
   const [data, setData] = useState<any>(null);
 
   const postRequest = async () => {
-    console.log(config.http.requestUrl + url);
     setLoading(true);
     setError(null);
 

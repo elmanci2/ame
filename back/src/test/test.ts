@@ -187,7 +187,7 @@ db.run(`ALTER TABLE usuarios ADD COLUMN type TEXT;`, (errany) => {
 
 
 
-
+/* 
 
 db.run(`
   CREATE TABLE IF NOT EXISTS reminders (
@@ -209,6 +209,25 @@ db.run(`
     add_by TEXT
   )
 `);
+ */
+
+
+function eliminarContenidoTabla(nombreTabla: string) {
+  const query = `DELETE FROM ${nombreTabla}`;
+  
+  db.run(query, function(err) {
+      if (err) {
+          console.error('Error al eliminar el contenido de la tabla:', err.message);
+      } else {
+          console.log('Contenido de la tabla eliminado con éxito.');
+      }
+  });
+}
+
+// Llamar a la función para eliminar el contenido de la tabla
+const nombreTabla = 'reminders';
+eliminarContenidoTabla(nombreTabla);
+
 
 
 //db.run(`DROP TABLE IF EXISTS vital_signes`);

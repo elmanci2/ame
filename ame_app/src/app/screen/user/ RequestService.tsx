@@ -1,4 +1,9 @@
-import {Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  Image,
+  PermissionsAndroid,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import React from 'react';
 import CustomScreen from '../../components/custom/CustomScreen';
 import {Title} from '../../components/custom/Title';
@@ -11,6 +16,30 @@ import Logo from '../../components/custom/Logo';
 
 export default function RequestService({route, navigation}: RoutListTypeProps) {
   const {title} = route.params;
+
+  async function requestLocationPermission() {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        //@ts-ignore
+        {
+          title: 'Example App',
+          message: 'Example App access to your location ',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('You can use the location');
+      } else {
+        console.log('location permission denied');
+      }
+    } catch (err) {
+     
+    }
+  }
+
+  React.useEffect(() => {
+    requestLocationPermission()
+  }, []);
 
   const go = (route: any) => {
     navigation.navigate(route);

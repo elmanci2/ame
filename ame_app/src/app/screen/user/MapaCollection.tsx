@@ -9,10 +9,11 @@ import {Title} from '../../components/custom/Title';
 import useServices from '../../hook/services/useServices';
 import {RoutListTypeProps} from '../../types/types';
 
-const MapaCollection = ({navigation}: RoutListTypeProps) => {
+const MapaCollection = ({navigation , title = 'Recolección \n de medicamentos' }: RoutListTypeProps) => {
   const [location, setLocation] = useState(null);
   const {add} = useServices();
   const fechaHoraActual = new Date();
+
 
   return (
     <CustomScreen>
@@ -26,7 +27,7 @@ const MapaCollection = ({navigation}: RoutListTypeProps) => {
           }}
         />
         <View style={styles.footer}>
-          <Title {...{title: 'Recolección \n de medicamentos'}} />
+          <Title {...{title}} />
           <ActionBottom
             {...{
               action() {

@@ -1,8 +1,6 @@
 export const config = {
   http: {
-    requestUrl: __DEV__
-      ? 'https://6101-190-60-33-226.ngrok-free.app/'
-      : 'http://200.234.227.108:3000/',
+    requestUrl:"https://8c828f22-3d2d-44cb-b1e8-d4b9adbfb6b7.clouding.host/"
   },
 
   GOOGLE_MAPS_APIKEY: {

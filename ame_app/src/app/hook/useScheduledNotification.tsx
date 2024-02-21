@@ -10,12 +10,6 @@ import {changeDate} from '../util/Tiem';
 const useScheduledNotification = (notificationData: Reminder) => {
   const {date, medicamento, mensaje, originalTime, time} = notificationData;
 
-  /*  const timestamp = cambiarHoraAFecha(date, time);
-  console.log(convertirHoraAModo24(time));
- */
-
-  console.log(new Date(originalTime.time).getTime());
-
   async function displayNotification(title: string, body: string) {
     const channelId = await notifee.createChannel({
       id: 'default',
@@ -43,11 +37,7 @@ const useScheduledNotification = (notificationData: Reminder) => {
       name: 'Default Channel',
     });
 
-
-    console.log("agregada");
-    
-
-    const timestamp = new Date(date).getTime();
+    const timestamp = new Date(date).getTime() + 60000;
 
     const trigger: TimestampTrigger = {
       type: TriggerType.TIMESTAMP,
@@ -67,8 +57,6 @@ const useScheduledNotification = (notificationData: Reminder) => {
       trigger,
     );
 
-   
-    
     return triggerNotificationId;
   }
 

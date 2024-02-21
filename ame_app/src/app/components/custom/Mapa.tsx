@@ -2,64 +2,50 @@ import {StyleSheet, View, PermissionsAndroid, Alert} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import MapView, {Marker} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
+import MapboxGL, {
+  PointAnnotation,
+  UserLocation,
+  ShapeSource,
+  LineLayer,
+} from '@rnmapbox/maps';
 
 interface Props {
   onCurrenLocation?: (location: any) => void;
 }
 
+const APIKEY =
+  'pk.eyJ1IjoiZWxtYW5jaTIiLCJhIjoiY2xzcXdkNDN5MTZndDJpbnl2ODV3bG5qZiJ9.LS9W-35dTB5koz7wVcjD2g';
+MapboxGL.setAccessToken(APIKEY);
+
+MapboxGL.setTelemetryEnabled(false);
+Geolocation.setRNConfiguration({
+  skipPermissionRequests: false,
+  authorizationLevel: 'auto',
+});
+
 const Mapa = ({onCurrenLocation}: Props) => {
-  const [userLocation, setUserLocation] = useState({
-    latitude: 35.0116,
-    longitude: 135.7681,
+  const [coords, setCoords] = useState([3.4516, -76.5320]);
+
+
+  Geolocation.getCurrentPosition(info => {
+    const {longitude, latitude} = info.coords;
+    setCoords([longitude, latitude]);
   });
 
-  const requestLocationPermission = async () => {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      );
-      if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-        Alert.alert(
-          'Permiso denegado',
-          'La aplicación necesita permisos de ubicación.',
-        );
-      }
-    } catch (err) {
-      console.warn(err);
-    }
-  };
 
-  useEffect(() => {
-    const fetchUserLocation = async () => {
-      await requestLocationPermission();
-      Geolocation.getCurrentPosition(info => {
-        const {latitude, longitude} = info.coords;
-        setUserLocation({
-          latitude,
-          longitude,
-        });
-
-        onCurrenLocation && onCurrenLocation(userLocation);
-      });
-    };
-
-    fetchUserLocation();
-  }, []);
-
+  
   return (
     <View style={styles.container}>
-      {userLocation.latitude !== 35.0116 && (
-        <MapView
-          style={styles.map}
-          initialRegion={{
-            latitude: userLocation.latitude,
-            longitude: userLocation.longitude,
-            latitudeDelta: 0.005,
-            longitudeDelta: 0.005,
-          }}>
-          {userLocation && <Marker coordinate={userLocation} />}
-        </MapView>
-      )}
+      <MapboxGL.MapView style={styles.map}>
+        <MapboxGL.Camera
+          zoomLevel={22}
+          centerCoordinate={coords}
+          animationMode={'flyTo'}
+          animationDuration={1000}
+        />
+
+        <MapboxGL.UserLocation animated={true} androidRenderMode={'gps'} />
+      </MapboxGL.MapView>
     </View>
   );
 };

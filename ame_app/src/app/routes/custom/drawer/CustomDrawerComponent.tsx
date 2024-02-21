@@ -20,6 +20,7 @@ import {
   visitorDrawerLIst,
 } from '../../list/DrawerRoutelist';
 import {addTk} from '../../../redux/tokenSlice';
+import { UserData } from '../../../types/types';
 
 type iconProps = {
   color: string;
@@ -91,7 +92,7 @@ export const CustomDrawerComponent = (
 ) => {
   const stateDrawer = useDrawerStatus();
   const isOpen = stateDrawer === 'open';
-
+  const  {name }:UserData = useSelector((state:any) => state?.Info?.info)
   const stylesOpe = {width: isOpen ? dimensions.width - 30 : dimensions.width};
   return (
     <SafeAreaView style={styles.container}>
@@ -100,7 +101,7 @@ export const CustomDrawerComponent = (
           <UserIcon width={40} height={40} />
           <View>
             <Text style={[styles.text, styles.hola]}>Hola</Text>
-            <Text style={[styles.text, styles.name]}>marx</Text>
+            <Text style={[styles.text, styles.name]}>{name}</Text>
           </View>
         </View>
         {isOpen && <NotificationIcon />}

@@ -11,19 +11,17 @@ const useCreateReminder = (reminder?: Reminder) => {
     tk: {type},
   } = useSelector((state: any) => state);
 
-  
-
   const renderRute =
     type === user_roles.user
       ? 'user-add-reminder'
       : `visitor-add-reminder?id=${util.select_user_reminder}`;
 
-      console.log(renderRute);
+  console.log(renderRute);
   const {data, loading, error, postRequest} = usePost(renderRute, reminder);
 
   //console.log(select_user_reminder);
 
-  const addNewReminder = async (reminder?:Reminder) => {
+  const addNewReminder = async () => {
     try {
       if (reminder) {
         await postRequest();
