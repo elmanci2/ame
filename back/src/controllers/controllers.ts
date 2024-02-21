@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { generateOTP } from "./util/util";
-//import { sendSMS } from "../services/sms/sms";
+/* import { generateOTP } from "./util/util";
+import { sendSMS } from "../services/sms/sms"; */
 import { allQueryAsync, queryAsync } from "../db/util/util";
 import { user_db as db, data_db as data } from "../db/db";
 import { v4 as uuidv4 } from "uuid";
@@ -10,16 +10,16 @@ import { Reminder, VitalSigns } from "../types/types";
 import { Errors } from "../errors/error";
 
 export const otp_validate = async (req: Request, res: Response) => {
-  const otp = generateOTP();
-  //const { phone } = req.body;
+/*   const otp = generateOTP();
+  const { phone } = req.body;
   console.log(otp);
-  /* 
+  
   await sendSMS({
     to: phone,
     body: `su código de validación de ame es: ${otp}`,
-  }); */
+  });  */
   res.send({
-    otp,
+    otp:"0000",
   });
 };
 

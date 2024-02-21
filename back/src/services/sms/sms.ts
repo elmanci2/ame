@@ -13,7 +13,7 @@ interface SMSData {
 
 const twilioCredentials: TwilioCredentials = {
   accountSid: "ACb93a5469a5f19b266605a1c440244670",
-  authToken: "f96fb84d6248624e5c77b20aa079629b",
+  authToken: "b95c28ae6b94f6f6b38e7d21398d4303",
   twilioPhoneNumber: "+17658197039",
 };
 
