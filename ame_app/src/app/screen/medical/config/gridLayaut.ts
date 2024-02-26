@@ -33,3 +33,34 @@ export const VisitorGritMenu: GridItemType[] = [
     color,
   },
 ];
+
+export const DeliveryGritMenu: GridItemType[] = [
+  {
+    label: 'Turno',
+    route: 'Recordatorio',
+    icon: require('../assets/img/grid1.png'),
+    params: {
+      name: 'lola',
+    },
+
+    color,
+  },
+  {
+    label: 'Toma de servicio',
+    route: 'Servicios',
+    icon: require('../assets/img/grid1.png'),
+    color,
+  },
+  {
+    label: 'Mis servicios y pagos',
+    route: 'Signos',
+    icon: require('../assets/img/grid2.png'),
+    color,
+  },
+  {
+    label: 'Adherencia \n  Medica',
+    route: 'AdherenciaMedica',
+    icon: require('../assets/img/grid3.png'),
+    color,
+  },
+];

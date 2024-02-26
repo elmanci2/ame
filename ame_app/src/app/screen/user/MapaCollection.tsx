@@ -8,12 +8,42 @@ import ActionBottom from '../../components/custom/ActionBottom';
 import {Title} from '../../components/custom/Title';
 import useServices from '../../hook/services/useServices';
 import {RoutListTypeProps} from '../../types/types';
+import {useUploadFile} from '../../hook/http/useUploadFile';
 
-const MapaCollection = ({navigation , title = 'Recolección \n de medicamentos' }: RoutListTypeProps) => {
+const MapaCollection = ({
+  navigation,
+  title = 'Recolección \n de medicamentos',
+  route,
+}: RoutListTypeProps) => {
   const [location, setLocation] = useState(null);
   const {add} = useServices();
   const fechaHoraActual = new Date();
 
+  const {data} = route?.params;
+  const {Upload_file} = useUploadFile('add-service', data?.fileDate, {});
+  console.log(data);
+
+  const action = async () => {
+    try {
+      await Upload_file();
+      add({
+        id: JSON.stringify(Math.floor(Math.random() * 1000)),
+        location: JSON.stringify(location),
+        serviceId: '1',
+        type: 1,
+        date: {
+          fecha: fechaHoraActual.toISOString().split('T')[0], // Obtener solo la parte de la fecha en formato ISO
+          hora: fechaHoraActual.toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+          }), // Obtener la hora en formato 24 horas con minutos y segundos
+        },
+      });
+
+      //  return navigation.replace('home');
+    } catch (error) {}
+  };
 
   return (
     <CustomScreen>
@@ -30,24 +60,7 @@ const MapaCollection = ({navigation , title = 'Recolección \n de medicamentos' 
           <Title {...{title}} />
           <ActionBottom
             {...{
-              action() {
-                add({
-                  id: JSON.stringify(Math.floor(Math.random() * 1000)),
-                  location: JSON.stringify(location),
-                  serviceId: '1',
-                  type: 1,
-                  date: {
-                    fecha: fechaHoraActual.toISOString().split('T')[0], // Obtener solo la parte de la fecha en formato ISO
-                    hora: fechaHoraActual.toLocaleTimeString([], {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                      second: '2-digit',
-                    }), // Obtener la hora en formato 24 horas con minutos y segundos
-                  },
-                });
-
-                return navigation.replace('home');
-              },
+              action,
               text: 'Listo',
               containerStyles: {
                 justifyContent: 'center',

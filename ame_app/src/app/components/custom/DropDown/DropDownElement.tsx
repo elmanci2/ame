@@ -16,7 +16,7 @@ interface Props {
   placeholder?: string;
   conteContainerStyles?: ViewStyle;
   notStyles?: boolean;
-  blocked?:boolean
+  blocked?: boolean;
   select?: string;
 }
 
@@ -29,9 +29,8 @@ const DropDownElement = ({
   label,
   placeholder,
   conteContainerStyles,
-  blocked= false ,
+  blocked = false,
 }: Props) => {
-
   const navigation = useNavigation<any>();
   return (
     <View>

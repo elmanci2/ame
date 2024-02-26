@@ -14,6 +14,7 @@ const MedicationCollection = ({route, navigation}: RoutListTypeProps) => {
   const {select} = route.params;
   const [photo, setPhoto] = useState<undefined | string>();
   const [coPago, setCoPago] = useState(false);
+  const [fileDate, setFileDate] = useState();
   const [items] = useState([
     {
       'Tipo Administradora': 'EPS',
@@ -123,7 +124,10 @@ const MedicationCollection = ({route, navigation}: RoutListTypeProps) => {
         <MyText fontSize={17} fontWeight="600" color={colors.texto_ling}>
           Adjuntar formula médica
         </MyText>
-        <ImagePiker onChangeImage={uri => setPhoto(uri)} />
+        <ImagePiker
+          onChangeImage={uri => setPhoto(uri)}
+          resultDate={data => setFileDate(data)}
+        />
         <MyText
           fontSize={17}
           fontWeight="600"
@@ -171,7 +175,11 @@ const MedicationCollection = ({route, navigation}: RoutListTypeProps) => {
           <ActionBottom
             {...{
               action() {
-                navigation.navigate('MapaCollection');
+                navigation.navigate('MapaCollection', {
+                  data: {
+                    fileDate,
+                  },
+                });
                 return;
               },
               containerStyles: {

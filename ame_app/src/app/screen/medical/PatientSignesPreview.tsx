@@ -1,4 +1,4 @@
-import {View, Text} from 'react-native';
+import {View} from 'react-native';
 import React from 'react';
 import CustomScreen from '../../components/custom/CustomScreen';
 import Logo from '../../components/custom/Logo';
@@ -42,9 +42,10 @@ function MyTabs({id}: {id: string}) {
 }
 
 const PatientSignesPreview = ({route}: RoutListTypeProps) => {
-  const {
-    item: {name, id},
-  } = route.params;
+  const {item} = route.params ?? {};
+
+  const {name, id} = item ?? {};
+
   return (
     <CustomScreen>
       <Logo center />

@@ -57,8 +57,8 @@ const MyInput: React.FC<Props> = ({
       <TextInput
         value={value}
         {...textInputProps}
-        focusable={blocked}
-        onFocus={falseAction && falseAction}
+        focusable={true}
+        onFocus={!blocked ? falseAction && falseAction : () => null}
         placeholder={placeholder}
         style={[
           styles.input,

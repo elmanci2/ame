@@ -4,20 +4,14 @@ import {
   DrawerContentComponentProps,
   createDrawerNavigator,
 } from '@react-navigation/drawer';
-
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {colors, user_roles} from '../../constants/Constants';
 import {CustomDrawerComponent} from './custom/drawer/CustomDrawerComponent';
 import AnimatedScreen from '../animation/AnimatedScreen';
-
 import {
   createStackNavigator,
-  CardStyleInterpolators,
   StackNavigationOptions,
 } from '@react-navigation/stack';
-
 import BottomScreen from './custom/bottom/BottomScreen';
-import AddReminderScreen from '../screen/AddReminderScreen';
 import {
   DeliveryRouteLIst,
   LoginRouteLIst,
@@ -31,35 +25,32 @@ import {useSelector} from 'react-redux';
 import {use_Get_users_info} from '../hook/info/use_Get_users_info';
 
 // stack
-
 const StackConfig: StackNavigationOptions = {
   headerShown: false,
   gestureEnabled: true,
 };
 
-const modalScreeConfig: StackNavigationOptions = {
+/* const modalScreeConfig: StackNavigationOptions = {
   gestureDirection: 'vertical',
   cardStyleInterpolator: CardStyleInterpolators.forModalPresentationIOS,
 };
-
+ */
 const Stack = createStackNavigator();
 
 const MyStack = () => {
   const {tk, type} = useSelector((state: any) => state.tk);
 
-    use_Get_users_info(tk);
+  use_Get_users_info(tk);
 
-    
-
-
-  const renderList =
-    tk && type === user_roles.user
-      ? userRouteLIst
-      : type === user_roles.visitor
-      ? VisitorRouteLIst
-      : type === user_roles.delivery
-      ? DeliveryRouteLIst
-      : LoginRouteLIst;
+  const renderList = !tk
+    ? LoginRouteLIst
+    : tk && type === user_roles.user
+    ? userRouteLIst
+    : type === user_roles.visitor
+    ? VisitorRouteLIst
+    : type === user_roles.delivery
+    ? DeliveryRouteLIst
+    : LoginRouteLIst;
 
   return (
     <Stack.Navigator screenOptions={{...StackConfig}}>
@@ -98,14 +89,14 @@ const drawerConfig = {
 };
 
 const CustomDrawer = (props: DrawerContentComponentProps) => {
-  return;
+  return <CustomDrawerComponent {...props} />;
 };
 
 const MyDrawer = () => {
   return (
     <Drawer.Navigator
       screenOptions={{drawerType: 'slide', ...drawerConfig} as any}
-      drawerContent={Props => <CustomDrawerComponent {...Props} />}>
+      drawerContent={CustomDrawer}>
       <Drawer.Screen name="Home" component={BottomScreen} />
       <Drawer.Screen name="animated">{() => <AnimatedScreen />}</Drawer.Screen>
     </Drawer.Navigator>

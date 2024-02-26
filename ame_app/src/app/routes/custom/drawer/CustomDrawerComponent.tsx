@@ -20,7 +20,7 @@ import {
   visitorDrawerLIst,
 } from '../../list/DrawerRoutelist';
 import {addTk} from '../../../redux/tokenSlice';
-import { UserData } from '../../../types/types';
+import {UserData} from '../../../types/types';
 
 type iconProps = {
   color: string;
@@ -45,6 +45,7 @@ const CustomDrawerItem = (props: DrawerContentComponentProps) => {
   const dispatcher = useDispatch();
 
   const activeItem = props.state.routes[props.state.index].name;
+  console.log(type);
 
   const renderDrawerList =
     type === user_roles.user
@@ -86,13 +87,10 @@ const CustomDrawerItem = (props: DrawerContentComponentProps) => {
   );
 };
 
-export const CustomDrawerComponent = (
-  props: DrawerContentComponentProps,
-  {user_type}: {user_type: string},
-) => {
+export const CustomDrawerComponent = (props: DrawerContentComponentProps) => {
   const stateDrawer = useDrawerStatus();
   const isOpen = stateDrawer === 'open';
-  const  {name }:UserData = useSelector((state:any) => state?.Info?.info)
+  const {name}: UserData = useSelector((state: any) => state?.Info?.info);
   const stylesOpe = {width: isOpen ? dimensions.width - 30 : dimensions.width};
   return (
     <SafeAreaView style={styles.container}>

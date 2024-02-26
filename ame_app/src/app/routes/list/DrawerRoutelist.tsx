@@ -11,7 +11,7 @@ const globalDrawerLIst: DrawerListType[] = [
     action: 'UserProfile',
   },
 
-/*   {
+  /*   {
     label: 'Configuración',
     icon: 'settings-outline',
     action: 'Settings',
@@ -34,12 +34,7 @@ export const userDrawerLIst: DrawerListType[] = [
     icon: 'hand-right-outline',
     action: 'RequestService',
   },
-/* 
-  {
-    label: 'Acudientes',
-    icon: 'people-outline',
-    action: 'AcudientesList',
-  }, */
+
   ...globalDrawerLIst,
 ];
 
@@ -60,4 +55,3 @@ export const visitorDrawerLIst: DrawerListType[] = [
   },
   ...globalDrawerLIst,
 ];
-

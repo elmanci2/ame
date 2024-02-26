@@ -118,6 +118,7 @@ const Location = ({route, navigation}: RoutListTypeProps) => {
 
           <View style={{width: '90%', alignSelf: 'center', gap: 20}}>
             <DropDownElement
+              placeholder="País"
               select={'Countries'}
               value={countries?.label ?? ''}
               screen="register_location"
@@ -130,6 +131,7 @@ const Location = ({route, navigation}: RoutListTypeProps) => {
               }}
             />
             <DropDownElement
+              placeholder="Departamento / estado"
               blocked={
                 !Boolean(
                   countries !== '' &&
@@ -158,6 +160,7 @@ const Location = ({route, navigation}: RoutListTypeProps) => {
                     Object.keys(departmentData).length !== 0,
                 )
               }
+              placeholder="Ciudad"
               select="City"
               data={citiesData?.cities ?? []}
               value={cities?.label}
@@ -170,6 +173,7 @@ const Location = ({route, navigation}: RoutListTypeProps) => {
               }}
             />
             <MyInput
+              placeholder="Barrio / comuna"
               inputStyles={styles.input}
               style={styles.inputStyle}
               label="Barrio / comuna"
@@ -183,6 +187,7 @@ const Location = ({route, navigation}: RoutListTypeProps) => {
             />
 
             <MyInput
+              placeholder="Domicilio"
               inputStyles={styles.input}
               style={styles.inputStyle}
               label="Domicilio"

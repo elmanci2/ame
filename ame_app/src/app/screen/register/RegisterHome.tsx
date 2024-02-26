@@ -95,7 +95,6 @@ const RegisterHome = ({route, navigation}: RoutListTypeProps) => {
   return (
     <CustomScreen>
       <SafeAreaView style={styles.body}>
-      
         <ScrollView>
           <Logo style={styles.logo} />
           <View style={styles.textContainer}>
@@ -116,6 +115,7 @@ const RegisterHome = ({route, navigation}: RoutListTypeProps) => {
           </View>
           <View style={styles.inputContainer}>
             <MyInput
+              placeholder="nombre"
               inputStyles={styles.input}
               style={styles.inputStyle}
               label="Nombre"
@@ -123,6 +123,7 @@ const RegisterHome = ({route, navigation}: RoutListTypeProps) => {
               onChangeText={e => setInfo({...info, name: e})}
             />
             <MyInput
+              placeholder="apellido"
               inputStyles={styles.input}
               style={styles.inputStyle}
               label="Apellido"
@@ -130,6 +131,7 @@ const RegisterHome = ({route, navigation}: RoutListTypeProps) => {
               onChangeText={e => setInfo({...info, lasName: e})}
             />
             <MyInput
+              placeholder="Correo"
               error={!isValidEmail}
               inputStyles={styles.input}
               style={styles.inputStyle}

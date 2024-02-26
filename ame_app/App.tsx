@@ -11,9 +11,7 @@ import {store} from './src/app/redux/store';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {PersistGate} from 'redux-persist/integration/react';
 import {persistStore} from 'redux-persist';
-import { use_Get_users_info } from './src/app/hook/info/use_Get_users_info';
-
-
+import {use_Get_users_info} from './src/app/hook/info/use_Get_users_info';
 
 const queryClient = new QueryClient();
 function App(): JSX.Element {
@@ -36,13 +34,16 @@ function App(): JSX.Element {
   }, []);
   const flex = {flex: 1};
   const persistor = persistStore(store);
-  
+
   return (
     <PersistGate {...{persistor}}>
       <Provider {...{store}}>
         <GestureHandlerRootView style={flex}>
           <QueryClientProvider client={queryClient}>
-            <StatusBar backgroundColor={colors.primary} />
+            <StatusBar
+              backgroundColor={colors.primary}
+              barStyle="dark-content"
+            />
             <Routes />
           </QueryClientProvider>
         </GestureHandlerRootView>

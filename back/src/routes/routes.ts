@@ -22,6 +22,9 @@ const {
   getUserRemindersList,
   generateReminderUser,
   deleteReminderUser,
+  add_service,
+  get_service,
+  service_real_time,
 } = controllers;
 const rt = Router();
 
@@ -71,5 +74,11 @@ rt.get("/get-signes", authentication, get_signes);
 //GET
 // users
 rt.get("/user-info", authentication, getUserInfo);
+
+///POST
+//service
+rt.post("/add-service", /* authentication */ add_service);
+rt.post("/get-service", authentication, get_service);
+rt.post("/real-time-services", authentication, service_real_time);
 
 export default rt;

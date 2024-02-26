@@ -8,16 +8,21 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
 import {MotiView} from 'moti';
 
 // Objeto para mapear los íconos directamente
 const iconMap = {
-  Recordatorio:{component: AntDesign, name: 'clockcircleo'},
+  Recordatorio: {component: AntDesign, name: 'clockcircleo'},
   Inicio: {component: Feather, name: 'home'},
   Medicamentos: {component: Fontisto, name: 'pills'},
   Servicios: {component: Ionicons, name: 'notifications-outline'},
   Pagos: {component: FontAwesome, name: 'credit-card'},
   default: {component: MaterialIcons, name: 'timeline'},
+  pagos: {component: Ionicons, name: 'card-outline'},
+  Servicio: {component: MaterialCommunityIcons, name: 'truck-delivery-outline'},
+  activo: {component: MaterialCommunityIcons, name: 'map-marker-distance'},
 };
 
 // CustomIcon component para manejar íconos personalizados con colores dinámicos

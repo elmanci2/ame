@@ -11,6 +11,6 @@ export const config = {
   },
 
   jwt: {
-    secretKey:`${process.env.secretKey}`,
+    secretKey: `${process.env.secretKey}`,
   },
 };

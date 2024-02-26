@@ -1,5 +1,7 @@
-import GetService from '../../screen/GetService';
 import GetServices from '../../screen/GetServices';
+import ServiceActive from '../../screen/ServiceActive';
+import DeliveryHomeScreen from '../../screen/delivery/DeliveryHomeScreen';
+import MyPay from '../../screen/delivery/MyPay';
 import GenerateSignesVisitorScreen from '../../screen/medical/GenerateSignesVisitorScreen';
 import HomeVisitorScreen from '../../screen/medical/HomeVisitorScreen';
 import RecordatorioVisitorScreen from '../../screen/medical/RecordatorioVisitorScreen';
@@ -9,27 +11,31 @@ import UserRemindersScreen from '../../screen/user/UserRemindersScreen';
 import VitalSigne from '../../screen/user/VitalSigne';
 import {RoutListType} from '../../types/types';
 
-
 export const DeliveryRouteLIst: RoutListType[] = [
-  {components: HomeVisitorScreen, name: 'Inicio'},
+  {components: DeliveryHomeScreen, name: 'Inicio'},
   {
-    components: GenerateSignesVisitorScreen,
-    name: 'Signos',
+    components: MyPay,
+    name: 'pagos',
     config: {
       title: 'Generar signos vitales',
     },
   },
 
-  {components: GetServices, name: 'Servicios'},
   {
-    components: RecordatorioVisitorScreen,
-    name: 'Recordatorio',
+    components: GetServices,
+    name: 'Servicio',
+    config: {
+      title: 'Servicio',
+    },
+  },
+  {
+    components: ServiceActive,
+    name: 'activo',
     config: {
       title: 'Recordatorios',
     },
   },
 ];
-
 
 export const MedicalStack: RoutListType[] = [
   {components: HomeVisitorScreen, name: 'Inicio'},

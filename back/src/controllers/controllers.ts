@@ -10,7 +10,7 @@ import { Reminder, VitalSigns } from "../types/types";
 import { Errors } from "../errors/error";
 
 export const otp_validate = async (req: Request, res: Response) => {
-/*   const otp = generateOTP();
+  /*   const otp = generateOTP();
   const { phone } = req.body;
   console.log(otp);
   
@@ -19,7 +19,7 @@ export const otp_validate = async (req: Request, res: Response) => {
     body: `su código de validación de ame es: ${otp}`,
   });  */
   res.send({
-    otp:"0000",
+    otp: "0000",
   });
 };
 
@@ -49,8 +49,8 @@ export const validate_email = async (
     }
 
     return null; // No hay problemas de validación
-  } catch (error: any) {
-    console.error("Error de validación:", error.message);
+  } catch (error) {
+    console.error("Error de validación:", error);
     return "Error interno del servidor.";
   }
 };
@@ -97,10 +97,7 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
-export const email_number_validation = async (
-  req: Request | any,
-  res: Response | any
-) => {
+export const email_number_validation = async (req: Request, res: Response) => {
   const { email, phoneNumber } = req.body;
 
   const validationError = await validate_email(email, phoneNumber);
@@ -294,7 +291,7 @@ export const search_users = async (req: Request, res: Response) => {
 // vital sing
 
 export const addVitalSigns = async (
-  id: string | any,
+  id: string,
   vitalSigns: VitalSigns,
   by?: string
 ) => {
@@ -341,6 +338,7 @@ export const addVitalSigns = async (
 
 export const generateVitalSignsUser = async (req: Request, res: Response) => {
   try {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     const user = req["user"];
     const data = req.body;
@@ -369,6 +367,7 @@ export const generateVitalSignsVisitor = async (
   res: Response
 ) => {
   try {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     const user = req["user"];
     const data = req.body;
@@ -379,6 +378,8 @@ export const generateVitalSignsVisitor = async (
       return res.status(400).send("Usuario o datos no válidos");
     }
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
     const save = await addVitalSigns(id, data, user?.user_id);
 
     if (save) {
@@ -394,6 +395,7 @@ export const generateVitalSignsVisitor = async (
 
 export const get_history_signes = async (req: Request, res: Response) => {
   try {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     const user = req.user;
     if (!user) {
@@ -413,6 +415,7 @@ export const get_history_signes = async (req: Request, res: Response) => {
 
 export const get_signes = async (req: Request, res: Response) => {
   try {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     const user = req.user;
     if (!user) {
@@ -442,8 +445,9 @@ export const get_history_signes_visitor = async (
   res: Response
 ) => {
   try {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
-    const { id } = req.query;
+    const { id }: { id: string } = req.query;
     console.log(id);
 
     if (!id) {
@@ -464,7 +468,9 @@ export const get_history_signes_visitor = async (
 // reminder
 
 const addReminder = async (
-  id: string | any,
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-ignore
+  id: string,
   reminderData: Reminder,
   by?: string
 ) => {
@@ -551,6 +557,7 @@ const addReminder = async (
 
 export const generateReminderVisitor = async (req: Request, res: Response) => {
   try {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     const user = req["user"];
     const data = req.body;
@@ -559,7 +566,8 @@ export const generateReminderVisitor = async (req: Request, res: Response) => {
     if (!user.user_id || !data || !id) {
       return res.status(400).send("Usuario o datos no válidos");
     }
-
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
     const save = await addReminder(id, data, user?.user_id);
 
     if (save) {
@@ -575,6 +583,7 @@ export const generateReminderVisitor = async (req: Request, res: Response) => {
 
 export const generateReminderUser = async (req: Request, res: Response) => {
   try {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     const user = req["user"];
     const data = req.body;
@@ -621,12 +630,12 @@ export const deleteReminder = async (userId: number, reminderId: number) => {
 
 export const deleteReminderUser = async (req: Request, res: Response) => {
   try {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     const user = req["user"];
     const { id } = req.body; // Suponiendo que el ID del recordatorio se pasa como un parámetro en la URL
 
     console.log(id);
-    
 
     if (!user.user_id || !id) {
       return res.status(400).send("Usuario o ID de recordatorio no válido");
@@ -649,6 +658,7 @@ export const deleteReminderUser = async (req: Request, res: Response) => {
 
 export const getUserRemindersList = async (req: Request, res: Response) => {
   try {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     const user = req.user;
     if (!user) {
@@ -668,8 +678,9 @@ export const getUserRemindersList = async (req: Request, res: Response) => {
 
 export const getVisitorReminderList = async (req: Request, res: Response) => {
   try {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
-    const { id } = req.query;
+    const { id }: { id: string } = req.query;
 
     console.log(id);
 
@@ -691,6 +702,7 @@ export const getVisitorReminderList = async (req: Request, res: Response) => {
 
 export const getUserInfo = async (req: Request, res: Response) => {
   try {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     const user = req["user"];
 
@@ -701,5 +713,8 @@ export const getUserInfo = async (req: Request, res: Response) => {
     res.status(200).send(result);
 
     return result;
-  } catch (error) {}
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send(Errors.internalError);
+  }
 };

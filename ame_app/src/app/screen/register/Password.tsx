@@ -1,4 +1,4 @@
-import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {SafeAreaView, StyleSheet, View} from 'react-native';
 import React, {useState} from 'react';
 import CustomScreen from '../../components/custom/CustomScreen';
 import {ScrollView} from 'react-native-gesture-handler';
@@ -16,7 +16,7 @@ import {usePost} from '../../hook/http/usePost';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import {addTk, addType} from '../../redux/tokenSlice';
 
-const Password = ({navigation}: RoutListTypeProps) => {
+const Password = ({}: RoutListTypeProps) => {
   const [password, setPassword] = useState<any>({
     p1: null,
     p2: null,
@@ -31,7 +31,14 @@ const Password = ({navigation}: RoutListTypeProps) => {
     password.p2.length >= 8 &&
     password.p1 === password.p2;
 
-  const {data, error, loading, postRequest} = usePost('create-user', info);
+  const {data, loading, postRequest} = usePost('create-user', info);
+
+  const add_data = () => {
+    if (data?.tk) {
+      Dispatch(addTk(data?.tk));
+      Dispatch(addType(data?.type));
+    }
+  };
 
   const register = async () => {
     try {
@@ -42,6 +49,8 @@ const Password = ({navigation}: RoutListTypeProps) => {
         }),
       );
       await postRequest();
+
+      add_data();
     } catch (error: any) {
       Toast.show({
         type: 'error',
@@ -51,13 +60,9 @@ const Password = ({navigation}: RoutListTypeProps) => {
   };
 
   React.useEffect(() => {
-    if (data?.tk) {
-      Dispatch(addTk(data?.tk));
-      Dispatch(addType(data?.type));
-    }
+    add_data();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, loading]);
-
-  
 
   return (
     <CustomScreen>
@@ -91,6 +96,7 @@ const Password = ({navigation}: RoutListTypeProps) => {
           </View>
           <View style={{gap: 20}}>
             <MyInput
+              placeholder="Contraseña"
               onChangeText={text =>
                 setPassword({
                   ...password,
@@ -110,6 +116,7 @@ const Password = ({navigation}: RoutListTypeProps) => {
                   p2: text,
                 })
               }
+              placeholder="Contraseña"
               inputStyles={styles.input}
               style={styles.inputStyle}
               label="Repetir contraseña"

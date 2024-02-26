@@ -10,9 +10,10 @@ import {CloseBottom} from './CloseBottom';
 
 interface Props {
   onChangeImage?: (uri: string) => void;
+  resultDate?: (result: any) => void;
 }
 
-export const ImagePiker = memo(({onChangeImage}: Props) => {
+export const ImagePiker = memo(({onChangeImage, resultDate}: Props) => {
   const [showModal, setShowModal] = useState(false);
   const [photo, setPhoto] = useState<undefined | string>(undefined);
 
@@ -25,6 +26,7 @@ export const ImagePiker = memo(({onChangeImage}: Props) => {
     if (result?.assets) {
       setPhoto(result?.assets[0]?.uri);
       onChangeImage && onChangeImage(result?.assets[0]?.uri ?? 'NOT');
+      resultDate && resultDate(result);
     }
   };
 

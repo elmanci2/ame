@@ -104,6 +104,7 @@ const Document = ({route, navigation}: RoutListTypeProps) => {
               marginTop: 20,
             }}>
             <DropDownElement
+              placeholder="documento"
               screen="Document"
               value={select?.label ?? ''}
               data={data}

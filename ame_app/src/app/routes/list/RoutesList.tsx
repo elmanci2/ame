@@ -196,7 +196,7 @@ export const VisitorRouteLIst: RoutListType[] = [
   },
   ...globalRoutes,
 ];
-export const DeliveryRouteLIst: RoutListType[] = [];
+export const DeliveryRouteLIst: RoutListType[] = [...globalRoutes];
 
 export const LoginRouteLIst: RoutListType[] = [
   {name: 'onboarding', components: IntroductionAnimationScreen},

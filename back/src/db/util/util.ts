@@ -1,6 +1,6 @@
-import sqlite3 from "sqlite3";
+import sqlite3, { Database } from "sqlite3";
 
-export const createUserDb = (db: any) => {
+export const createUserDb = (db: Database) => {
   db.run(`
 CREATE TABLE IF NOT EXISTS usuarios (
   id INTEGER,
@@ -36,11 +36,10 @@ export function queryAsync(
   });
 }
 
-
 export function allQueryAsync(
   db: sqlite3.Database,
   sql: string,
-  params: any[]
+  params: string[]
 ): Promise<any> {
   return new Promise((resolve, reject) => {
     db.all(sql, params, (err, result) => {
@@ -52,7 +51,3 @@ export function allQueryAsync(
     });
   });
 }
-
-
-
-
