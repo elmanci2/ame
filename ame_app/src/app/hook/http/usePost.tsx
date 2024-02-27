@@ -36,6 +36,7 @@ export const usePost = (url: string, requestData: any) => {
       //  console.log('Post request successful:', responseData);
       setData(responseData);
       return responseData;
+      // eslint-disable-next-line no-catch-shadow, @typescript-eslint/no-shadow
     } catch (error: any) {
       // Manejar errores
       console.error('Error making post request:', error);

@@ -19,7 +19,13 @@ import {
   getVisitorReminderList,
   deleteReminderUser,
 } from "./controllers";
-import { add_service, get_service, service_real_time } from "./controllers2";
+import {
+  add_service,
+  get_service,
+  service_real_time,
+  get_active_service,
+  get_service_user,
+} from "./controllers2";
 import { generateOTP } from "./util/util";
 
 const controllers = {
@@ -45,6 +51,8 @@ const controllers = {
   add_service,
   get_service,
   service_real_time,
+  get_active_service,
+  get_service_user,
   util: {
     generateOTP,
   },

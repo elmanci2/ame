@@ -31,14 +31,7 @@ const Password = ({}: RoutListTypeProps) => {
     password.p2.length >= 8 &&
     password.p1 === password.p2;
 
-  const {data, loading, postRequest} = usePost('create-user', info);
-
-  const add_data = () => {
-    if (data?.tk) {
-      Dispatch(addTk(data?.tk));
-      Dispatch(addType(data?.type));
-    }
-  };
+  const {loading, postRequest} = usePost('create-user', info);
 
   const register = async () => {
     try {
@@ -48,9 +41,11 @@ const Password = ({}: RoutListTypeProps) => {
           type,
         }),
       );
-      await postRequest();
-
-      add_data();
+      const response = await postRequest();
+      if (response.tk) {
+        Dispatch(addTk(response?.tk));
+        Dispatch(addType(response?.type));
+      }
     } catch (error: any) {
       Toast.show({
         type: 'error',
@@ -58,11 +53,6 @@ const Password = ({}: RoutListTypeProps) => {
       });
     }
   };
-
-  React.useEffect(() => {
-    add_data();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, loading]);
 
   return (
     <CustomScreen>

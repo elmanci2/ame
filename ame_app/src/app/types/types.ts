@@ -49,11 +49,14 @@ interface ServiceDate {
 }
 
 export type Service = {
-  id: string;
-  location: any;
-  type: number;
-  serviceId: string;
-  date: ServiceDate;
+  Copago?: number;
+  eps?: any;
+  id?: string;
+  location?: any;
+  type?: number;
+  serviceId?: string;
+  date?: ServiceDate;
+  createdAt?: string;
 };
 
 export interface Register_AddressType {
@@ -81,9 +84,8 @@ export type patientsType = {
   name?: string;
   document?: string;
   edad?: number;
-  id?:string
+  id?: string;
 };
-
 
 export interface UserData {
   active: number;

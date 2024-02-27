@@ -17,10 +17,17 @@ import Feather from 'react-native-vector-icons/Feather';
 import DeleteModal from '../../components/custom/modal/DeleteModal';
 import useServices from '../../hook/services/useServices';
 import {use_Get_users_info} from '../../hook/info/use_Get_users_info';
+import {useFetch} from '../../hook/http/useFetch';
+import {convertirHora12h} from '../../util/Tiem';
 
 const UserHomeScreen = (props: any) => {
   const service: [] = useSelector((state: any) => state.service.service);
   use_Get_users_info('');
+
+  const {data, loading, error} = useFetch(
+    'get-active-user-services',
+    'get-active-user-services',
+  );
 
   const {remove} = useServices();
   const [showModal, setShowModal] = useState(false);
@@ -30,8 +37,8 @@ const UserHomeScreen = (props: any) => {
   return (
     <CustomScreen>
       <HederComponent {...props} />
-      <View style={[styles.styles, service.length < 1 && styles.service]}>
-        {service.length > 0 && (
+      <View style={[styles.styles, data.length < 1 && styles.service]}>
+        {data.length > 0 && !loading && (
           <TouchableOpacity
             activeOpacity={0.8}
             style={styles.serviceContainer}
@@ -46,7 +53,7 @@ const UserHomeScreen = (props: any) => {
               }}
             />
             <FlatList
-              data={[service[0]]}
+              data={data.slice(0, 1)}
               renderItem={({item}: {item: Service}) => (
                 <View style={styles.serviceContainerItem}>
                   <MyText fontSize={16} color={colors.texto_ling}>
@@ -55,7 +62,7 @@ const UserHomeScreen = (props: any) => {
                       : 'Organización Medicamentos'}
                   </MyText>
                   <MyText fontSize={14} color={colors.icon}>
-                    {item.date.hora}
+                    {convertirHora12h(item?.createdAt ?? '')}
                   </MyText>
                 </View>
               )}
@@ -95,7 +102,7 @@ const UserHomeScreen = (props: any) => {
           </View>
           <FlatList
             contentContainerStyle={{gap: 13}}
-            data={service}
+            data={data}
             renderItem={({item}: {item: Service}) => (
               <TouchableOpacity
                 style={styles.serviceContainerItem}
@@ -105,17 +112,17 @@ const UserHomeScreen = (props: any) => {
                 }}>
                 <View style={{gap: 10}}>
                   <MyText fontSize={16} color={colors.texto_ling}>
-                    {item.type === 1
+                    {item?.type === 1
                       ? 'Recolección de medicamentos'
                       : 'Organización Medicamentos'}
                   </MyText>
                   <MyText fontSize={14} color={colors.icon}>
-                    {item.date.hora}
+                    {convertirHora12h(item?.createdAt ?? '')}
                   </MyText>
                 </View>
                 <TouchableOpacity
                   onPress={() => {
-                    setSelectId(item.id);
+                    setSelectId(item?.id);
                     setShowModal2(true);
                   }}>
                   <Feather name="more-vertical" size={25} color={colors.icon} />

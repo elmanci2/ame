@@ -26,41 +26,49 @@ export const service_Model = {
     primaryKey: true,
     autoIncrement: true,
   },
-  user_id: {
+  Copago: {
     type: DataTypes.INTEGER,
+  },
+  eps: { type: DataTypes.STRING },
+  user_id: {
+    type: DataTypes.TEXT,
     allowNull: false,
   },
   get_service_id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.TEXT,
   },
   status: {
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
   },
   incurred: {
     type: DataTypes.BOOLEAN,
+    defaultValue: false,
   },
   canceled: {
     type: DataTypes.BOOLEAN,
+    defaultValue: false,
   },
   user_location: {
     type: DataTypes.STRING,
   },
   photo: {
-    type: DataTypes.BLOB,
+    type: DataTypes.STRING,
   },
   address: {
     type: DataTypes.STRING,
   },
   completed: {
     type: DataTypes.BOOLEAN,
+    defaultValue: false,
   },
   pressing: {
     type: DataTypes.BOOLEAN,
   },
   type: {
     type: DataTypes.INTEGER,
+    defaultValue: 1,
   },
   location: {
-    type: DataTypes.TEXT,
+    type: DataTypes.STRING,
   },
 };

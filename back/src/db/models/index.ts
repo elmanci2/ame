@@ -11,14 +11,20 @@ const sequelize = new Sequelize({
 export const User = sequelize.define("user", User_Model);
 export const Service = sequelize.define("service", service_Model);
 
-(async () => {
+/* (async () => {
+  await sequelize.sync({ force: true });
+})();
+ */
+const start_dev = async () => {
   try {
-    
+    // Autenticar la conexión a la base de datos
+
     await sequelize.authenticate();
+
     console.log("Connection has been established successfully.");
   } catch (error) {
     console.error("Unable to connect to the database:", error);
   }
-})();
+};
 
-export default sequelize;
+export default start_dev;

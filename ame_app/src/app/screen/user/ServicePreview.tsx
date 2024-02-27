@@ -6,12 +6,15 @@ import {RoutListTypeProps, Service} from '../../types/types';
 import {Title} from '../../components/custom/Title';
 import {MyText} from '../../components/custom/MyText';
 import {colors} from '../../../constants/Constants';
+import {convertirHora12h, obtenerFecha} from '../../util/Tiem';
 
 const ServicePreview = ({route}: RoutListTypeProps) => {
   const {service}: {service: Service} = route?.params;
-  const {type, location, date, id} = service;
+  const {type, location, date, id, createdAt, status} = service;
   const title =
     type === 1 ? 'Recolección de medicamentos' : 'Organización Medicamentos';
+
+  console.log();
 
   return (
     <CustomScreen>
@@ -26,16 +29,21 @@ const ServicePreview = ({route}: RoutListTypeProps) => {
           }}
         />
 
-        <View>
+        <View style={styles.containerItem}>
           <View style={styles.View_1}>
-            <MyText fontSize={15} fontWeight="500" color={colors.secundario}>
-              No asignado
+            <MyText
+              fontSize={15}
+              fontWeight="500"
+              color={
+                status === 0 ? colors.secundario : 'rgba(0, 255, 17, 0.43)'
+              }>
+              {status === 0 ? 'No asignado' : 'Asignado'}
             </MyText>
             <MyText fontSize={15} fontWeight="300">
-              {date.hora}
+              {convertirHora12h(createdAt ?? '')}
             </MyText>
             <MyText fontSize={15} fontWeight="300">
-              {date.fecha}
+              {obtenerFecha(createdAt ?? '')}
             </MyText>
           </View>
           {type === 1 ? (
@@ -54,5 +62,9 @@ const ServicePreview = ({route}: RoutListTypeProps) => {
 export default ServicePreview;
 
 const styles = StyleSheet.create({
-  View_1: {flexDirection: 'row', justifyContent: 'space-evenly'},
+  View_1: {flexDirection: 'row', justifyContent: 'space-between'},
+  containerItem: {
+    gap: 20,
+    paddingHorizontal: 15,
+  },
 });

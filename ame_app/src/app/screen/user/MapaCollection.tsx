@@ -4,44 +4,31 @@ import CustomScreen from '../../components/custom/CustomScreen';
 import {DowIndicator} from '../../components/custom/DowIndicator';
 import Mapa from '../../components/custom/Mapa';
 import {colors} from '../../../constants/Constants';
-import ActionBottom from '../../components/custom/ActionBottom';
 import {Title} from '../../components/custom/Title';
-import useServices from '../../hook/services/useServices';
-import {RoutListTypeProps} from '../../types/types';
 import {useUploadFile} from '../../hook/http/useUploadFile';
+import NextBottomRegister from '../register/components/NextBottomRegister';
+import {useSelector} from 'react-redux';
 
 const MapaCollection = ({
   navigation,
   title = 'Recolección \n de medicamentos',
   route,
-}: RoutListTypeProps) => {
+}: any) => {
   const [location, setLocation] = useState(null);
-  const {add} = useServices();
-  const fechaHoraActual = new Date();
+
+  const service = useSelector((state: any) => state?.service?.service);
 
   const {data} = route?.params;
-  const {Upload_file} = useUploadFile('add-service', data?.fileDate, {});
-  console.log(data);
+  const {Upload_file} = useUploadFile('add-service', data?.fileDate, {
+    user_location: JSON.stringify(location),
+    Copago: service[0]?.Copago ?? 0,
+    eps: service[0]?.eps?.value ?? null,
+  });
 
   const action = async () => {
     try {
       await Upload_file();
-      add({
-        id: JSON.stringify(Math.floor(Math.random() * 1000)),
-        location: JSON.stringify(location),
-        serviceId: '1',
-        type: 1,
-        date: {
-          fecha: fechaHoraActual.toISOString().split('T')[0], // Obtener solo la parte de la fecha en formato ISO
-          hora: fechaHoraActual.toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-          }), // Obtener la hora en formato 24 horas con minutos y segundos
-        },
-      });
-
-      //  return navigation.replace('home');
+      return navigation.replace('home');
     } catch (error) {}
   };
 
@@ -58,16 +45,11 @@ const MapaCollection = ({
         />
         <View style={styles.footer}>
           <Title {...{title}} />
-          <ActionBottom
+          <NextBottomRegister
             {...{
               action,
               text: 'Listo',
-              containerStyles: {
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: '90%',
-                alignSelf: 'center',
-              },
+              active: true,
             }}
           />
         </View>

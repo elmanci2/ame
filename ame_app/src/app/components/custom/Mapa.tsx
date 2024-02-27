@@ -24,16 +24,17 @@ Geolocation.setRNConfiguration({
 });
 
 const Mapa = ({onCurrenLocation}: Props) => {
-  const [coords, setCoords] = useState([3.4516, -76.5320]);
+  const [coords, setCoords] = useState([3.4516, -76.532]);
 
+  useEffect(() => {
+    Geolocation.getCurrentPosition(info => {
+      const {longitude, latitude} = info.coords;
+      setCoords([longitude, latitude]);
 
-  Geolocation.getCurrentPosition(info => {
-    const {longitude, latitude} = info.coords;
-    setCoords([longitude, latitude]);
-  });
-
-
-  
+      onCurrenLocation && onCurrenLocation([longitude, latitude]);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <View style={styles.container}>
       <MapboxGL.MapView style={styles.map}>

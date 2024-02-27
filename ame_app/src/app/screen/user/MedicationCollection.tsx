@@ -9,8 +9,10 @@ import {RoutListTypeProps} from '../../types/types';
 import YesNoComponent from '../../components/custom/YesNoComponent';
 import MyInput from '../../components/custom/MyInput';
 import ActionBottom from '../../components/custom/ActionBottom';
+import useServices from '../../hook/services/useServices';
 
 const MedicationCollection = ({route, navigation}: RoutListTypeProps) => {
+  const {add} = useServices();
   const {select} = route.params;
   const [photo, setPhoto] = useState<undefined | string>();
   const [coPago, setCoPago] = useState(false);
@@ -118,6 +120,8 @@ const MedicationCollection = ({route, navigation}: RoutListTypeProps) => {
     },
   ]);
 
+  const [coPagoValue, setCoPagoValue] = useState(0);
+
   return (
     <CustomScreen>
       <ScrollView style={styles.container}>
@@ -167,6 +171,9 @@ const MedicationCollection = ({route, navigation}: RoutListTypeProps) => {
               textInputProps: {
                 keyboardType: 'numeric',
               },
+              onChangeText(e) {
+                setCoPagoValue(Number(e));
+              },
             }}
           />
         )}
@@ -175,6 +182,10 @@ const MedicationCollection = ({route, navigation}: RoutListTypeProps) => {
           <ActionBottom
             {...{
               action() {
+                add({
+                  Copago: coPagoValue,
+                  eps: select,
+                });
                 navigation.navigate('MapaCollection', {
                   data: {
                     fileDate,

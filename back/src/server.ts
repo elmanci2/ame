@@ -6,18 +6,13 @@ import rt from "./routes/routes";
 import morgan from "morgan";
 import adm_rt from "./admin/routes/admin.Routes";
 import fileUpload from "express-fileupload";
-
+import bodyParser from "body-parser";
 import { admin_permission_validate } from "./admin/middlewares/admin.middlewares";
-import sequelize from "./db/models";
-
-(async () => {
-  await sequelize.sync();
-})();
 
 const app = express();
 
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(bodyParser.json());
 app.use(
   fileUpload({
     useTempFiles: true,
