@@ -8,13 +8,13 @@ const sequelize = new Sequelize({
   storage,
 });
 
-export const User = sequelize.define("user", User_Model);
+export const Users = sequelize.define("users", User_Model);
 export const Service = sequelize.define("service", service_Model);
 
-/* (async () => {
+/*  (async () => {
   await sequelize.sync({ force: true });
-})();
- */
+})();  */
+
 const start_dev = async () => {
   try {
     // Autenticar la conexión a la base de datos

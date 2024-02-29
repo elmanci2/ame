@@ -8,14 +8,15 @@ import ImagePreviewContainer from '../components/custom/ImagePreviewContainer';
 import {MyText} from '../components/custom/MyText';
 import {colors} from '../../constants/Constants';
 import NextBottomRegister from './register/components/NextBottomRegister';
+import {config} from '../../config/config';
 
 const GetServicePreview = ({route, navigation}: RoutListTypeProps) => {
   const {data} = route?.params ?? {};
-  const {firstName, lastName, photo} = data ?? {};
+  const {user_name, photo, location} = data ?? {};
 
   const next = () => {
-    navigation?.navigate(/* 'ServiceRutePreview' */ "Takin", {
-      location: {latitude: data?.latitude, longitude: data?.longitude},
+    navigation?.navigate('ServiceRutePreview', {
+      location: JSON.stringify(location),
     });
   };
 
@@ -23,8 +24,8 @@ const GetServicePreview = ({route, navigation}: RoutListTypeProps) => {
     <CustomScreen>
       <DowIndicator />
       <View style={{marginTop: 15}}>
-        <Title {...{title: `${firstName} ${lastName}`}} />
-        <ImagePreviewContainer {...{photo}} />
+        <Title {...{title: `${user_name}`}} />
+        <ImagePreviewContainer {...{photo: config.aws.publicUrl + photo}} />
 
         <View style={styles?.textContainer}>
           <View style={{gap: 10}}>
@@ -32,7 +33,7 @@ const GetServicePreview = ({route, navigation}: RoutListTypeProps) => {
               Eps : {data?.eps}
             </MyText>
             <MyText color={colors?.texto_bold} fontWeight="500" fontSize={15}>
-              Copago : {data?.copago}
+              Copago : {data?.Copago}
             </MyText>
           </View>
 

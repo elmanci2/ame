@@ -69,6 +69,7 @@ const RegisterHome = ({route, navigation}: RoutListTypeProps) => {
         await postRequest();
         Dispatch(addInfo(info));
         navigation.navigate('otp_phone', {phone: info.phoneNumber});
+        // eslint-disable-next-line no-catch-shadow, @typescript-eslint/no-shadow
       } catch (error: any) {
         //@ts-ignore
         Toast.show({

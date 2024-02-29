@@ -74,7 +74,7 @@ export interface INitial_Register {
   date: string;
   documentType: string;
   document: string;
-  password: '';
+  password: string;
 }
 
 export interface RegisterType extends Register_AddressType, INitial_Register {}

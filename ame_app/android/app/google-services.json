@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "222087746278",
+    "project_id": "ame-app-fe31e",
+    "storage_bucket": "ame-app-fe31e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:222087746278:android:db242901ff326f21136127",
+        "android_client_info": {
+          "package_name": "com.ame_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXgYsDg1KAQR6-_UnHulC775w1Dg-4tA0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

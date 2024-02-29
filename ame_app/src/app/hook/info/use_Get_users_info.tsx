@@ -1,15 +1,21 @@
-import React from 'react';
+/* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable no-catch-shadow */
+import {useEffect, useState} from 'react';
 import {useFetch} from '../http/useFetch';
 import {useDispatch} from 'react-redux';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
-import { addInfoUser } from '../../redux/InfoSlice';
+import {addInfoUser} from '../../redux/InfoSlice';
+import NetInfo from '@react-native-community/netinfo';
 
-export const use_Get_users_info = (tk:any) => {
-  const {data, error, loading} = useFetch('user-info', 'user-info');
+export const use_Get_users_info = () => {
+  const [isConnected, setIsConnected] = useState(false);
   const dispatcher = useDispatch();
-  React.useEffect(() => {
+
+  const {data, loading} = useFetch('user-info', 'user-info');
+
+  const getUserDate = async () => {
     try {
-      if (!loading && data) {
+      if (!loading && data && isConnected) {
         dispatcher(addInfoUser(data));
       }
     } catch (error) {
@@ -18,7 +24,19 @@ export const use_Get_users_info = (tk:any) => {
         text2: 'Error al obtener tu información',
       });
     }
-  }, [loading, data , tk]);
+  };
+
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      setIsConnected(state?.isConnected ?? true);
+    });
+    getUserDate();
+    return () => {
+      unsubscribe();
+    };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return {data};
 };

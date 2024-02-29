@@ -18,6 +18,8 @@ export const User_Model = {
   verified: { type: DataTypes.INTEGER, defaultValue: 0 },
   active: { type: DataTypes.INTEGER, defaultValue: 1 },
   photo: DataTypes.TEXT,
+  firebase_tk: DataTypes.STRING,
+  type: DataTypes.TEXT,
 };
 
 export const service_Model = {
@@ -71,4 +73,9 @@ export const service_Model = {
   location: {
     type: DataTypes.STRING,
   },
+
+  user_name: DataTypes.STRING,
+  user_photo: DataTypes.STRING,
+  get_name: DataTypes.STRING,
+  get_photo: DataTypes.STRING,
 };

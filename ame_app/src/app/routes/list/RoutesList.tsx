@@ -27,7 +27,6 @@ import ValidatePhone from '../../screen/register/ValidatePhone';
 import Location from '../../screen/register/Location';
 import Document from '../../screen/register/Document';
 import Password from '../../screen/register/Password';
-import UserHomeScreen from '../../screen/user/UserHomeScreen';
 import AddReminderScreen from '../../screen/AddReminderScreen';
 import Login from '../../screen/register/auth/Login';
 import SearchUsers from '../../screen/medical/SearchUsers';
@@ -38,6 +37,7 @@ import GetServicePreview from '../../screen/GetServicePreview';
 import ServiceRutePreview from '../../screen/ServiceRutePreview';
 import Takin from '../../screen/Trakin';
 import UserReminderList from '../../screen/medical/UserReminderList';
+import ServiceActivePreview from '../../screen/user/ServiceActivePreview';
 
 const header = {
   header: MiniHeader,
@@ -72,6 +72,12 @@ export const globalRoutes: RoutListType[] = [
     name: 'AboutTheApp',
     components: AboutTheApp,
     config: {...modalScreeConfig, title: 'Ame App'},
+  },
+
+  {
+    name: 'ServiceActivePreview',
+    components: ServiceActivePreview,
+    config: {...modalScreeConfig},
   },
 
   {

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Image,
   StyleSheet,
@@ -35,7 +36,7 @@ const MapaServiceCard = ({data}: any) => {
   };
 
   const go = () => {
-    navigation.navigate('GetServicePreview' , {data});
+    navigation.navigate('GetServicePreview', {data});
   };
 
   React.useEffect(() => {
@@ -54,7 +55,7 @@ const MapaServiceCard = ({data}: any) => {
             <MyText
               fontWeight="500"
               color={colors.texto_bold}
-              fontSize={20}>{`${data?.firstName} ${data?.lastName}`}</MyText>
+              fontSize={20}>{`${data?.user_name}`}</MyText>
 
             <MyText color={colors.texto_bold} fontSize={13}>
               {data?.address}
@@ -69,7 +70,9 @@ const MapaServiceCard = ({data}: any) => {
               fontSize={13}
               fontWeight="500"
               style={styles.text_type}>
-              Recolección de medicamentos
+              {data?.type === 1
+                ? 'Recolección de medicamentos'
+                : 'Organización de medicamentos'}
             </MyText>
           </View>
 

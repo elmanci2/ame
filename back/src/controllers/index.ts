@@ -25,6 +25,7 @@ import {
   service_real_time,
   get_active_service,
   get_service_user,
+  cancel_service,
 } from "./controllers2";
 import { generateOTP } from "./util/util";
 
@@ -53,6 +54,7 @@ const controllers = {
   service_real_time,
   get_active_service,
   get_service_user,
+  cancel_service,
   util: {
     generateOTP,
   },

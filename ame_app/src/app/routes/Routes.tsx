@@ -1,5 +1,5 @@
 import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
+import {LinkingOptions, NavigationContainer} from '@react-navigation/native';
 import {
   DrawerContentComponentProps,
   createDrawerNavigator,
@@ -40,17 +40,18 @@ const Stack = createStackNavigator();
 const MyStack = () => {
   const {tk, type} = useSelector((state: any) => state.tk);
 
-  use_Get_users_info(tk);
+  use_Get_users_info();
 
-  const renderList = !tk
-    ? LoginRouteLIst
-    : tk && type === user_roles.user
-    ? userRouteLIst
-    : type === user_roles.visitor
-    ? VisitorRouteLIst
-    : type === user_roles.delivery
-    ? DeliveryRouteLIst
-    : LoginRouteLIst;
+  const renderList =
+    !tk || !type
+      ? LoginRouteLIst
+      : tk && type === user_roles.user
+      ? userRouteLIst
+      : type === user_roles.visitor
+      ? VisitorRouteLIst
+      : type === user_roles.delivery
+      ? DeliveryRouteLIst
+      : LoginRouteLIst;
 
   return (
     <Stack.Navigator screenOptions={{...StackConfig}}>
@@ -103,9 +104,13 @@ const MyDrawer = () => {
   );
 };
 
-const Routes = () => {
+const Routes = ({
+  linking,
+}: {
+  linking: LinkingOptions<ReactNavigation.RootParamList> | undefined;
+}) => {
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking}>
       <MyStack />
       <Toast config={toastConfig} />
     </NavigationContainer>

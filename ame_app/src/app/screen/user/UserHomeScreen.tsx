@@ -15,24 +15,30 @@ import BottomModal from '../../components/custom/BottomModal';
 import {CloseBottom} from '../../components/custom/CloseBottom';
 import Feather from 'react-native-vector-icons/Feather';
 import DeleteModal from '../../components/custom/modal/DeleteModal';
-import useServices from '../../hook/services/useServices';
 import {use_Get_users_info} from '../../hook/info/use_Get_users_info';
 import {useFetch} from '../../hook/http/useFetch';
 import {convertirHora12h} from '../../util/Tiem';
+import {usePost} from '../../hook/http/usePost';
 
 const UserHomeScreen = (props: any) => {
-  const service: [] = useSelector((state: any) => state.service.service);
   use_Get_users_info('');
 
-  const {data, loading, error} = useFetch(
+  const {data, loading, refetch} = useFetch(
     'get-active-user-services',
     'get-active-user-services',
   );
 
-  const {remove} = useServices();
   const [showModal, setShowModal] = useState(false);
   const [showModal2, setShowModal2] = useState(false);
   const [selectId, setSelectId] = useState('0');
+
+  const {
+    data: dataPost,
+    postRequest,
+    loading: loadingPost,
+  } = usePost('cancel-service-user', {
+    id: selectId,
+  });
 
   return (
     <CustomScreen>
@@ -136,8 +142,10 @@ const UserHomeScreen = (props: any) => {
       <BottomModal {...{setShowModal: setShowModal2, showModal: showModal2}}>
         <DeleteModal
           {...{
-            remove() {
-              remove(selectId);
+            remove: async () => {
+              await postRequest();
+              await refetch();
+              setShowModal2(false);
             },
             cancel() {
               setShowModal2(false);

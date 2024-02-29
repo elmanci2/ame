@@ -26,7 +26,6 @@ const CustomBottom = (props: BottomTabBarProps) => {
 
 const MyBottom = () => {
   const {tk, type} = useSelector((state: any) => state.tk);
-  console.log(type);
 
   const renderList =
     tk && type === user_roles.user

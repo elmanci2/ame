@@ -27,6 +27,7 @@ const {
   service_real_time,
   get_active_service,
   get_service_user,
+  cancel_service,
 } = controllers;
 const rt = Router();
 
@@ -82,14 +83,13 @@ rt.get("/user-info", authentication, getUserInfo);
 ///POST
 //service
 
-
 rt.post("/add-service", authentication, add_service);
 rt.post("/get-service", authentication, get_service);
 rt.post("/real-time-services", authentication, service_real_time);
+rt.post("/cancel-service-user", cancel_service);
 
 // Get
 rt.get("/get-active-services", get_active_service);
 rt.get("/get-active-user-services", authentication, get_service_user);
-
 
 export default rt;

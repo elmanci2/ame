@@ -1,5 +1,5 @@
 import {SafeAreaView, StyleSheet, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import CustomScreen from '../../components/custom/CustomScreen';
 import {ScrollView} from 'react-native-gesture-handler';
 import {MyText} from '../../components/custom/MyText';
@@ -15,15 +15,21 @@ import {useDispatch, useSelector} from 'react-redux';
 import {usePost} from '../../hook/http/usePost';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import {addTk, addType} from '../../redux/tokenSlice';
+import {get_object_storage} from '../../../function/saveStorage';
 
 const Password = ({}: RoutListTypeProps) => {
   const [password, setPassword] = useState<any>({
     p1: null,
     p2: null,
   });
+
+  const [fcmToken, setFcmToken] = useState<any>(null);
   const {type, info} = useSelector((state: any) => state.register);
   const Dispatch = useDispatch();
 
+  useEffect(() => {
+    get_object_storage('fcm:tk').then(result => setFcmToken(result));
+  }, []);
   const next =
     password.p1 &&
     password.p2 &&
@@ -31,20 +37,23 @@ const Password = ({}: RoutListTypeProps) => {
     password.p2.length >= 8 &&
     password.p1 === password.p2;
 
-  const {loading, postRequest} = usePost('create-user', info);
+  const {loading, postRequest} = usePost('create-user', {
+    ...info,
+    firebase_tk: fcmToken?.token,
+    type: type,
+  });
 
   const register = async () => {
     try {
       Dispatch(
         addInfo({
           password: password.p1,
-          type,
         }),
       );
       const response = await postRequest();
       if (response.tk) {
         Dispatch(addTk(response?.tk));
-        Dispatch(addType(response?.type));
+        Dispatch(addType(type));
       }
     } catch (error: any) {
       Toast.show({

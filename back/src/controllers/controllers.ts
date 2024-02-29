@@ -8,6 +8,7 @@ import { BcryptDecrypt, BcryptEncrypt } from "./util/bcrypt";
 import { generate_token } from "./util/token";
 import { Reminder, VitalSigns } from "../types/types";
 import { Errors } from "../errors/error";
+import { Users } from "../db/models";
 
 export const otp_validate = async (req: Request, res: Response) => {
   /*   const otp = generateOTP();
@@ -28,21 +29,17 @@ export const validate_email = async (
   phoneNumber: string
 ): Promise<string | null> => {
   try {
-    const existingUserWithEmail = await queryAsync(
-      db,
-      "SELECT email FROM usuarios WHERE email = ?",
-      [email.toLowerCase()]
-    );
+    const existingUserWithEmail = await Users.findOne({
+      where: { email: email.toLowerCase() },
+    });
 
     if (existingUserWithEmail) {
       return "Correo electrónico ya registrado.";
     }
 
-    const existingUserWithPhone = await queryAsync(
-      db,
-      "SELECT phoneNumber FROM usuarios WHERE phoneNumber = ?",
-      [phoneNumber]
-    );
+    const existingUserWithPhone = await Users.findOne({
+      where: { phoneNumber },
+    });
 
     if (existingUserWithPhone) {
       return "Número de teléfono ya registrado.";
@@ -112,13 +109,6 @@ export const email_number_validation = async (req: Request, res: Response) => {
 export const create_new_user = async (req: Request, res: Response) => {
   try {
     const nuevoUsuario = req.body;
-    const insertQuery = `
-  INSERT INTO usuarios (
-      id_usuario, address, barrio, city, country, date, document,
-      documentType, email, lastName, name, password, phoneNumber,
-      state, verified, active, photo, type
-  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
-`;
 
     const user_id = uuidv4();
 
@@ -131,52 +121,41 @@ export const create_new_user = async (req: Request, res: Response) => {
       return res.status(400).send(validationError);
     }
 
-    // Determinar qué campo de apellido usar (lastName o lasName)
-    const apellido =
-      nuevoUsuario.lastName !== null
-        ? nuevoUsuario.lastName
-        : nuevoUsuario.lasName;
-
     const password = await BcryptEncrypt(nuevoUsuario.password);
 
-    // Parámetros para la consulta SQL
-    const params = [
-      user_id, // Agregando el ID generado
-      nuevoUsuario.address,
-      nuevoUsuario.barrio,
-      nuevoUsuario.city,
-      nuevoUsuario.country,
-      nuevoUsuario.date,
-      nuevoUsuario.document,
-      nuevoUsuario.documentType,
-      nuevoUsuario.email.toLowerCase(),
-      apellido || null,
-      nuevoUsuario.name,
+    const newUser = await Users.create({
+      id_usuario: user_id,
+      address: nuevoUsuario.address,
+      barrio: nuevoUsuario.barrio,
+      city: nuevoUsuario.city,
+      country: nuevoUsuario.country,
+      date: nuevoUsuario.date,
+      document: nuevoUsuario.document,
+      documentType: nuevoUsuario.documentType,
+      email: nuevoUsuario.email.toLowerCase(),
+      lastName: nuevoUsuario.lasName,
+      name: nuevoUsuario.name,
       password,
-      nuevoUsuario.phoneNumber,
-      nuevoUsuario.state,
-      nuevoUsuario.verified || 0,
-      nuevoUsuario.active || 1,
-      nuevoUsuario.photo || null,
-      nuevoUsuario.type,
-    ];
+      phoneNumber: nuevoUsuario.phoneNumber,
+      state: nuevoUsuario.state,
+      verified: nuevoUsuario.verified || 0,
+      active: nuevoUsuario.active || 1,
+      photo: nuevoUsuario.photo || null,
+      type: nuevoUsuario.type,
+      firebase_tk: nuevoUsuario.firebase_tk,
+    });
 
-    console.log(params);
+    console.log(nuevoUsuario);
+
+    const result = await newUser.save();
 
     const tk = await generate_token(user_id);
 
-    if (!tk) res.status(500).send("internal server  error");
+    if (!tk || !result) res.status(500).send(Errors.internalError);
 
-    db.run(insertQuery, params, (err) => {
-      if (err) {
-        console.error("Error al insertar el nuevo usuario:", err.message);
-        res.status(500).json("Error al insertar el nuevo usuario.");
-      } else {
-        res.status(201).json({ type: nuevoUsuario.type, ...tk });
-      }
-    });
+    res.status(201).json({ type: nuevoUsuario.type, ...tk });
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).send(Errors.internalError);
   }
 };
 

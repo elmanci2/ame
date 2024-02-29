@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Dimensions, StyleSheet, View } from 'react-native';
+import React, {useState, useEffect, useRef} from 'react';
+import {Dimensions, StyleSheet, View} from 'react-native';
 import MapboxGL, {
   PointAnnotation,
   UserLocation,
@@ -8,6 +8,8 @@ import MapboxGL, {
 } from '@rnmapbox/maps';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Geolocation from '@react-native-community/geolocation';
+import LoadScreen from './LoadScreen';
+//import MapboxNavigation from '../components/mapBox';
 
 const metersToLongitudeDegrees = (meters, latitude) => {
   const earthEquatorialRadius = 6378137; // in meters
@@ -15,7 +17,7 @@ const metersToLongitudeDegrees = (meters, latitude) => {
   return meters * degreesPerPixel * Math.cos((latitude * Math.PI) / 180);
 };
 
-const metersToLatitudeDegrees = (meters) => {
+const metersToLatitudeDegrees = meters => {
   const metersPerDegreeLat =
     111132.92 - 559.82 * Math.cos(2 * meters) + 1.175 * Math.cos(4 * meters);
   return meters / metersPerDegreeLat;
@@ -38,7 +40,7 @@ const Takin = () => {
   const [routeCorners, setRouteCorners] = useState([]);
   const userLocationRef = useRef(null);
 
-  function calculateRouteCorners(routeCoordinates) {
+  function calculateRouteCorners(routeCoordinates: any) {
     const corners = [];
     for (let i = 1; i < routeCoordinates.length - 1; i++) {
       const prevCoord = routeCoordinates[i - 1];
@@ -48,11 +50,11 @@ const Takin = () => {
       // Calcular el ángulo entre los segmentos de la ruta
       const anglePrev = Math.atan2(
         currCoord[1] - prevCoord[1],
-        currCoord[0] - prevCoord[0]
+        currCoord[0] - prevCoord[0],
       );
       const angleNext = Math.atan2(
         nextCoord[1] - currCoord[1],
-        nextCoord[0] - currCoord[0]
+        nextCoord[0] - currCoord[0],
       );
       const angleDiff = Math.abs(angleNext - anglePrev);
 
@@ -66,7 +68,7 @@ const Takin = () => {
 
   useEffect(() => {
     Geolocation.getCurrentPosition(info => {
-      const { longitude, latitude } = info.coords;
+      const {longitude, latitude} = info.coords;
       setCoords([longitude, latitude]);
 
       // Calculate destination coordinates 200 meters away
@@ -82,16 +84,18 @@ const Takin = () => {
 
   useEffect(() => {
     if (userLocationRef.current) {
-      const { longitude, latitude } = userLocationRef.current;
+      const {longitude, latitude} = userLocationRef.current;
       const index = routeCorners.findIndex(
-        corner => corner[0] === longitude && corner[1] === latitude
+        corner => corner[0] === longitude && corner[1] === latitude,
       );
       if (index !== -1 && index < routeCorners.length - 1) {
         // Rotar el mapa hacia la siguiente esquina
         const nextCorner = routeCorners[index + 1];
-        MapboxGL.animateCamera({
+        MapboxGL.Camera.setCamera({
           centerCoordinate: nextCorner,
-          duration: 1000,
+          animationDuration: 1000,
+          animationMode: 'flyTo',
+          followUserMode: 'normal',
         });
       }
     }
@@ -110,7 +114,7 @@ const Takin = () => {
         location =>
           setCoords([location.coords.longitude, location.coords.latitude]),
         err => console.log(err),
-        { enableHighAccuracy: true }
+        {enableHighAccuracy: true},
       );
     } catch (error) {
       console.error('Error getting location', error);
@@ -124,7 +128,7 @@ const Takin = () => {
     }
   }, [selectedRouteProfile]);
 
-  function makeRouterFeature(coordinates:any) {
+  function makeRouterFeature(coordinates: any) {
     return {
       type: 'FeatureCollection',
       features: [
@@ -138,6 +142,10 @@ const Takin = () => {
         },
       ],
     };
+  }
+
+  if (loading) {
+    return <LoadScreen />;
   }
 
   async function createRouterLine(coords, routeProfile) {
@@ -171,11 +179,11 @@ const Takin = () => {
   }
 
   return (
-    <View style={{ flex: 1 }}>
-      <View style={{ flex: 1 }}>
+    <View style={{flex: 1}}>
+      <View style={{flex: 1}}>
         <MapboxGL.MapView style={styles.map}>
           <MapboxGL.Camera
-            zoomLevel={22}
+            zoomLevel={18}
             centerCoordinate={coords}
             animationMode={'flyTo'}
             animationDuration={1000}
@@ -194,8 +202,7 @@ const Takin = () => {
           {destinationCoords && (
             <MapboxGL.PointAnnotation
               id="destinationPoint"
-              coordinate={destinationCoords}
-            >
+              coordinate={destinationCoords}>
               <View style={styles.destinationIcon}>
                 <Ionicons name="storefront" size={24} color="#E1710A" />
               </View>
@@ -290,6 +297,7 @@ const styles = StyleSheet.create({
     height: 120,
     borderRadius: 50,
     borderWidth: 1,
+    borderColor: 'red',
   },
 });
 

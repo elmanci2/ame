@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
 import { Errors } from "../errors/error";
-import { Service } from "../db/models";
+import { Service, Users } from "../db/models";
 import { user_roles } from "./util/Roles";
 import { upload_file } from "../services/aws/storage";
 import generateUniqueId from "generate-unique-id";
@@ -22,20 +23,27 @@ export const add_service = async (req: Request, res: Response) => {
   if (!user_id || !data) {
     return res.status(400).send(Errors.internalError);
   }
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-ignore
-  const file_path = req.files?.photo?.tempFilePath;
-
-  const photo = `${service_id}.jpg`;
-
-  const service_data = {
-    ...data,
-    user_id,
-    status: service_state.espera,
-    photo,
-  };
 
   try {
+    const user_info: any = await Users.findOne({ where: { id_usuario: user_id } });
+
+    console.log(user_info);
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
+    const file_path = req.files?.photo?.tempFilePath;
+
+    const photo = `${service_id}.jpg`;
+
+    const service_data = {
+      ...data,
+      user_id,
+      status: service_state.espera,
+      photo,
+      user_name: user_info?.lastName,
+      user_photo: user_info?.photo,
+    };
+
     await upload_file(file_path, photo);
     const service = await Service.create({ ...service_data });
     const save = await service.save();
@@ -50,15 +58,11 @@ export const add_service = async (req: Request, res: Response) => {
 };
 
 export const get_active_service = async (req: Request, res: Response) => {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-ignore
-  /*   const { user_id } = req.user;
-   */
-  /*   console.log(user_id); */
   try {
-    const services = await Service.findAll();
-    console.log(services);
-
+    const services = await Service.findAll({ where: { status: 0 } });
+    if (!services) {
+      return res.status(404).send("Servicio no encontrado");
+    }
     return res.status(200).json(services);
   } catch (error) {
     return res.status(500).send(Errors.internalError);
@@ -71,11 +75,45 @@ export const get_service_user = async (req: Request, res: Response) => {
   const { user_id } = req.user;
 
   try {
-    const services = await Service.findAll({ where: { user_id } });
-    console.log(services);
+    const services = await Service.findAll({
+      where: { user_id, canceled: false },
+    });
+    if (!services) {
+      return res.status(404).send("Servicio no encontrado");
+    }
 
     return res.status(200).json(services);
   } catch (error) {
+    return res.status(500).send(Errors.internalError);
+  }
+};
+
+export const cancel_service = async (req: Request, res: Response) => {
+  const { id } = req.body;
+  if (!id) {
+    return res.status(400).send(Errors.unauthorized);
+  }
+
+  try {
+    // Buscar el servicio por su ID
+    const service = await Service.findOne({ where: { id } });
+
+    // Verificar si el servicio fue encontrado
+    if (!service) {
+      return res.status(404).send("Servicio no encontrado");
+    }
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
+    service.canceled = true;
+
+    // Guardar los cambios en la base de datos
+    await service.save();
+
+    // Enviar una respuesta exitosa
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    console.error("Error al cancelar el servicio:", error);
     return res.status(500).send(Errors.internalError);
   }
 };
