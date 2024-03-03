@@ -28,6 +28,7 @@ const {
   get_active_service,
   get_service_user,
   cancel_service,
+  get_service_info,
 } = controllers;
 const rt = Router();
 
@@ -91,5 +92,6 @@ rt.post("/cancel-service-user", cancel_service);
 // Get
 rt.get("/get-active-services", get_active_service);
 rt.get("/get-active-user-services", authentication, get_service_user);
+rt.get("/get-service-info", get_service_info);
 
 export default rt;

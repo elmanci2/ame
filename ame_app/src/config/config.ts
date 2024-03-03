@@ -1,7 +1,7 @@
 export const config = {
   http: {
     requestUrl: __DEV__
-      ? 'https://b307-190-60-33-226.ngrok-free.app/'
+      ? 'https://4eaa-181-78-84-190.ngrok-free.app/'
       : 'https://8c828f22-3d2d-44cb-b1e8-d4b9adbfb6b7.clouding.host/',
   },
 

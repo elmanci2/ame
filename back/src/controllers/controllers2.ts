@@ -25,7 +25,9 @@ export const add_service = async (req: Request, res: Response) => {
   }
 
   try {
-    const user_info: any = await Users.findOne({ where: { id_usuario: user_id } });
+    const user_info: any = await Users.findOne({
+      where: { id_usuario: user_id },
+    });
 
     console.log(user_info);
 
@@ -154,6 +156,22 @@ export const get_service = async (req: Request, res: Response) => {
     return res.status(200).json({ service });
   } catch (error) {
     console.error("Error al obtener el servicio:", error);
+    return res.status(500).send(Errors.internalError);
+  }
+};
+
+export const get_service_info = async (req: Request, res: Response) => {
+  const { id } = req.query;
+  if (!id) {
+    return res.status(400).send(Errors.unauthorized);
+  }
+  try {
+    const service = await Service.findOne({ where: { id } });
+    if (!service) {
+      return res.status(404).send("Servicio no encontrado");
+    }
+    res.status(200).json(service);
+  } catch (error) {
     return res.status(500).send(Errors.internalError);
   }
 };

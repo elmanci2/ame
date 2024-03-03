@@ -4,18 +4,46 @@ import CustomScreen from '../components/custom/CustomScreen';
 import MapView, {Marker} from 'react-native-maps';
 import MapaServiceCard from '../components/custom/MapaServiceCard';
 import {useFetch} from '../hook/http/useFetch';
+import LoadScreen from './LoadScreen';
+import Geolocation from '@react-native-community/geolocation';
 
 const GetServices = () => {
-  const {data, error, loading, refetch} = useFetch(
-    'get-active-services',
-    'get-active-services',
-  );
+  const {
+    data,
+    error,
+    loading: dataLading,
+    refetch,
+  } = useFetch('get-active-services', 'get-active-services');
 
   const [selectedUser, setSelectedUser] = useState();
+  const [currentLocation, setCurrentLocation] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   const handleMarkerPress = (point: any) => {
     setSelectedUser(point);
   };
+
+  useEffect(() => {
+    //@ts-ignore
+    Geolocation.getCurrentPosition((info: any) => {
+      const {longitude, latitude}: any = info.coords;
+      //@ts-ignore
+      setCurrentLocation({
+        longitude,
+        latitude,
+      });
+      //@ts-ignore
+      setLoading(false);
+    });
+  }, []);
+
+  useEffect(() => {
+    handleMarkerPress(data[0]);
+  }, [data, dataLading]);
+
+  if (loading || dataLading) {
+    return <LoadScreen />;
+  }
 
   return (
     <CustomScreen>
@@ -23,15 +51,12 @@ const GetServices = () => {
         <MapView
           style={styles.map}
           initialRegion={{
-            latitude: 40.7128,
-            longitude: -74.006,
-            latitudeDelta: 0.1,
-            longitudeDelta: 0.1,
+            ...currentLocation,
+            latitudeDelta: 0.03,
+            longitudeDelta: 0.03,
           }}>
-          {data.map((point, index) => {
+          {data.map((point: any, index) => {
             const location = JSON.parse(point?.user_location);
-
-            console.log(location);
 
             return (
               <Marker
@@ -47,7 +72,7 @@ const GetServices = () => {
         </MapView>
 
         <View>
-          <MapaServiceCard data={selectedUser} />
+          {data?.length > 0 && <MapaServiceCard data={selectedUser} />}
         </View>
       </View>
     </CustomScreen>

@@ -16,7 +16,7 @@ const GetServicePreview = ({route, navigation}: RoutListTypeProps) => {
 
   const next = () => {
     navigation?.navigate('ServiceRutePreview', {
-      location: JSON.stringify(location),
+      service: data,
     });
   };
 

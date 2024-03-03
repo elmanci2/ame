@@ -38,6 +38,7 @@ import ServiceRutePreview from '../../screen/ServiceRutePreview';
 import Takin from '../../screen/Trakin';
 import UserReminderList from '../../screen/medical/UserReminderList';
 import ServiceActivePreview from '../../screen/user/ServiceActivePreview';
+import ActiveServicesPreview from '../../screen/ActiveServicesPreview';
 
 const header = {
   header: MiniHeader,
@@ -61,6 +62,12 @@ export const globalRoutes: RoutListType[] = [
     config: {
       ...modalScreeConfig,
     },
+  },
+
+  {
+    name: 'ActiveServicesPreview',
+    components: ActiveServicesPreview,
+    config: {...modalScreeConfig, title: 'Service active'},
   },
   {
     name: 'GenerateVitalSigns',
