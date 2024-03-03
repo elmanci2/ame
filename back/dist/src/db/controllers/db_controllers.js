@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createUser = void 0;
+exports.createVitalSing = exports.createUser = void 0;
 const db_1 = require("../db");
 function createUser(userData) {
     // Validar que todos los campos obligatorios estén presentes
@@ -82,3 +82,6 @@ function createUser(userData) {
     });
 }
 exports.createUser = createUser;
+function createVitalSing() {
+}
+exports.createVitalSing = createVitalSing;
