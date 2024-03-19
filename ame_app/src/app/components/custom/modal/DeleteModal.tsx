@@ -1,5 +1,11 @@
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React from 'react';
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import React, {useState} from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {CloseBottom} from '../CloseBottom';
 import {colors} from '../../../../constants/Constants';
@@ -9,11 +15,18 @@ import {GlobalStyle} from '../../../styles/styles';
 type Props = {
   title: string;
   message: string;
-  remove: () => void;
+  remove: () => Promise<void>;
   cancel: () => void;
+  loading: boolean;
 };
 
-const DeleteModal = ({message, remove, title, cancel}: Props) => {
+const DeleteModal = ({message, remove, title, cancel, loading}: Props) => {
+  if (loading) {
+    <View style={styles.load}>
+      <ActivityIndicator size={30} color={colors.tertiary} />
+    </View>;
+  }
+
   return (
     <View style={[GlobalStyle.gap]}>
       <View style={styles.modalHeader}>
@@ -42,7 +55,7 @@ const DeleteModal = ({message, remove, title, cancel}: Props) => {
           <Text style={styles.btnTextModal}>Cancelar</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => remove()}
+          onPress={remove}
           style={[styles.btnModal, styles.betAcepa]}>
           <Text style={[styles.btnTextModal, styles.removeTextColorBtn]}>
             Remover
@@ -120,4 +133,6 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     padding: 4,
   },
+
+  load: {flex: 1},
 });

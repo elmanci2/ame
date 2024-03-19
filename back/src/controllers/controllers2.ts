@@ -1,19 +1,19 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
 import { Errors } from "../errors/error";
 import { Service, Users } from "../db/models";
-import { user_roles } from "./util/Roles";
 import { upload_file } from "../services/aws/storage";
 import generateUniqueId from "generate-unique-id";
 import { service_state } from "./util/util";
+import { sendNotification } from "../services/firebase/fcm";
+import { user_roles } from "./util/Roles";
 
-export const add_service = async (req: Request, res: Response) => {
+const add_service = async (req: Request, res: Response) => {
   const data = req.body;
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
   const { user_id } = req.user;
-
-  console.log(data);
 
   const service_id = generateUniqueId({
     length: 100,
@@ -29,7 +29,24 @@ export const add_service = async (req: Request, res: Response) => {
       where: { id_usuario: user_id },
     });
 
-    console.log(user_info);
+    console.log(data?.type);
+
+    if (data?.type === 2) {
+      const service_data = {
+        ...data,
+        user_id,
+        status: service_state.espera,
+        user_name: user_info?.lastName,
+        user_photo: user_info?.photo,
+      };
+
+      const service = await Service.create({ ...service_data });
+      const save = await service.save();
+
+      if (save) {
+        return res.status(200).json({ success: true });
+      }
+    }
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
@@ -59,9 +76,31 @@ export const add_service = async (req: Request, res: Response) => {
   }
 };
 
-export const get_active_service = async (req: Request, res: Response) => {
+const get_active_service = async (req: Request, res: Response) => {
+  //@ts-ignore
+  const { user_id } = req.user;
   try {
-    const services = await Service.findAll({ where: { status: 0 } });
+    const user = await Users.findOne({
+      where: {
+        id_usuario: user_id,
+      },
+    });
+
+    if (!user) {
+      return res.status(401).send(Errors.unauthorized);
+    }
+    //@ts-ignore
+    const server_type = user.type === user_roles.delivery ? 1 : 2;
+
+    const services = await Service.findAll({
+      where: {
+        status: 0,
+        canceled: false,
+        incurred: false,
+        type: server_type,
+        completed: false,
+      },
+    });
     if (!services) {
       return res.status(404).send("Servicio no encontrado");
     }
@@ -71,26 +110,45 @@ export const get_active_service = async (req: Request, res: Response) => {
   }
 };
 
-export const get_service_user = async (req: Request, res: Response) => {
+const get_service_user = async (req: Request, res: Response) => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
   const { user_id } = req.user;
 
   try {
     const services = await Service.findAll({
-      where: { user_id, canceled: false },
+      where: { user_id, canceled: false, completed: false },
     });
-    if (!services) {
-      return res.status(404).send("Servicio no encontrado");
+
+    if (!services || services.length === 0) {
+      return res.status(201).json([]);
     }
 
-    return res.status(200).json(services);
+    // Crear un array de promesas para las operaciones asincrónicas
+    const promises = services.map(async (service: any) => {
+      if (service?.incurred) {
+        const user: any = await Users.findOne({
+          where: {
+            id_usuario: service?.get_service_id,
+          },
+        });
+
+        if (user) {
+          service.get_phone = user?.phoneNumber;
+          service.get_age = user?.date;
+        }
+      }
+      return service;
+    });
+    const updatedServices = await Promise.all(promises);
+
+    return res.status(200).json(updatedServices);
   } catch (error) {
     return res.status(500).send(Errors.internalError);
   }
 };
 
-export const cancel_service = async (req: Request, res: Response) => {
+const cancel_service = async (req: Request, res: Response) => {
   const { id } = req.body;
   if (!id) {
     return res.status(400).send(Errors.unauthorized);
@@ -120,29 +178,96 @@ export const cancel_service = async (req: Request, res: Response) => {
   }
 };
 
-// get service
-export const get_service = async (req: Request, res: Response) => {
+const confirme_Service = async (req: Request, res: Response) => {
+  const { id, start, observation } = req.body;
+  if (!id) {
+    return res.status(400).send(Errors.unauthorized);
+  }
+
   try {
-    const id = req.query.id;
+    // Buscar el servicio por su ID
+    const service = await Service.findOne({ where: { id } });
+
+    // Verificar si el servicio fue encontrado
+    if (!service) {
+      return res.status(404).send("Servicio no encontrado");
+    }
+
+    //@ts-ignore
+    service.completed = true;
+    //@ts-ignore
+    service.start = start;
+    //@ts-ignore
+    service.observation = observation ?? "";
+
+    // Guardar los cambios en la base de datos
+    await service.save();
+
+    // Enviar una respuesta exitosa
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    console.error("Error al cancelar el servicio:", error);
+    return res.status(500).send(Errors.internalError);
+  }
+};
+
+const confirme_Service_delivery_adn_medica = async (
+  req: Request,
+  res: Response
+) => {
+  const { id } = req.body;
+  if (!id) {
+    return res.status(400).send(Errors.unauthorized);
+  }
+
+  try {
+    // Buscar el servicio por su ID
+    const service = await Service.findOne({ where: { id } });
+
+    // Verificar si el servicio fue encontrado
+    if (!service) {
+      return res.status(404).send("Servicio no encontrado");
+    }
+    //@ts-ignore
+    service.incurred = false;
+    await service.save();
+
+    // Enviar una respuesta exitosa
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    console.error("Error al cancelar el servicio:", error);
+    return res.status(500).send(Errors.internalError);
+  }
+};
+
+// get service
+const get_service = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.body;
     const location = req.body;
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
-    const { user_id, type } = req.user;
+    const { user_id } = req.user;
 
-    if (!id || user_id || type) {
+    if (!id) {
       return res.status(400).send(Errors.unauthorized);
     }
     // Busca el servicio por su ID
-    const service = await Service.findOne({ where: { id } });
+    const service: any = await Service.findOne({ where: { id } });
 
     if (!service) {
       return res.status(404).send("Servicio no encontrado");
     }
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //@ts-ignore
-    service.type = type === user_roles.delivery ? 1 : 2;
+    const user: any = await Users.findOne({
+      where: { id_usuario: service?.user_id },
+    });
+
+    const get: any = await Users.findOne({
+      where: { id_usuario: user_id },
+    });
+
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     service.get_service_id = user_id;
@@ -151,7 +276,21 @@ export const get_service = async (req: Request, res: Response) => {
     //@ts-ignore
     service.location = JSON.stringify(location);
 
+    service.get_name = get.name;
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
+    service.incurred = true;
+
     await service.save();
+
+    console.log(service);
+
+    await sendNotification({
+      title: "servicio activo",
+      body: `${service?.user_name} tu servicio fue tomado`,
+      to: user?.firebase_tk,
+    });
 
     return res.status(200).json({ service });
   } catch (error) {
@@ -160,7 +299,7 @@ export const get_service = async (req: Request, res: Response) => {
   }
 };
 
-export const get_service_info = async (req: Request, res: Response) => {
+const get_service_info = async (req: Request, res: Response) => {
   const { id } = req.query;
   if (!id) {
     return res.status(400).send(Errors.unauthorized);
@@ -176,7 +315,7 @@ export const get_service_info = async (req: Request, res: Response) => {
   }
 };
 
-export const service_real_time = async (req: Request, res: Response) => {
+const service_real_time = async (req: Request, res: Response) => {
   const { location, id } = req.body;
   try {
     const service = await Service.findOne({ where: { id } });
@@ -193,4 +332,46 @@ export const service_real_time = async (req: Request, res: Response) => {
   } catch (error) {
     return res.status(500).send(Errors.internalError);
   }
+};
+
+const get_active_service_delivery_and_medical = async (
+  req: Request,
+  res: Response
+) => {
+  //@ts-ignore
+  const { user_id } = req.user;
+
+  try {
+    const service: any = await Service.findOne({
+      where: {
+        get_service_id: user_id,
+        completed: false,
+        incurred: true,
+        canceled: false,
+      },
+      order: [["createdAt", "DESC"]], // Ordenar por fecha de creación en orden descendente
+    });
+
+    if (service) {
+      res.status(200).json(service);
+    } else {
+      res.status(200).json([]);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal server error");
+  }
+};
+
+export {
+  add_service,
+  get_service,
+  service_real_time,
+  get_active_service,
+  get_service_user,
+  cancel_service,
+  get_service_info,
+  confirme_Service_delivery_adn_medica,
+  get_active_service_delivery_and_medical,
+  confirme_Service,
 };

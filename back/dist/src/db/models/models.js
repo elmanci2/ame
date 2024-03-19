@@ -65,13 +65,24 @@ exports.service_Model = {
         defaultValue: false,
     },
     pressing: {
-        type: sequelize_1.DataTypes.BOOLEAN,
+        type: sequelize_1.DataTypes.STRING,
     },
     type: {
         type: sequelize_1.DataTypes.INTEGER,
         defaultValue: 1,
     },
     location: {
+        type: sequelize_1.DataTypes.STRING,
+    },
+    reclamation: {
+        type: sequelize_1.DataTypes.BOOLEAN,
+        default: false,
+    },
+    start: {
+        type: sequelize_1.DataTypes.INTEGER,
+        default: 0,
+    },
+    observation: {
         type: sequelize_1.DataTypes.STRING,
     },
     user_name: sequelize_1.DataTypes.STRING,

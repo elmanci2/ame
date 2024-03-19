@@ -12,13 +12,56 @@ import {config} from '../../config/config';
 
 const GetServicePreview = ({route, navigation}: RoutListTypeProps) => {
   const {data} = route?.params ?? {};
-  const {user_name, photo, location} = data ?? {};
+  const {user_name, photo, incurred} = data ?? {};
 
   const next = () => {
     navigation?.navigate('ServiceRutePreview', {
       service: data,
     });
   };
+
+  console.log(data);
+
+  if (data?.type === 2) {
+    return (
+      <CustomScreen>
+        <DowIndicator />
+        <View
+          style={{
+            marginTop: 15,
+            justifyContent: 'space-between',
+            height: '90%',
+          }}>
+          <Title {...{title: `${user_name}`}} />
+
+          <View>
+            <View style={styles?.textContainer}>
+              <View style={{gap: 10}}>
+                <MyText
+                  color={colors?.texto_bold}
+                  fontWeight="500"
+                  fontSize={15}>
+                  {data?.time}
+                </MyText>
+                <MyText color="rgb(77, 160, 47)" fontWeight="500" fontSize={20}>
+                  {incurred === false ? 'active' : 'inactive'}
+                </MyText>
+              </View>
+            </View>
+            <NextBottomRegister {...{action: next, active: true}} />
+            <NextBottomRegister
+              {...{
+                text: 'Cerrar',
+                action: () => navigation.goBack(),
+                active: true,
+                color: colors.secundario,
+              }}
+            />
+          </View>
+        </View>
+      </CustomScreen>
+    );
+  }
 
   return (
     <CustomScreen>

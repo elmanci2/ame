@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserInfo = exports.getVisitorReminderList = exports.getUserRemindersList = exports.deleteReminderUser = exports.deleteReminder = exports.generateReminderUser = exports.generateReminderVisitor = exports.get_history_signes_visitor = exports.get_signes = exports.get_history_signes = exports.generateVitalSignsVisitor = exports.generateVitalSignsUser = exports.addVitalSigns = exports.search_users = exports.get_document_type = exports.get_cities = exports.get_state = exports.get_countries = exports.create_new_user = exports.email_number_validation = exports.login = exports.validate_email = exports.otp_validate = void 0;
+exports.get_history_signes = exports.deleteReminderUser = exports.getVisitorReminderList = exports.getUserRemindersList = exports.generateReminderUser = exports.generateReminderVisitor = exports.get_signes = exports.getUserInfo = exports.get_history_signes_visitor = exports.search_users = exports.generateVitalSignsVisitor = exports.generateVitalSignsUser = exports.login = exports.get_document_type = exports.get_cities = exports.get_state = exports.get_countries = exports.create_new_user = exports.email_number_validation = exports.otp_validate = void 0;
 /* import { generateOTP } from "./util/util";
 import { sendSMS } from "../services/sms/sms"; */
 const util_1 = require("../db/util/util");
@@ -19,6 +19,7 @@ const bcrypt_1 = require("./util/bcrypt");
 const token_1 = require("./util/token");
 const error_1 = require("../errors/error");
 const models_1 = require("../db/models");
+const sequelize_1 = require("sequelize");
 const otp_validate = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     /*   const otp = generateOTP();
     const { phone } = req.body;
@@ -54,14 +55,13 @@ const validate_email = (email, phoneNumber) => __awaiter(void 0, void 0, void 0,
         return "Error interno del servidor.";
     }
 });
-exports.validate_email = validate_email;
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email, password } = req.body;
         if (!email || !password) {
             return res.status(400).send("Campos 'email' y 'password' son requeridos");
         }
-        const selectQuery = "SELECT email, password , type , id_usuario FROM usuarios WHERE email = ?";
+        const selectQuery = "SELECT email, password , type , id_usuario FROM users WHERE email = ?";
         const search_user = yield (0, util_1.queryAsync)(db_1.user_db, selectQuery, [
             email.toLowerCase(),
         ]);
@@ -92,7 +92,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.login = login;
 const email_number_validation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, phoneNumber } = req.body;
-    const validationError = yield (0, exports.validate_email)(email, phoneNumber);
+    const validationError = yield validate_email(email, phoneNumber);
     if (validationError) {
         return res.status(400).send(validationError);
     }
@@ -103,7 +103,7 @@ const create_new_user = (req, res) => __awaiter(void 0, void 0, void 0, function
     try {
         const nuevoUsuario = req.body;
         const user_id = (0, uuid_1.v4)();
-        const validationError = yield (0, exports.validate_email)(nuevoUsuario === null || nuevoUsuario === void 0 ? void 0 : nuevoUsuario.email, nuevoUsuario === null || nuevoUsuario === void 0 ? void 0 : nuevoUsuario.phoneNumber);
+        const validationError = yield validate_email(nuevoUsuario === null || nuevoUsuario === void 0 ? void 0 : nuevoUsuario.email, nuevoUsuario === null || nuevoUsuario === void 0 ? void 0 : nuevoUsuario.phoneNumber);
         if (validationError) {
             return res.status(400).send(validationError);
         }
@@ -218,25 +218,25 @@ exports.get_document_type = get_document_type;
 const search_users = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const searchTerm = req.query.term;
-        if (!searchTerm) {
-            return res
-                .status(400)
-                .json({ error: "Se requiere un término de búsqueda" });
-        }
-        const searchQuery = `
-      SELECT *
-      FROM usuarios
-      WHERE (name LIKE ? OR lastName LIKE ?) AND type = 'Usuario';
-    `;
-        const params = [`%${searchTerm}%`, `%${searchTerm}%`];
-        // Ejecuta la consulta en la base de datos
-        db_1.user_db.all(searchQuery, params, (err, rows) => {
-            if (err) {
-                console.error("Error al buscar usuarios:", err.message);
-                return res.status(500).json({ error: "Error al buscar usuarios." });
-            }
-            res.status(200).json(rows); // Devuelve los resultados de la búsqueda
+        /*     if (!searchTerm) {
+          return res
+            .status(400)
+            .json({ error: "Se requiere un término de búsqueda" });
+        } */
+        const users = yield models_1.Users.findAll({
+            where: {
+                [sequelize_1.Op.and]: [
+                    {
+                        [sequelize_1.Op.or]: [
+                            { name: { [sequelize_1.Op.like]: `%${searchTerm}%` } },
+                            { lastName: { [sequelize_1.Op.like]: `%${searchTerm}%` } },
+                        ],
+                    },
+                    { type: "Usuario" },
+                ],
+            },
         });
+        res.status(200).json(users);
     }
     catch (error) {
         console.error("Error en la función de búsqueda de usuarios:", error);
@@ -284,7 +284,6 @@ const addVitalSigns = (id, vitalSigns, by) => __awaiter(void 0, void 0, void 0, 
             throw new Error("parámetros inválidos");
     }
 });
-exports.addVitalSigns = addVitalSigns;
 const generateVitalSignsUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -296,7 +295,7 @@ const generateVitalSignsUser = (req, res) => __awaiter(void 0, void 0, void 0, f
                 .status(400)
                 .json({ success: false, message: "Invalid user or data 2" });
         }
-        const save = yield (0, exports.addVitalSigns)(user.user_id, data);
+        const save = yield addVitalSigns(user.user_id, data);
         if (save) {
             return res.status(200).json({ success: true });
         }
@@ -323,7 +322,7 @@ const generateVitalSignsVisitor = (req, res) => __awaiter(void 0, void 0, void 0
         }
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //@ts-ignore
-        const save = yield (0, exports.addVitalSigns)(id, data, user === null || user === void 0 ? void 0 : user.user_id);
+        const save = yield addVitalSigns(id, data, user === null || user === void 0 ? void 0 : user.user_id);
         if (save) {
             return res.status(200).json({ success: true });
         }
@@ -534,7 +533,6 @@ const deleteReminder = (userId, reminderId) => __awaiter(void 0, void 0, void 0,
         });
     });
 });
-exports.deleteReminder = deleteReminder;
 const deleteReminderUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -545,7 +543,7 @@ const deleteReminderUser = (req, res) => __awaiter(void 0, void 0, void 0, funct
         if (!user.user_id || !id) {
             return res.status(400).send("Usuario o ID de recordatorio no válido");
         }
-        const deleted = yield (0, exports.deleteReminder)(user.user_id, id);
+        const deleted = yield deleteReminder(user.user_id, id);
         if (deleted) {
             return res.status(200).json({ success: true });
         }
@@ -603,11 +601,11 @@ const getUserInfo = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     try {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //@ts-ignore
-        const user = req["user"];
-        const selectQuery = `SELECT * FROM usuarios WHERE id_usuario = ?`;
-        const result = yield (0, util_1.queryAsync)(db_1.user_db, selectQuery, [user === null || user === void 0 ? void 0 : user.user_id]);
-        res.status(200).send(result);
-        return result;
+        const { user_id } = req["user"];
+        const user_info = yield models_1.Users.findOne({
+            where: { id_usuario: user_id },
+        });
+        res.status(200).send(user_info);
     }
     catch (error) {
         console.error("Error:", error);

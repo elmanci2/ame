@@ -9,7 +9,7 @@ export const usePost = (url: string, requestData: any) => {
   const [error, setError] = useState<any>(null);
   const [data, setData] = useState<any>(null);
 
-  const postRequest = async () => {
+  const postRequest = async (datos?: any) => {
     setLoading(true);
     setError(null);
 
@@ -20,7 +20,7 @@ export const usePost = (url: string, requestData: any) => {
           'Content-Type': 'application/json',
           tk: JSON.stringify(token),
         },
-        body: JSON.stringify(requestData),
+        body: JSON.stringify(datos ? datos : requestData),
       });
 
       if (!response.ok) {

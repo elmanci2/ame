@@ -42,6 +42,7 @@ export const service_Model = {
   status: {
     type: DataTypes.INTEGER,
   },
+
   incurred: {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
@@ -64,13 +65,25 @@ export const service_Model = {
     defaultValue: false,
   },
   pressing: {
-    type: DataTypes.BOOLEAN,
+    type: DataTypes.STRING,
   },
   type: {
     type: DataTypes.INTEGER,
     defaultValue: 1,
   },
   location: {
+    type: DataTypes.STRING,
+  },
+  reclamation: {
+    type: DataTypes.BOOLEAN,
+    default: false,
+  },
+
+  start: {
+    type: DataTypes.INTEGER,
+    default: 0,
+  },
+  observation: {
     type: DataTypes.STRING,
   },
 

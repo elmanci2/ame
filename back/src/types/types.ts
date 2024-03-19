@@ -1,3 +1,5 @@
+import { Request } from "express";
+
 export interface UserData {
   id: number;
   name: string;
@@ -38,4 +40,12 @@ export interface Reminder {
   originalTime: {
     time: string;
   };
+}
+
+export type userType = {
+  user_id: string;
+};
+
+export interface RequestType extends Request {
+  user: userType;
 }

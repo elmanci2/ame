@@ -11,7 +11,7 @@ import {DeliveryGritMenu as items} from '../medical/config/gridLayaut';
 import {onShare} from '../../../function/share';
 
 const DeliveryHomeScreen = (props: any) => {
-  use_Get_users_info('');
+  use_Get_users_info();
 
   return (
     <CustomScreen>

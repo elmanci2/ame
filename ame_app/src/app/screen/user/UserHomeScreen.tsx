@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
+/* eslint-disable react-native/no-inline-styles */
+import React, {useCallback, useEffect, useState} from 'react';
 import HederComponent from '../../components/custom/HederComponent';
 import CustomScreen from '../../components/custom/CustomScreen';
 import GridMenu from '../../components/custom/global/GridMenu';
 import {UserHomeGridArray as items} from './config/grid/gridArrays';
 import RenderPill from '../../components/screen/users/home/RenderPill';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import {useSelector} from 'react-redux';
 import {colors, dimensions} from '../../../constants/Constants';
 import {MyText} from '../../components/custom/MyText';
 import {FlatList} from 'react-native-gesture-handler';
@@ -19,9 +19,10 @@ import {use_Get_users_info} from '../../hook/info/use_Get_users_info';
 import {useFetch} from '../../hook/http/useFetch';
 import {convertirHora12h} from '../../util/Tiem';
 import {usePost} from '../../hook/http/usePost';
+import {useFocusEffect} from '@react-navigation/native';
 
 const UserHomeScreen = (props: any) => {
-  use_Get_users_info('');
+  use_Get_users_info();
 
   const {data, loading, refetch} = useFetch(
     'get-active-user-services',
@@ -30,13 +31,23 @@ const UserHomeScreen = (props: any) => {
 
   const [showModal, setShowModal] = useState(false);
   const [showModal2, setShowModal2] = useState(false);
-  const [selectId, setSelectId] = useState('0');
+  const [selectId, setSelectId] = useState<string | null>(null);
 
-  const {
-    data: dataPost,
-    postRequest,
-    loading: loadingPost,
-  } = usePost('cancel-service-user', {
+  useEffect(() => {
+    refetch();
+  }, [showModal, refetch]);
+
+  useFocusEffect(
+    useCallback(() => {
+      const observer = async () => {
+        await refetch();
+      };
+
+      observer();
+    }, [refetch]),
+  );
+
+  const {postRequest, loading: postLoading} = usePost('cancel-service-user', {
     id: selectId,
   });
 
@@ -80,21 +91,8 @@ const UserHomeScreen = (props: any) => {
         <RenderPill />
       </View>
       <BottomModal {...{setShowModal, showModal}}>
-        <View
-          style={{
-            backgroundColor: colors.white,
-            padding: 10,
-            borderTopRightRadius: 14,
-            borderTopLeftRadius: 14,
-            maxHeight: dimensions.height / 2,
-          }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginBottom: 10,
-            }}>
+        <View style={styles.view1}>
+          <View style={styles?.view2}>
             <Title
               {...{
                 title: 'Servicios activos ',
@@ -128,7 +126,7 @@ const UserHomeScreen = (props: any) => {
                 </View>
                 <TouchableOpacity
                   onPress={() => {
-                    setSelectId(item?.id);
+                    setSelectId(item?.id ?? '');
                     setShowModal2(true);
                   }}>
                   <Feather name="more-vertical" size={25} color={colors.icon} />
@@ -142,6 +140,7 @@ const UserHomeScreen = (props: any) => {
       <BottomModal {...{setShowModal: setShowModal2, showModal: showModal2}}>
         <DeleteModal
           {...{
+            loading: postLoading,
             remove: async () => {
               await postRequest();
               await refetch();
@@ -188,5 +187,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+
+  view1: {
+    backgroundColor: colors.white,
+    padding: 10,
+    borderTopRightRadius: 14,
+    borderTopLeftRadius: 14,
+    maxHeight: dimensions.height / 2,
+  },
+
+  view2: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 10,
   },
 });

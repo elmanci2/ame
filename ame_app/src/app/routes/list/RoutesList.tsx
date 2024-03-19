@@ -39,6 +39,8 @@ import Takin from '../../screen/Trakin';
 import UserReminderList from '../../screen/medical/UserReminderList';
 import ServiceActivePreview from '../../screen/user/ServiceActivePreview';
 import ActiveServicesPreview from '../../screen/ActiveServicesPreview';
+import ValidateService from '../../screen/user/ValidateService';
+import ServiceActive from '../../screen/ServiceActive';
 
 const header = {
   header: MiniHeader,
@@ -62,6 +64,12 @@ export const globalRoutes: RoutListType[] = [
     config: {
       ...modalScreeConfig,
     },
+  },
+
+  {
+    name: 'PaymentsAndServices',
+    components: PaymentsAndServices,
+    config: {...header, title: 'Mis servicios y pagos'},
   },
 
   {
@@ -156,9 +164,11 @@ export const globalRoutes: RoutListType[] = [
 
 export const userRouteLIst: RoutListType[] = [
   {
-    name: 'PaymentsAndServices',
-    components: PaymentsAndServices,
-    config: {...header, title: 'Mis servicios y pagos'},
+    name: 'ValidateService',
+    components: ValidateService,
+    config: {
+      ...modalScreeConfig,
+    },
   },
   {
     name: 'RequestService',
@@ -206,6 +216,14 @@ export const VisitorRouteLIst: RoutListType[] = [
     name: 'UserReminderList',
     components: UserReminderList,
     config: {...modalScreeConfig},
+  },
+  {
+    components: ServiceActive,
+    name: 'activo',
+    config: {
+      title: 'Activo',
+      ...modalScreeConfig,
+    },
   },
   ...globalRoutes,
 ];

@@ -16,7 +16,6 @@ const useCreateReminder = (reminder?: Reminder) => {
       ? 'user-add-reminder'
       : `visitor-add-reminder?id=${util.select_user_reminder}`;
 
-  console.log(renderRute);
   const {data, loading, error, postRequest} = usePost(renderRute, reminder);
 
   //console.log(select_user_reminder);

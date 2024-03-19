@@ -32,13 +32,11 @@ export default function RequestService({route, navigation}: RoutListTypeProps) {
       } else {
         console.log('location permission denied');
       }
-    } catch (err) {
-     
-    }
+    } catch (err) {}
   }
 
   React.useEffect(() => {
-    requestLocationPermission()
+    requestLocationPermission();
   }, []);
 
   const go = (route: any) => {

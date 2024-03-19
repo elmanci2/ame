@@ -1,52 +1,91 @@
-import {StyleSheet, View, PermissionsAndroid, Alert} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import MapView, {Marker} from 'react-native-maps';
+import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
-import MapboxGL, {
-  PointAnnotation,
-  UserLocation,
-  ShapeSource,
-  LineLayer,
-} from '@rnmapbox/maps';
+import LoadScreen from '../../screen/LoadScreen';
 
 interface Props {
   onCurrenLocation?: (location: any) => void;
 }
 
-const APIKEY =
-  'pk.eyJ1IjoiZWxtYW5jaTIiLCJhIjoiY2xzcXdkNDN5MTZndDJpbnl2ODV3bG5qZiJ9.LS9W-35dTB5koz7wVcjD2g';
-MapboxGL.setAccessToken(APIKEY);
-
-MapboxGL.setTelemetryEnabled(false);
-Geolocation.setRNConfiguration({
-  skipPermissionRequests: false,
-  authorizationLevel: 'auto',
-});
-
 const Mapa = ({onCurrenLocation}: Props) => {
-  const [coords, setCoords] = useState([3.4516, -76.532]);
+  const [coords, setCoords] = useState({longitude: 0, latitude: 0});
+  const [load, setLoad] = useState(true);
 
   useEffect(() => {
-    Geolocation.getCurrentPosition(info => {
+    //@ts-ignore
+    Geolocation.getCurrentPosition((info: any) => {
       const {longitude, latitude} = info.coords;
-      setCoords([longitude, latitude]);
+      setCoords({longitude, latitude});
 
-      onCurrenLocation && onCurrenLocation([longitude, latitude]);
+      onCurrenLocation && onCurrenLocation({longitude, latitude});
+      setLoad(false);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const mapStyle = [
+    {
+      featureType: 'poi',
+      elementType: 'labels',
+      stylers: [
+        {
+          visibility: 'off',
+        },
+      ],
+    },
+    {
+      featureType: 'road',
+      elementType: 'labels',
+      stylers: [
+        {
+          visibility: 'off',
+        },
+      ],
+    },
+    {
+      featureType: 'transit',
+      elementType: 'labels',
+      stylers: [
+        {
+          visibility: 'off',
+        },
+      ],
+    },
+    {
+      featureType: 'administrative',
+      elementType: 'labels',
+      stylers: [
+        {
+          visibility: 'off',
+        },
+      ],
+    },
+    {
+      featureType: 'water',
+      elementType: 'labels',
+      stylers: [
+        {
+          visibility: 'off',
+        },
+      ],
+    },
+  ];
+
+  if (load) {
+    return <LoadScreen />;
+  }
+
   return (
     <View style={styles.container}>
-      <MapboxGL.MapView style={styles.map}>
-        <MapboxGL.Camera
-          zoomLevel={22}
-          centerCoordinate={coords}
-          animationMode={'flyTo'}
-          animationDuration={1000}
-        />
-
-        <MapboxGL.UserLocation animated={true} androidRenderMode={'gps'} />
-      </MapboxGL.MapView>
+      <MapView
+        customMapStyle={mapStyle}
+        provider={PROVIDER_GOOGLE}
+        style={styles.map}
+        showsUserLocation={true}
+        followsUserLocation={true}
+        initialRegion={{...coords, latitudeDelta: 0.01, longitudeDelta: 0.01}}
+      />
     </View>
   );
 };

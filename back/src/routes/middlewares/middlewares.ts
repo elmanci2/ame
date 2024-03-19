@@ -7,6 +7,7 @@ export async function authentication(
   res: Response,
   next: NextFunction
 ) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const token: any = req.headers["tk"];
   const tk = JSON.parse(token);
   if (!tk.tk) {
@@ -14,8 +15,13 @@ export async function authentication(
   }
   const decoded = await verify_Token(tk?.tk?.substring(7));
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
   req["user"] = decoded;
 
   next();
 }
+
+export const next = (req: Request, res: Response, next: NextFunction) => {
+  next();
+};

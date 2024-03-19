@@ -13,9 +13,11 @@ export const use_Get_users_info = () => {
 
   const {data, loading} = useFetch('user-info', 'user-info');
 
+  console.log(data);
+
   const getUserDate = async () => {
     try {
-      if (!loading && data && isConnected) {
+      if (data && isConnected) {
         dispatcher(addInfoUser(data));
       }
     } catch (error) {

@@ -1,15 +1,15 @@
-import { useEffect, useState } from 'react';
-import { useQuery } from 'react-query';
-import { config } from '../../../config/config';
-import { useSelector } from 'react-redux';
+import {useEffect, useState} from 'react';
+import {useQuery} from 'react-query';
+import {config} from '../../../config/config';
+import {useSelector} from 'react-redux';
 
 export const useFetch = (
   url: string,
   id: string,
   activeUrl: boolean = true,
-  updateDate: boolean = false, 
+  updateDate: boolean = false,
 ) => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<any>([]);
 
   const token = useSelector((state: any) => state.tk);
 
@@ -56,5 +56,5 @@ export const useFetch = (
     }
   }, [updateDate, refetch]);
 
-  return { data, loading: isLoading, error, refetch };
+  return {data, loading: isLoading, error, refetch};
 };

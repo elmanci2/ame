@@ -1,5 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react/self-closing-comp */
+/* eslint-disable react-native/no-inline-styles */
 import {Image, StyleSheet, Linking, TouchableOpacity, View} from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import CustomScreen from '../../components/custom/CustomScreen';
 import {DowIndicator} from '../../components/custom/DowIndicator';
 import {RoutListTypeProps, Service} from '../../types/types';
@@ -10,20 +13,95 @@ import {convertirHora12h, obtenerFecha} from '../../util/Tiem';
 import NoAssignService from '../../components/screen/service/NoAssignService';
 import {GlobalStyle} from '../../styles/styles';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import Mapa from '../../components/custom/Mapa';
+import MapView, {Marker} from 'react-native-maps';
+import Geolocation from '@react-native-community/geolocation';
+import LoadScreen from '../LoadScreen';
+import MapViewDirections from 'react-native-maps-directions';
+import {config} from '../../../config/config';
+import ValidateService from './ValidateService';
+import {getDistance} from 'geolib';
+
 const ServicePreview = ({route, navigation}: RoutListTypeProps) => {
   const {service}: {service: Service} = route?.params;
-  const {type, location, date, id, createdAt, status, photo} = service;
+  const get_icon = require('../../../assets/img/icon/map/delivery_map_icon.png');
+  const home_icon = require('../../../assets/img/icon/map/home_map_icon.png');
+  const {
+    type,
+    location,
+    date,
+    id,
+    createdAt,
+    status,
+    photo,
+    incurred,
+    get_name,
+    gte_phone,
+    completed,
+  } = service;
   const title =
     type === 1 ? 'Recolección de medicamentos' : 'Organización Medicamentos';
 
   const Preview = () => {
     navigation.navigate('ServiceActivePreview', {service});
   };
-  const phoneNumber = '123456789';
+
   const handlePhoneCall = () => {
-    Linking.openURL(`tel:${phoneNumber}`);
+    Linking.openURL(`tel:${gte_phone}`);
   };
+
+  const [currentLocation, setCurrentLocation] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  const [DestinationReached, setDestinationReached] = useState(false);
+
+  const getLocation = JSON.parse(location);
+
+  const initialRegin = {
+    latitude: getLocation?.location.latitude ?? 0,
+    longitude: getLocation?.location?.longitude ?? 0,
+  };
+
+  const handleUserLocationChange = async () => {
+    if (getLocation) {
+      const distanceToDestination = getDistance(currentLocation, initialRegin);
+      console.log(distanceToDestination);
+
+      const threshold = 50;
+      if (distanceToDestination < threshold) {
+        setDestinationReached(true);
+        console.log('¡El usuario ha llegado al destino!');
+      }
+    }
+  };
+
+  useEffect(() => {
+    handleUserLocationChange();
+  }, [currentLocation]);
+
+  useEffect(() => {
+    //@ts-ignore
+    Geolocation.getCurrentPosition((info: any) => {
+      const {longitude, latitude}: any = info.coords;
+      //@ts-ignore
+      setCurrentLocation({
+        longitude,
+        latitude,
+      });
+      //@ts-ignore
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) {
+    return <LoadScreen />;
+  }
+
+  if (!incurred) {
+    return <NoAssignService />;
+  }
+  if (DestinationReached && !incurred) {
+    return <ValidateService {...service} />;
+  }
 
   return (
     <CustomScreen>
@@ -43,10 +121,8 @@ const ServicePreview = ({route, navigation}: RoutListTypeProps) => {
             <MyText
               fontSize={15}
               fontWeight="500"
-              color={
-                status === 0 ? colors.secundario : 'rgba(0, 255, 17, 0.43)'
-              }>
-              {status === 0 ? 'No asignado' : 'Asignado'}
+              color={!incurred ? colors.secundario : 'rgba(1, 175, 12, 0.65)'}>
+              {!incurred ? 'No asignado' : 'Asignado'}
             </MyText>
             <MyText fontSize={15} fontWeight="300">
               {convertirHora12h(createdAt ?? '')}
@@ -65,11 +141,34 @@ const ServicePreview = ({route, navigation}: RoutListTypeProps) => {
                 alignSelf: 'center',
                 flexGrow: 1,
               }}>
-              <Mapa />
+              <MapView
+                style={styles.mapa}
+                initialRegion={{
+                  ...initialRegin,
+                  latitudeDelta: 0.03,
+                  longitudeDelta: 0.03,
+                }}>
+                <Marker
+                  coordinate={{...currentLocation}}
+                  image={home_icon}
+                  style={{
+                    width: 1,
+                    height: 1,
+                  }}
+                />
+                <Marker coordinate={{...initialRegin}} image={get_icon} />
+                <MapViewDirections
+                  apikey={config.GOOGLE_MAPS_APIKEY.GOOGLE_MAPS_APIKEY}
+                  destination={{...currentLocation}}
+                  origin={{...initialRegin}}
+                  strokeWidth={4}
+                  strokeColor={colors.tertiary}
+                />
+              </MapView>
             </View>
           )}
         </View>
-        {status === 0 && (
+        {incurred && (
           <TouchableOpacity onPress={Preview} style={styles.detail}>
             <View style={styles.previewItem}>
               <View
@@ -85,17 +184,12 @@ const ServicePreview = ({route, navigation}: RoutListTypeProps) => {
                     color={colors.texto_ling}
                     fontSize={17}
                     fontWeight="500">
-                    Andres Felipe
-                  </MyText>
-                  <MyText
-                    color={colors.texto_ling}
-                    fontSize={15}
-                    fontWeight="400">
-                    edad : 24
+                    {get_name}
                   </MyText>
                 </View>
               </View>
-              <TouchableOpacity onPress={handlePhoneCall}>
+              <TouchableOpacity
+                onPress={type === 1 ? handlePhoneCall : () => null}>
                 <AntDesign name="phone" size={30} color={colors.tertiary} />
               </TouchableOpacity>
             </View>
@@ -139,5 +233,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 15,
+  },
+  mapa: {
+    width: '100%',
+    height: '100%',
   },
 });

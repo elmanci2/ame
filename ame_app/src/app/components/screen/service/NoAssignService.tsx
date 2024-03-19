@@ -1,24 +1,31 @@
 import {StyleSheet, View} from 'react-native';
 import React from 'react';
+import CustomScreen from '../../custom/CustomScreen';
+import Logo from '../../custom/Logo';
+import {Title} from '../../custom/Title';
+import NextBottomRegister from '../../../screen/register/components/NextBottomRegister';
+import {useNavigation} from '@react-navigation/native';
 import {RenderLottie} from '../../custom/RenderLottie';
-import {MyText} from '../../custom/MyText';
-import {colors} from '../../../../constants/Constants';
 
 const NoAssignService = () => {
+  const navigation = useNavigation();
   return (
-    <View style={styles.container}>
-      <MyText
-        textAlign="center"
-        fontWeight="500"
-        color={colors.texto_ling}
-        fontSize={30}>
-        Solicitud en espera
-      </MyText>
-      <RenderLottie
-        style={styles.lottie}
-        animate={require('../../../animation/lottie/noAsignate.json')}
-      />
-    </View>
+    <CustomScreen>
+      <View style={{marginTop: 30}}>
+        <Logo center />
+        <Title title=" Solicitud en espera" />
+        <RenderLottie
+          style={styles.lottie}
+          animate={require('../../../animation/lottie/noAsignate.json')}
+        />
+
+        <NextBottomRegister
+          text="Cerrar"
+          active
+          action={() => navigation.goBack()}
+        />
+      </View>
+    </CustomScreen>
   );
 };
 
@@ -30,5 +37,5 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     position: 'relative',
   },
-  lottie: {width: 350, height: 300},
+  lottie: {width: 450, height: 400},
 });

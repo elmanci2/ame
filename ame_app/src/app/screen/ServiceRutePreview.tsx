@@ -172,116 +172,77 @@ export default ServiceRutePreview;
 
 import React, {Fragment, useEffect, useRef, useState} from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
+import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import LoadScreen from './LoadScreen';
 import NextBottomRegister from './register/components/NextBottomRegister';
 import MapViewDirections, {
-  MapDirectionsLegs,
   MapDirectionsResponse,
 } from 'react-native-maps-directions';
 import {config} from '../../config/config';
 import {colors} from '../../constants/Constants';
 import {MyText} from '../components/custom/MyText';
-import axios from 'axios';
-import {getDistance} from 'geolib';
-import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {RoutListTypeProps} from '../types/types';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {usePost} from '../hook/http/usePost';
+import Toast from 'react-native-toast-message';
 
 const ServiceRutePreview = ({navigation, route}: RoutListTypeProps) => {
   const {service} = route?.params;
-
+  const [currentLocationIndex] = useState<number>(0);
   const [ruteInfo, setRuteInfo] = useState<MapDirectionsResponse>();
-  const [currentLocationIndex, setCurrentLocationIndex] = useState<number>(0);
   const [currentLocation, setCurrentLocation] = useState<any>(null);
-  const [nextManeuver, setNextManeuver] = useState<MapDirectionsLegs>('');
+
+  const user_location = JSON?.parse(service?.user_location);
+
+  const userLocation = {
+    latitude: user_location.latitude,
+    longitude: user_location.longitude,
+  };
+
   const mapViewRef = useRef<any>(null);
   const [loading, setLoading] = useState(true);
   const [active, setActive] = useState(false);
   const initialRegion = {
     latitude: currentLocation ? currentLocation.latitude : 37.78825,
     longitude: currentLocation ? currentLocation.longitude : -122.4324,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
+    latitudeDelta: 0.005,
+    longitudeDelta: 0.005,
+    pitch: 65,
   };
 
-  const {} = usePost('get-service-info');
+  const {postRequest, loading: loadingService} = usePost('get-service', {
+    id: service?.id,
+    location: currentLocation,
+  });
 
   useEffect(() => {
-    Geolocation.watchPosition(
-      (info: any) => {
-        const {longitude, latitude}: any = info.coords;
-        setCurrentLocation({
-          longitude,
-          latitude,
-        });
-        setLoading(false);
-      },
-      (error: any) => console.error('Error getting location:', error),
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
-    );
-    return () => {
-      setLoading(true);
-    };
+    //@ts-ignore
+    Geolocation.getCurrentPosition((info: any) => {
+      const {longitude, latitude}: any = info.coords;
+      //@ts-ignore
+      setCurrentLocation({
+        longitude,
+        latitude,
+      });
+      //@ts-ignore
+      setLoading(false);
+    });
   }, []);
 
-  useEffect(() => {
-    if (ruteInfo) {
-      const steps = ruteInfo?.legs[0].steps;
-      const interval = setInterval(() => {
-        if (currentLocationIndex < steps.length) {
-          const nextStep = steps[currentLocationIndex];
-          if (nextStep?.maneuver && nextStep?.maneuver.includes('turn')) {
-            const rotationAngle = getRotationAngle(nextStep.maneuver);
-            rotateMap(rotationAngle);
-            setNextManeuver(nextStep);
-          }
-          setCurrentLocationIndex(prevIndex => prevIndex + 1);
-        } else {
-          clearInterval(interval);
-        }
-      }, 1000); // Cambia la velocidad del avance aquí
-      return () => clearInterval(interval);
-    }
-  }, [ruteInfo, currentLocationIndex]);
-
-  useEffect(() => {
-    // Recalcular ruta si la ubicación del usuario cambia significativamente
-    if (ruteInfo && currentLocation) {
-      // Comparar la ubicación actual del usuario con el destino original
-      const destination =
-        ruteInfo?.coordinates[ruteInfo?.coordinates.length - 1];
-      const distanceToDestination = getDistance(currentLocation, destination);
-
-      if (distanceToDestination > 100) {
-        // Por ejemplo, si el usuario se desvía más de 100 metros de la ruta original
-        recalculateRoute(currentLocation, destination);
-      }
-    }
-  }, [currentLocation]);
-
-  const recalculateRoute = async (startLocation: any, destination: any) => {
+  const start = async () => {
     try {
-      const response = await axios.get(
-        config.GOOGLE_MAPS_APIKEY.GOOGLE_MAPS_APIKEY,
-        {
-          params: {
-            origin: `${startLocation.latitude},${startLocation.longitude}`,
-            destination: `${destination.latitude},${destination.longitude}`,
-            key: config.GOOGLE_MAPS_APIKEY.GOOGLE_MAPS_APIKEY,
-          },
-        },
-      );
-
-      const newRoute = response.data;
-
-      // Actualizar ruteInfo con la nueva ruta
-      setRuteInfo(newRoute);
+      const result = await postRequest();
+      if (result?.service?.incurred) {
+        setActive(result?.service?.incurred);
+      }
+      Toast.show({
+        type: 'success',
+        text2: 'Servicio Activo',
+      });
     } catch (error) {
-      console.error('Error recalculating route:', error);
+      console.log(error);
     }
   };
 
@@ -304,19 +265,25 @@ const ServiceRutePreview = ({navigation, route}: RoutListTypeProps) => {
     }
   };
 
+  const calculateAngle = (pointA: any, pointB: any) => {
+    const deltaX = pointB.longitude - pointA.longitude;
+    const deltaY = pointB.latitude - pointA.latitude;
+    return Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+  };
+
   const rotateMap = (rotate: number) => {
     if (mapViewRef.current) {
       mapViewRef.current.animateToRegion({
         latitude: currentLocation.latitude,
         longitude: currentLocation.longitude,
-        latitudeDelta: 0.001,
-        longitudeDelta: 0.001,
+        latitudeDelta: 0.003,
+        longitudeDelta: 0.003,
       });
 
       setTimeout(() => {
         mapViewRef.current.animateCamera(
           {
-            pitch: 65,
+            pitch: 20,
             heading: rotate,
             altitude: 1000,
             zoom: mapViewRef.current.getCamera().zoom,
@@ -327,85 +294,26 @@ const ServiceRutePreview = ({navigation, route}: RoutListTypeProps) => {
     }
   };
 
-  const calculateAngle = (pointA: any, pointB: any) => {
-    const deltaX = pointB.longitude - pointA.longitude;
-    const deltaY = pointB.latitude - pointA.latitude;
-    return Math.atan2(deltaY, deltaX) * (180 / Math.PI);
-  };
-
-  const getRotationAngle = (maneuver: string) => {
-    switch (maneuver) {
-      case 'turn-left':
-        return -90; // Girar a la izquierda
-      case 'turn-right':
-        return 90; // Girar a la derecha
-      default:
-        return 0; // No hay giro
-    }
-  };
-
-  const getStepDirection = (step: any) => {
-    switch (step.maneuver) {
-      case 'turn-left':
-        return 'izquierda';
-      case 'turn-right':
-        return 'derecha';
-      default:
-        return 'seguir derecho';
-    }
-  };
-
-  const start = async () => {
-    setActive(true);
-    handleZoomIn();
-  };
-
-  if (loading) {
+  if (loading || loadingService) {
     return <LoadScreen />;
   }
 
+  const mapStyle = [
+    {
+      featureType: 'poi',
+      elementType: 'labels',
+      stylers: [
+        {
+          visibility: 'off',
+        },
+      ],
+    },
+  ];
+
   return (
     <View style={styles.container}>
-      <View style={styles.topBar}>
-        <View style={styles.directionContainer}>
-          {getStepDirection(nextManeuver) === 'izquierda' ? (
-            <FontAwesome6
-              name="arrow-turn-up"
-              size={30}
-              style={{transform: [{rotate: '-90deg'}]}}
-              color={colors.secundario}
-            />
-          ) : getStepDirection(nextManeuver) === 'derecha' ? (
-            <FontAwesome6
-              name="arrow-turn-down"
-              size={30}
-              style={{transform: [{rotate: '-90deg'}]}}
-              color={colors.secundario}
-            />
-          ) : (
-            <FontAwesome6
-              name="arrow-turn-up"
-              size={30}
-              color={colors.secundario}
-            />
-          )}
-
-          <MyText color={colors.white} fontSize={17} fontWeight="500">
-            {getStepDirection(nextManeuver)}
-          </MyText>
-        </View>
-
-        <View style={styles.distanceDurationContainer}>
-          <MyText color={colors.white} fontSize={17} fontWeight="500">
-            {nextManeuver?.distance?.text}
-          </MyText>
-          <MyText color={colors.white} fontSize={17} fontWeight="500">
-            {nextManeuver?.duration?.text}
-          </MyText>
-        </View>
-      </View>
-
       <MapView
+        customMapStyle={mapStyle}
         ref={mapViewRef}
         provider={PROVIDER_GOOGLE}
         style={styles.mapView}
@@ -417,12 +325,14 @@ const ServiceRutePreview = ({navigation, route}: RoutListTypeProps) => {
           timePrecision="now"
           mode="DRIVING"
           origin={initialRegion}
-          destination={{latitude: 3.2774479, longitude: -76.2276009}}
+          destination={userLocation}
           apikey={config.GOOGLE_MAPS_APIKEY?.GOOGLE_MAPS_APIKEY}
-          strokeWidth={10}
+          strokeWidth={7}
           strokeColor={colors.tertiary}
           onReady={e => setRuteInfo(e)}
         />
+
+        <Marker coordinate={userLocation} />
       </MapView>
 
       <View style={styles.bottomBar}>
@@ -450,13 +360,24 @@ const ServiceRutePreview = ({navigation, route}: RoutListTypeProps) => {
           )}
 
           {active && (
-            <TouchableOpacity style={styles.btnOption} onPress={handleZoomIn}>
-              <MaterialIcons
-                name="alt-route"
-                size={20}
-                color={colors.texto_ling}
-              />
-            </TouchableOpacity>
+            <Fragment>
+              <TouchableOpacity style={styles.btnOption} onPress={handleZoomIn}>
+                <MaterialIcons
+                  name="alt-route"
+                  size={20}
+                  color={colors.texto_ling}
+                />
+              </TouchableOpacity>
+
+              <MyText
+                fontSize={26}
+                fontWeight="700"
+                textAlign="center"
+                color={colors.tertiary}
+                style={styles.distanceText}>
+                {ruteInfo?.legs[0].distance?.text}
+              </MyText>
+            </Fragment>
           )}
 
           <TouchableOpacity

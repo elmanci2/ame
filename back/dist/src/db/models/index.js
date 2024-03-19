@@ -16,15 +16,14 @@ const storage = "./src/db/db_users.db";
 const sequelize = new sequelize_1.Sequelize({
     dialect: "sqlite",
     storage,
+    logging: true,
 });
 exports.Users = sequelize.define("users", models_1.User_Model);
 exports.Service = sequelize.define("service", models_1.service_Model);
-/*  (async () => {
-  await sequelize.sync({ force: true });
-})();  */
 const start_dev = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // Autenticar la conexión a la base de datos
+        // await sequelize.sync({ force: true });
         yield sequelize.authenticate();
         console.log("Connection has been established successfully.");
     }

@@ -9,7 +9,7 @@ import React, {memo} from 'react';
 import {colors} from '../../../constants/Constants';
 
 interface Props {
-  containerStyles?: ViewStyle;
+  containerStyles?: ViewStyle | ViewStyle[];
   textStyles?: TextStyle;
   icon?: JSX.Element;
   text: string;

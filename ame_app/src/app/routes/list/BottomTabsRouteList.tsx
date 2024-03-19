@@ -32,7 +32,7 @@ export const DeliveryRouteLIst: RoutListType[] = [
     components: ServiceActive,
     name: 'activo',
     config: {
-      title: 'Recordatorios',
+      title: 'Activo',
     },
   },
 ];

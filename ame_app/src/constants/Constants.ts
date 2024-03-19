@@ -1,7 +1,8 @@
 import {Dimensions} from 'react-native';
 const {height, width} = Dimensions.get('window');
 
-export const default_image = 'https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-image-182145777.jpg';
+export const default_image =
+  'https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-image-182145777.jpg';
 
 export const user_roles = {
   user: 'Usuario',
@@ -28,7 +29,7 @@ const constants = {
   colors,
   dimensions,
   user_roles,
-  default_image
+  default_image,
 };
 
 export default constants;

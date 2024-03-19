@@ -1,5 +1,5 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React, {Fragment} from 'react';
+import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
+import React, {useCallback} from 'react';
 import CustomScreen from '../../components/custom/CustomScreen';
 import HederComponent from '../../components/custom/HederComponent';
 import GridMenu from '../../components/custom/global/GridMenu';
@@ -8,9 +8,37 @@ import {colors} from '../../../constants/Constants';
 import {GlobalStyle} from '../../styles/styles';
 import {MyText} from '../../components/custom/MyText';
 import {use_Get_users_info} from '../../hook/info/use_Get_users_info';
-
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import LoadScreen from '../LoadScreen';
+import {useFetch} from '../../hook/http/useFetch';
+import {useFocusEffect} from '@react-navigation/native';
 const HomeVisitorScreen = (props: any) => {
-  use_Get_users_info('');
+  use_Get_users_info();
+
+  const action = () => {
+    props.navigation.navigate('activo');
+  };
+
+  const {data, loading, refetch} = useFetch(
+    'get_active_service_delivery_and_medical',
+    'get_active_service_delivery_and_medical',
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      const observer = async () => {
+        await refetch();
+      };
+
+      observer();
+    }, [refetch]),
+  );
+
+  if (loading) {
+    return <LoadScreen />;
+  }
+
+  console.log(data);
 
   return (
     <CustomScreen>
@@ -57,6 +85,18 @@ const HomeVisitorScreen = (props: any) => {
             </TouchableOpacity>
           </View>
         </View>
+
+        {data?.length < 1 && (
+          <View style={styles.activeBottomContainer}>
+            <TouchableOpacity onPress={action} style={styles.activeBottom}>
+              <MaterialCommunityIcons
+                name="clipboard-text-clock-outline"
+                color={colors.white}
+                size={35}
+              />
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     </CustomScreen>
   );
@@ -98,5 +138,23 @@ const styles = StyleSheet.create({
     position: 'absolute',
     zIndex: 2,
     marginTop: 7,
+  },
+
+  activeBottomContainer: {
+    position: 'absolute',
+    bottom: 0,
+    alignSelf: 'flex-end',
+    zIndex: 100,
+  },
+
+  activeBottom: {
+    width: 70,
+    height: 70,
+    borderRadius: 50,
+    backgroundColor: colors.tertiary,
+    marginBottom: 50,
+    marginRight: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

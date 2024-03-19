@@ -16,7 +16,7 @@ export const VisitorGritMenu: GridItemType[] = [
   },
   {
     label: 'Mis servicios y pagos',
-    route: 'Servicios',
+    route: 'pay',
     icon: require('../assets/img/grid2.png'),
     color,
   },
@@ -36,9 +36,9 @@ export const VisitorGritMenu: GridItemType[] = [
 
 export const DeliveryGritMenu: GridItemType[] = [
   {
-    label: 'Turno',
+    label: 'Activo',
     route: 'Recordatorio',
-    icon: require('../assets/img/grid1.png'),
+    icon: require('../assets/img/turno.png'),
     params: {
       name: 'lola',
     },
@@ -47,13 +47,13 @@ export const DeliveryGritMenu: GridItemType[] = [
   },
   {
     label: 'Toma de servicio',
-    route: 'Servicios',
+    route: 'Servicio',
     icon: require('../assets/img/grid1.png'),
     color,
   },
   {
     label: 'Mis servicios y pagos',
-    route: 'Signos',
+    route: 'pagos',
     icon: require('../assets/img/grid2.png'),
     color,
   },

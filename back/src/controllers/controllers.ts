@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
 /* import { generateOTP } from "./util/util";
 import { sendSMS } from "../services/sms/sms"; */
@@ -9,8 +10,9 @@ import { generate_token } from "./util/token";
 import { Reminder, VitalSigns } from "../types/types";
 import { Errors } from "../errors/error";
 import { Users } from "../db/models";
+import { Op } from "sequelize";
 
-export const otp_validate = async (req: Request, res: Response) => {
+const otp_validate = async (req: Request, res: Response) => {
   /*   const otp = generateOTP();
   const { phone } = req.body;
   console.log(otp);
@@ -24,7 +26,7 @@ export const otp_validate = async (req: Request, res: Response) => {
   });
 };
 
-export const validate_email = async (
+const validate_email = async (
   email: string,
   phoneNumber: string
 ): Promise<string | null> => {
@@ -52,7 +54,7 @@ export const validate_email = async (
   }
 };
 
-export const login = async (req: Request, res: Response) => {
+const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
@@ -61,7 +63,7 @@ export const login = async (req: Request, res: Response) => {
     }
 
     const selectQuery =
-      "SELECT email, password , type , id_usuario FROM usuarios WHERE email = ?";
+      "SELECT email, password , type , id_usuario FROM users WHERE email = ?";
 
     const search_user = await queryAsync(db, selectQuery, [
       email.toLowerCase(),
@@ -94,7 +96,7 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
-export const email_number_validation = async (req: Request, res: Response) => {
+const email_number_validation = async (req: Request, res: Response) => {
   const { email, phoneNumber } = req.body;
 
   const validationError = await validate_email(email, phoneNumber);
@@ -106,7 +108,7 @@ export const email_number_validation = async (req: Request, res: Response) => {
   return res.status(200).json({ success: true });
 };
 
-export const create_new_user = async (req: Request, res: Response) => {
+const create_new_user = async (req: Request, res: Response) => {
   try {
     const nuevoUsuario = req.body;
 
@@ -159,7 +161,7 @@ export const create_new_user = async (req: Request, res: Response) => {
   }
 };
 
-export const get_countries = async (req: Request, res: Response) => {
+const get_countries = async (req: Request, res: Response) => {
   const query = "SELECT value, label , code  FROM countries";
   const results = await allQueryAsync(data, query, []);
   res.send({
@@ -167,7 +169,7 @@ export const get_countries = async (req: Request, res: Response) => {
   });
 };
 
-export const get_state = async (req: Request, res: Response) => {
+const get_state = async (req: Request, res: Response) => {
   const { id } = req.params;
   const query = `SELECT value, label , st FROM states WHERE id_country = ${id};`;
   const results = await allQueryAsync(data, query, []);
@@ -176,7 +178,7 @@ export const get_state = async (req: Request, res: Response) => {
   });
 };
 
-export const get_cities = async (req: Request, res: Response) => {
+const get_cities = async (req: Request, res: Response) => {
   const { id } = req.params;
   const query = `SELECT value, cit , label FROM cities WHERE id_state = ${id};`;
   const results = await allQueryAsync(data, query, []);
@@ -230,37 +232,35 @@ const documentosIdentificación = [
   },
 ];
 
-export const get_document_type = async (req: Request, res: Response) => {
+const get_document_type = async (req: Request, res: Response) => {
   res.send(documentosIdentificación);
 };
 
-export const search_users = async (req: Request, res: Response) => {
+const search_users = async (req: Request, res: Response) => {
   try {
     const searchTerm = req.query.term;
 
-    if (!searchTerm) {
+    /*     if (!searchTerm) {
       return res
         .status(400)
         .json({ error: "Se requiere un término de búsqueda" });
-    }
+    } */
 
-    const searchQuery = `
-      SELECT *
-      FROM usuarios
-      WHERE (name LIKE ? OR lastName LIKE ?) AND type = 'Usuario';
-    `;
-
-    const params = [`%${searchTerm}%`, `%${searchTerm}%`];
-
-    // Ejecuta la consulta en la base de datos
-    db.all(searchQuery, params, (err, rows) => {
-      if (err) {
-        console.error("Error al buscar usuarios:", err.message);
-        return res.status(500).json({ error: "Error al buscar usuarios." });
-      }
-
-      res.status(200).json(rows); // Devuelve los resultados de la búsqueda
+    const users = await Users.findAll({
+      where: {
+        [Op.and]: [
+          {
+            [Op.or]: [
+              { name: { [Op.like]: `%${searchTerm}%` } },
+              { lastName: { [Op.like]: `%${searchTerm}%` } },
+            ],
+          },
+          { type: "Usuario" },
+        ],
+      },
     });
+
+    res.status(200).json(users);
   } catch (error) {
     console.error("Error en la función de búsqueda de usuarios:", error);
     res.status(500).json({ error: "Error interno del servidor" });
@@ -269,7 +269,7 @@ export const search_users = async (req: Request, res: Response) => {
 
 // vital sing
 
-export const addVitalSigns = async (
+const addVitalSigns = async (
   id: string,
   vitalSigns: VitalSigns,
   by?: string
@@ -315,7 +315,7 @@ export const addVitalSigns = async (
   }
 };
 
-export const generateVitalSignsUser = async (req: Request, res: Response) => {
+const generateVitalSignsUser = async (req: Request, res: Response) => {
   try {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
@@ -341,10 +341,7 @@ export const generateVitalSignsUser = async (req: Request, res: Response) => {
   }
 };
 
-export const generateVitalSignsVisitor = async (
-  req: Request,
-  res: Response
-) => {
+const generateVitalSignsVisitor = async (req: Request, res: Response) => {
   try {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
@@ -372,7 +369,7 @@ export const generateVitalSignsVisitor = async (
   }
 };
 
-export const get_history_signes = async (req: Request, res: Response) => {
+const get_history_signes = async (req: Request, res: Response) => {
   try {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
@@ -392,7 +389,7 @@ export const get_history_signes = async (req: Request, res: Response) => {
   }
 };
 
-export const get_signes = async (req: Request, res: Response) => {
+const get_signes = async (req: Request, res: Response) => {
   try {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
@@ -419,10 +416,7 @@ export const get_signes = async (req: Request, res: Response) => {
   }
 };
 
-export const get_history_signes_visitor = async (
-  req: Request,
-  res: Response
-) => {
+const get_history_signes_visitor = async (req: Request, res: Response) => {
   try {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
@@ -534,7 +528,7 @@ const addReminder = async (
   }
 };
 
-export const generateReminderVisitor = async (req: Request, res: Response) => {
+const generateReminderVisitor = async (req: Request, res: Response) => {
   try {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
@@ -560,7 +554,7 @@ export const generateReminderVisitor = async (req: Request, res: Response) => {
   }
 };
 
-export const generateReminderUser = async (req: Request, res: Response) => {
+const generateReminderUser = async (req: Request, res: Response) => {
   try {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
@@ -584,7 +578,7 @@ export const generateReminderUser = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteReminder = async (userId: number, reminderId: number) => {
+const deleteReminder = async (userId: number, reminderId: number) => {
   return new Promise((resolve, reject) => {
     // Ejecutar la consulta DELETE
     db.run(
@@ -607,7 +601,7 @@ export const deleteReminder = async (userId: number, reminderId: number) => {
   });
 };
 
-export const deleteReminderUser = async (req: Request, res: Response) => {
+const deleteReminderUser = async (req: Request, res: Response) => {
   try {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
@@ -635,7 +629,7 @@ export const deleteReminderUser = async (req: Request, res: Response) => {
   }
 };
 
-export const getUserRemindersList = async (req: Request, res: Response) => {
+const getUserRemindersList = async (req: Request, res: Response) => {
   try {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
@@ -655,7 +649,7 @@ export const getUserRemindersList = async (req: Request, res: Response) => {
   }
 };
 
-export const getVisitorReminderList = async (req: Request, res: Response) => {
+const getVisitorReminderList = async (req: Request, res: Response) => {
   try {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
@@ -679,21 +673,41 @@ export const getVisitorReminderList = async (req: Request, res: Response) => {
   }
 };
 
-export const getUserInfo = async (req: Request, res: Response) => {
+const getUserInfo = async (req: Request, res: Response) => {
   try {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
-    const user = req["user"];
+    const { user_id } = req["user"];
 
-    const selectQuery = `SELECT * FROM usuarios WHERE id_usuario = ?`;
-
-    const result = await queryAsync(db, selectQuery, [user?.user_id]);
-
-    res.status(200).send(result);
-
-    return result;
+    const user_info: any = await Users.findOne({
+      where: { id_usuario: user_id },
+    });
+    res.status(200).send(user_info);
   } catch (error) {
     console.error("Error:", error);
     res.status(500).send(Errors.internalError);
   }
+};
+
+export {
+  otp_validate,
+  email_number_validation,
+  create_new_user,
+  get_countries,
+  get_state,
+  get_cities,
+  get_document_type,
+  login,
+  generateVitalSignsUser,
+  generateVitalSignsVisitor,
+  search_users,
+  get_history_signes_visitor,
+  getUserInfo,
+  get_signes,
+  generateReminderVisitor,
+  generateReminderUser,
+  getUserRemindersList,
+  getVisitorReminderList,
+  deleteReminderUser,
+  get_history_signes,
 };

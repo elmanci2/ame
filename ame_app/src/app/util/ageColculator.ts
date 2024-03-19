@@ -14,3 +14,25 @@ export function calcularEdad(fechaNacimiento: string): number | null {
 
   return edadEnAños;
 }
+
+export function calculateAge(dateOfBirth: string): number {
+  const dob = new Date(dateOfBirth);
+  const today = new Date();
+
+  let age = today.getFullYear() - dob.getFullYear();
+
+  // Check if the birthday for this year has not occurred yet
+  const currentMonth = today.getMonth();
+  const birthMonth = dob.getMonth();
+  const currentDay = today.getDate();
+  const birthDay = dob.getDate();
+
+  if (
+    currentMonth < birthMonth ||
+    (currentMonth === birthMonth && currentDay < birthDay)
+  ) {
+    age--;
+  }
+
+  return age;
+}
