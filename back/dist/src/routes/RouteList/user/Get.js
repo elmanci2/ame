@@ -10,9 +10,19 @@ const userGetList = [
         function: controllers_1.get_service_user,
     },
     {
+        route: "/allServicesUser",
+        middlewares: middlewares_1.authentication,
+        function: controllers_1.allServicesUser,
+    },
+    {
         route: "/history-vita-signes",
         middlewares: middlewares_1.authentication,
         function: controllers_1.get_history_signes_visitor,
+    },
+    {
+        route: "/history-vital-signes-user",
+        middlewares: middlewares_1.authentication,
+        function: controllers_1.get_history_signes_visitor_user,
     },
     {
         route: "/get-signes",

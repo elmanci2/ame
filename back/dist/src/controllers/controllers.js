@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.get_history_signes = exports.deleteReminderUser = exports.getVisitorReminderList = exports.getUserRemindersList = exports.generateReminderUser = exports.generateReminderVisitor = exports.get_signes = exports.getUserInfo = exports.get_history_signes_visitor = exports.search_users = exports.generateVitalSignsVisitor = exports.generateVitalSignsUser = exports.login = exports.get_document_type = exports.get_cities = exports.get_state = exports.get_countries = exports.create_new_user = exports.email_number_validation = exports.otp_validate = void 0;
+exports.get_history_signes_visitor_user = exports.get_history_signes = exports.deleteReminderUser = exports.getVisitorReminderList = exports.getUserRemindersList = exports.generateReminderUser = exports.generateReminderVisitor = exports.get_signes = exports.getUserInfo = exports.get_history_signes_visitor = exports.search_users = exports.generateVitalSignsVisitor = exports.generateVitalSignsUser = exports.login = exports.get_document_type = exports.get_cities = exports.get_state = exports.get_countries = exports.create_new_user = exports.email_number_validation = exports.otp_validate = void 0;
 /* import { generateOTP } from "./util/util";
 import { sendSMS } from "../services/sms/sms"; */
 const util_1 = require("../db/util/util");
@@ -295,7 +295,7 @@ const generateVitalSignsUser = (req, res) => __awaiter(void 0, void 0, void 0, f
                 .status(400)
                 .json({ success: false, message: "Invalid user or data 2" });
         }
-        const save = yield addVitalSigns(user.user_id, data);
+        const save = yield addVitalSigns(user.user_id, data, user.user_id);
         if (save) {
             return res.status(200).json({ success: true });
         }
@@ -396,6 +396,24 @@ const get_history_signes_visitor = (req, res) => __awaiter(void 0, void 0, void 
     }
 });
 exports.get_history_signes_visitor = get_history_signes_visitor;
+const get_history_signes_visitor_user = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore
+        const { user_id } = req.user;
+        if (!user_id) {
+            return res.status(401).send(error_1.Errors.unauthorized);
+        }
+        const query = "SELECT * FROM vital_signes WHERE patient_id = ?";
+        const results = yield (0, util_1.allQueryAsync)(db_1.user_db, query, [user_id]);
+        res.status(200).json(results);
+    }
+    catch (error) {
+        console.error("Error:", error);
+        res.status(500).send(error_1.Errors.internalError);
+    }
+});
+exports.get_history_signes_visitor_user = get_history_signes_visitor_user;
 // reminder
 const addReminder = (
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment

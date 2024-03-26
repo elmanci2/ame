@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateUser = void 0;
+exports.allServicesUser = exports.updateUser = void 0;
 const models_1 = require("../db/models");
 const error_1 = require("../errors/error");
 const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -34,3 +34,19 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.updateUser = updateUser;
+const allServicesUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //@ts-ignore
+    const { user_id } = req.user;
+    try {
+        const services = yield models_1.Service.findAll({
+            where: {
+                user_id,
+            },
+        });
+        res.status(200).json(services);
+    }
+    catch (error) {
+        return res.status(500).send("Internal Server Error");
+    }
+});
+exports.allServicesUser = allServicesUser;
