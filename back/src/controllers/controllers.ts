@@ -319,6 +319,7 @@ const generateVitalSignsUser = async (req: Request, res: Response) => {
   try {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
+
     const user = req["user"];
     const data = req.body;
 
@@ -328,7 +329,7 @@ const generateVitalSignsUser = async (req: Request, res: Response) => {
         .json({ success: false, message: "Invalid user or data 2" });
     }
 
-    const save = await addVitalSigns(user.user_id, data);
+    const save = await addVitalSigns(user.user_id, data, user.user_id);
 
     if (save) {
       return res.status(200).json({ success: true });
@@ -430,6 +431,27 @@ const get_history_signes_visitor = async (req: Request, res: Response) => {
     const query = "SELECT * FROM vital_signes WHERE patient_id = ?";
 
     const results = await allQueryAsync(db, query, [id]);
+
+    res.status(200).json(results);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send(Errors.internalError);
+  }
+};
+
+const get_history_signes_visitor_user = async (req: Request, res: Response) => {
+  try {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
+    const { user_id } = req.user;
+
+    if (!user_id) {
+      return res.status(401).send(Errors.unauthorized);
+    }
+
+    const query = "SELECT * FROM vital_signes WHERE patient_id = ?";
+
+    const results = await allQueryAsync(db, query, [user_id]);
 
     res.status(200).json(results);
   } catch (error) {
@@ -710,4 +732,5 @@ export {
   getVisitorReminderList,
   deleteReminderUser,
   get_history_signes,
+  get_history_signes_visitor_user,
 };

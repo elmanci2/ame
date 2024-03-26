@@ -49,7 +49,7 @@ rt.post("/cancel-service-user", cancel_service);
 
 // Get
 /* rt.get("/get-active-services", get_active_service);
-rt.get("/get-active-user-services", authentication, get_service_user);
+rt.get("/get-active-user-services", authentication, );
 rt.get("/get-service-info", get_service_info);
 rt.get(
   "/get_active_service_delivery_and_medical",

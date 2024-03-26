@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Response, Request } from "express";
-import { Users } from "../db/models";
+import { Service, Users } from "../db/models";
 import { Errors } from "../errors/error";
 
 const updateUser = async (req: Request, res: Response) => {
@@ -26,6 +26,23 @@ const updateUser = async (req: Request, res: Response) => {
   }
 };
 
+const allServicesUser = async (req: Request, res: Response) => {
+  //@ts-ignore
+  const { user_id } = req.user;
+
+  try {
+    const services = await Service.findAll({
+      where: {
+        user_id,
+      },
+    });
+
+    res.status(200).json(services);
+  } catch (error) {
+    return res.status(500).send("Internal Server Error");
+  }
+};
+
 /* const recoverAccount = async (
   req: RequestType,
   res: Response
@@ -33,4 +50,4 @@ const updateUser = async (req: Request, res: Response) => {
   sendEmail;
 }; */
 
-export { updateUser };
+export { updateUser, allServicesUser };

@@ -1,7 +1,9 @@
 import {
+  allServicesUser,
   getUserInfo,
   getUserRemindersList,
   get_history_signes_visitor,
+  get_history_signes_visitor_user,
   get_service_user,
   get_signes,
   search_users,
@@ -16,10 +18,23 @@ const userGetList = [
   },
 
   {
+    route: "/allServicesUser",
+    middlewares: authentication,
+    function: allServicesUser,
+    
+  },
+
+  {
     route: "/history-vita-signes",
     middlewares: authentication,
     function: get_history_signes_visitor,
   },
+  {
+    route: "/history-vital-signes-user",
+    middlewares: authentication,
+    function: get_history_signes_visitor_user,
+  },
+
   {
     route: "/get-signes",
     middlewares: authentication,
