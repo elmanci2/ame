@@ -37,17 +37,12 @@ const Document = ({route, navigation}: RoutListTypeProps) => {
   const [info, setInfo] = useState({
     date: null,
     documentType: null,
-    document: null,
+    document: '',
   });
 
   const fecha = formatDate(date);
 
-  const validateNext =
-    fecha !== null ||
-    (undefined &&
-      info.documentType !== null &&
-      info.document !== null &&
-      info.document !== '');
+  const validateNext = select && date && info && info.document.trim() !== '';
 
   const handleDateChange = (event: any, selected: any) => {
     setShowDataPiker(false);
@@ -108,7 +103,7 @@ const Document = ({route, navigation}: RoutListTypeProps) => {
               screen="Document"
               value={select?.label ?? ''}
               data={data}
-              label="Tip de documento"
+              label="Tipo de documento"
               conteContainerStyles={{
                 width: '90%',
               }}

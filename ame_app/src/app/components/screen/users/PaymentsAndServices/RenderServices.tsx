@@ -1,4 +1,4 @@
-import {StyleSheet, FlatList} from 'react-native';
+import {StyleSheet, FlatList, View} from 'react-native';
 import React, {Fragment} from 'react';
 import CustomScreen from '../../../custom/CustomScreen';
 import {Title} from '../../../custom/Title';
@@ -44,8 +44,31 @@ const RenderServices = ({route}: any) => {
           styles: styles.title,
         }}
       />
-      {/* render list */}
 
+      <View style={{flex: 1}}>
+        <FlatList
+          {...{
+            style: {
+              flex: 1,
+            },
+          }}
+          contentContainerStyle={styles.containerFlatLit}
+          data={data.cancelados}
+          renderItem={({item, index}) => {
+            console.log(item);
+
+            return (
+              <RowsItem
+                key={index}
+                {...{text: item.title, route: 'BillPreview'}}
+              />
+            );
+          }}
+        />
+      </View>
+
+      {/* render list */}
+      {/* 
       {title ? (
         <Fragment>
           <LottieView
@@ -76,14 +99,18 @@ const RenderServices = ({route}: any) => {
           }}
           contentContainerStyle={styles.containerFlatLit}
           data={data.cancelados}
-          renderItem={({item, index}) => (
-            <RowsItem
-              key={index}
-              {...{text: item.title, route: 'BillPreview'}}
-            />
-          )}
+          renderItem={({item, index}) => {
+            console.log(item);
+
+            return (
+              <RowsItem
+                key={index}
+                {...{text: item.title, route: 'BillPreview'}}
+              />
+            );
+          }}
         />
-      )}
+      )} */}
     </CustomScreen>
   );
 };

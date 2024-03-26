@@ -48,7 +48,7 @@ const TopBackSkipView: React.FC<Props> = ({
           }}
           onPress={() => onSkipClick()}>
           <Text style={{color: 'black', fontFamily: 'WorkSans-Regular'}}>
-            Skip
+            Saltar
           </Text>
         </MyPressable>
       </Animated.View>

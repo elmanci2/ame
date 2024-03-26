@@ -67,7 +67,7 @@ const Login = () => {
             fontSize={30}
             fontWeight="500"
             textAlign="center">
-            Inicia sección
+            Inicia sesión
           </MyText>
         </View>
         <View style={styles.inputContainer}>

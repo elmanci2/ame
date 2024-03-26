@@ -1,5 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-hooks/rules-of-hooks */
-/* eslint-disable no-catch-shadow */
 import {useEffect, useState} from 'react';
 import {useFetch} from '../http/useFetch';
 import {useDispatch} from 'react-redux';
@@ -13,11 +13,9 @@ export const use_Get_users_info = () => {
 
   const {data, loading} = useFetch('user-info', 'user-info');
 
-  console.log(data);
-
   const getUserDate = async () => {
     try {
-      if (data && isConnected) {
+      if (data && isConnected && !loading) {
         dispatcher(addInfoUser(data));
       }
     } catch (error) {
@@ -33,12 +31,11 @@ export const use_Get_users_info = () => {
       setIsConnected(state?.isConnected ?? true);
     });
     getUserDate();
+
     return () => {
       unsubscribe();
     };
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [loading, data, isConnected]);
 
   return {data};
 };

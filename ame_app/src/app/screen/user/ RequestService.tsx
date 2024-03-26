@@ -45,11 +45,7 @@ export default function RequestService({route, navigation}: RoutListTypeProps) {
 
   return (
     <CustomScreen>
-      <View style={styles.logo}>
-        <Logo />
-      </View>
       <Title {...{title}} />
-
       <View style={styles.container}>
         <TouchableOpacity
           style={styles.item}

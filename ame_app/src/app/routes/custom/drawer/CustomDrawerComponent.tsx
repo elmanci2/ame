@@ -60,6 +60,10 @@ const CustomDrawerItem = (props: DrawerContentComponentProps) => {
         <View style={styles.itemListContend} key={index}>
           {activeItem === item.action && <View style={styles.activeDrawer} />}
           <DrawerItem
+            allowFontScaling
+            labelStyle={{
+              width: '150%',
+            }}
             pressColor={colors.primary}
             activeTintColor={colors.tertiary}
             activeBackgroundColor={colors.primary}

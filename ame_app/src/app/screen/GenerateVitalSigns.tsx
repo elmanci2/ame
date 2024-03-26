@@ -8,11 +8,9 @@ import {MyText} from '../components/custom/MyText';
 import {colors, user_roles} from '../../constants/Constants';
 import MyInput from '../components/custom/MyInput';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import ActionBottom from '../components/custom/ActionBottom';
 import {useDispatch, useSelector} from 'react-redux';
 import {addSigne} from '../redux/VitalsigneSlice';
 import NextBottomRegister from './register/components/NextBottomRegister';
-import {useFetch} from '../hook/http/useFetch';
 import {usePost} from '../hook/http/usePost';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import LoadModalScreen from './LoadModalScreen';
@@ -38,9 +36,9 @@ const GenerateVitalSigns = ({route, navigation}: RoutListTypeProps) => {
     weight: signos.peso,
   };
   const {data, loading, postRequest} = usePost(
-    /*  type !== user_roles.user
-      ? 'user-generate-vital-sing' */
-    /*  : */ `visitor-generate-vital-sing?id=${id}`,
+    type === user_roles.user
+      ? 'user-generate-vital-sing'
+      : `visitor-generate-vital-sing?id=${id}`,
     postData,
   );
 

@@ -1,9 +1,10 @@
-import {StyleSheet, View} from 'react-native';
+/* eslint-disable react-native/no-inline-styles */
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import CustomScreen from '../../components/custom/CustomScreen';
 import {Title} from '../../components/custom/Title';
 import Logo from '../../components/custom/Logo';
-import {RoutListTypeProps, VitalSignType} from '../../types/types';
+import {RoutListTypeProps} from '../../types/types';
 import LottieView from 'lottie-react-native';
 import {MyText} from '../../components/custom/MyText';
 import ActionBottom from '../../components/custom/ActionBottom';
@@ -14,6 +15,7 @@ import {Image} from 'moti';
 import {useFetch} from '../../hook/http/useFetch';
 import {useWifi} from '../../hook/network/useWifi';
 import LoadScreen from '../LoadScreen';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const NoSignes = ({go, title}: any) => {
   return (
@@ -53,18 +55,23 @@ const VitalSigne = ({route, navigation}: RoutListTypeProps) => {
     navigation.navigate('GenerateVitalSigns');
   };
 
+  const goHistory = () => {
+    navigation.navigate('HistorySignes');
+  };
+
   const {blood_pressure, blood_sugar_level, heart_rate, weight}: any = data;
 
   const pressure = JSON.parse(blood_pressure ?? '{}');
 
-  
-  if (data?.length < 0) {
+  if (data?.length < 1 && Object.keys(signes).length === 0) {
     return <NoSignes go={go} title={title} />;
   } else if (wifi?.isConnected === false && Object.keys(signes).length === 0) {
     return <NoSignes go={go} title={title} />;
   }
 
-  //  if (wifi && loading) return <LoadScreen />;
+  if (wifi && loading) {
+    return <LoadScreen />;
+  }
 
   return (
     <CustomScreen>
@@ -107,8 +114,9 @@ const VitalSigne = ({route, navigation}: RoutListTypeProps) => {
             </View>
             <View>
               <MyText color={colors.tertiary} fontWeight="600" fontSize={20}>
-                {`${pressure?.en} / ${pressure?.sobre}` ??
-                  `${signes?.presion?.en} / ${signes?.presion?.sobre}`}
+                {Object.keys(pressure).length !== 0
+                  ? `${pressure?.en} / ${pressure?.sobre}`
+                  : `${signes?.presion?.en} / ${signes?.presion?.sobre}`}
               </MyText>
               <MyText fontSize={15}>PRESIÓN ARTERIAL</MyText>
             </View>
@@ -145,13 +153,22 @@ const VitalSigne = ({route, navigation}: RoutListTypeProps) => {
             </View>
           </View>
         </View>
-        <ActionBottom
-          action={go}
-          text="Generar"
-          noStylesText
-          textStyles={styles.textBottom}
-          containerStyles={styles.bottomStyes}
-        />
+        <View style={styles.bottomContainer}>
+          <ActionBottom
+            action={go}
+            text="Generar"
+            noStylesText
+            textStyles={styles.textBottom}
+            containerStyles={styles.bottomStyes}
+          />
+          <TouchableOpacity style={styles.historialIcon} onPress={goHistory}>
+            <MaterialCommunityIcons
+              name="clipboard-text-clock-outline"
+              size={30}
+              color={colors.white}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
     </CustomScreen>
   );
@@ -182,7 +199,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '50%',
     alignSelf: 'center',
-    marginTop: 50,
   },
 
   textBottom: {fontSize: 20, fontWeight: '500', color: 'white'},
@@ -199,5 +215,20 @@ const styles = StyleSheet.create({
 
   itenContainer: {
     gap: 24,
+  },
+  bottomContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 100,
+    marginTop: 50,
+  },
+
+  historialIcon: {
+    backgroundColor: colors.tertiary,
+    padding: 10,
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

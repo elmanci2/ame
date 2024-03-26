@@ -41,6 +41,7 @@ import ServiceActivePreview from '../../screen/user/ServiceActivePreview';
 import ActiveServicesPreview from '../../screen/ActiveServicesPreview';
 import ValidateService from '../../screen/user/ValidateService';
 import ServiceActive from '../../screen/ServiceActive';
+import HistorySignes from '../../screen/user/HistorySignes';
 
 const header = {
   header: MiniHeader,
@@ -72,10 +73,17 @@ export const globalRoutes: RoutListType[] = [
     config: {...header, title: 'Mis servicios y pagos'},
   },
 
+  {name: 'PatientSignesPreview', components: PatientSignesPreview},
+
   {
     name: 'ActiveServicesPreview',
     components: ActiveServicesPreview,
     config: {...modalScreeConfig, title: 'Service active'},
+  },
+  {
+    name: 'SignesPreview',
+    components: SignesPreview,
+    config: {...modalScreeConfig},
   },
   {
     name: 'GenerateVitalSigns',
@@ -202,16 +210,17 @@ export const userRouteLIst: RoutListType[] = [
     config: {...modalScreeConfig, title: 'Mis Acudientes'},
   },
 
+  {
+    name: 'HistorySignes',
+    components: HistorySignes,
+    config: {...modalScreeConfig, title: 'Historial'},
+  },
+
   ...globalRoutes,
 ];
 export const VisitorRouteLIst: RoutListType[] = [
-  {name: 'PatientSignesPreview', components: PatientSignesPreview},
   {name: 'SearchUser', components: SearchUsers, config: {...modalScreeConfig}},
-  {
-    name: 'SignesPreview',
-    components: SignesPreview,
-    config: {...modalScreeConfig},
-  },
+
   {
     name: 'UserReminderList',
     components: UserReminderList,

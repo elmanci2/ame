@@ -5,6 +5,7 @@ import {
 } from '@react-navigation/material-top-tabs';
 import {colors} from '../../../../../constants/Constants';
 import {PaymentsTabsList} from './util/PaymentsTabsList';
+import {useFetch} from '../../../../hook/http/useFetch';
 const Tab = createMaterialTopTabNavigator();
 
 const configTab: MaterialTopTabNavigationOptions = {
@@ -20,45 +21,17 @@ const configTab: MaterialTopTabNavigationOptions = {
   },
 };
 
-const data = {
-  solicitado: Array.from({length: 20}, (_, index) => ({
-    title: `Solicitado ${index + 1}`,
-    type: `Type ${index + 1}`,
-    fecha: new Date(),
-    id: index + 1,
-  })),
-
-  realzados: Array.from({length: 20}, (_, index) => ({
-    title: `Realizado ${index + 1}`,
-    type: `Type ${index + 1}`,
-    fecha: new Date(),
-    id: index + 1,
-  })),
-
-  cancelados: Array.from({length: 20}, (_, index) => ({
-    title: `Cancelado1 ${index + 20}`,
-    type: `Type ${index + 1}`,
-    fecha: new Date(),
-    id: index + 1,
-  })),
-
-  reclamacion: Array.from({length: 20}, (_, index) => ({
-    title: `Reclamación ${index + 1}`,
-    type: `Type ${index + 1}`,
-    fecha: new Date(),
-    id: index + 1,
-  })),
-};
-
 export const PaymentsTabs = memo(() => {
+  const {data} = useFetch('allServicesUser', 'allServicesUser');
+
   return (
     <Tab.Navigator screenOptions={configTab}>
-      {PaymentsTabsList.map(({name = '', componente}, index) => (
+      {PaymentsTabsList.map(({name = 'hola', componente}, index) => (
         <Tab.Screen
           name={name}
           component={componente}
           key={index}
-          initialParams={{data, name}}
+          initialParams={{data: data ?? [], name}}
         />
       ))}
     </Tab.Navigator>

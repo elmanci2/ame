@@ -12,6 +12,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import LoadScreen from '../LoadScreen';
 import {useFetch} from '../../hook/http/useFetch';
 import {useFocusEffect} from '@react-navigation/native';
+import {onShare} from '../../../function/share';
 const HomeVisitorScreen = (props: any) => {
   use_Get_users_info();
 
@@ -55,7 +56,7 @@ const HomeVisitorScreen = (props: any) => {
           </View>
 
           <View style={styles.dialogoContainer}>
-            <TouchableOpacity style={styles.dialogoContend}>
+            <TouchableOpacity style={styles.dialogoContend} onPress={onShare}>
               <MyText
                 color={colors.white}
                 fontSize={16}
@@ -69,7 +70,7 @@ const HomeVisitorScreen = (props: any) => {
                 source={require('./assets/img/dialogoBlue.png')}
               />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.dialogoContend}>
+            <TouchableOpacity style={styles.dialogoContend} onPress={onShare}>
               <MyText
                 textAlign="center"
                 color={colors.white}

@@ -2,11 +2,13 @@ import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {MyText} from '../../../custom/MyText';
 import {colors} from '../../../../../constants/Constants';
+import {onShare} from '../../../../../function/share';
 
 const RenderPill = () => {
   return (
     <View style={styles.container}>
       <TouchableOpacity
+        onPress={onShare}
         style={[styles.pillStyles, {paddingRight: 30, marginRight: -15}]}>
         <MyText
           color={colors.white}
@@ -27,6 +29,7 @@ const RenderPill = () => {
         />
       </View>
       <TouchableOpacity
+        onPress={onShare}
         style={[
           styles.pillStyles,
           {paddingLeft: 30, marginLeft: -15, marginBottom: 100},

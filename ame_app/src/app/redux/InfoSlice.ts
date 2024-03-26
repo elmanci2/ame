@@ -1,5 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {RegisterType, UserData, patientsType} from '../types/types';
+import {UserData} from '../types/types';
 
 type Types = {
   info: UserData;

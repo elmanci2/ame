@@ -10,7 +10,6 @@ import {getOtpNumber} from '../../util/otp';
 import {usePost} from '../../hook/http/usePost';
 import useSecondCounter from '../../hook/useMinuteCounter';
 
-const code = 1245;
 const ValidatePhone = ({route, navigation}: RoutListTypeProps) => {
   const {phone} = route?.params ?? {};
 
@@ -49,7 +48,7 @@ const ValidatePhone = ({route, navigation}: RoutListTypeProps) => {
 
           <View>
             <MyText textAlign="center" style={{marginTop: 20}} fontSize={17}>
-              Emos enviado un código al siguiente numero telefónico:{' '}
+              Hemos enviado un código al siguiente número telefónico:{' '}
               <MyText fontSize={14} fontWeight="900" color={colors.secundario}>
                 {phone}
               </MyText>

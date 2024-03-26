@@ -8,17 +8,26 @@ import {GlobalStyle} from '../../styles/styles';
 import {colors, default_image} from '../../../constants/Constants';
 import {MyText} from '../../components/custom/MyText';
 import {useSelector} from 'react-redux';
+import {calcularEdad} from '../../util/ageColculator';
 
 const UserProfile = ({route}: RoutListTypeProps) => {
   const {title} = route.params;
-  const {name, lastName, document, documentType, photo}: UserData = useSelector(
-    (state: any) => state?.Info?.info,
-  );
+  const {
+    name,
+    document,
+    documentType,
+    photo,
+    date,
+    phoneNumber,
+    email,
+    address,
+    state,
+  }: UserData = useSelector((e: any) => e?.Info?.info);
 
   return (
     <CustomScreen>
       <DowIndicator />
-      <View style={{marginTop: 20, paddingHorizontal: 5}}>
+      <View style={styles.title}>
         <Title {...{title}} />
       </View>
 
@@ -32,17 +41,34 @@ const UserProfile = ({route}: RoutListTypeProps) => {
           </View>
           <View style={styles.info_1_text}>
             <MyText fontSize={24} fontWeight="500" color={colors.texto_bold}>
-              {name} 
+              {name}
             </MyText>
 
             <View style={styles.info_1_text_2}>
               <MyText fontSize={16} fontWeight="500" color={colors.texto_ling}>
-                Edad: {55}
+                Edad: {calcularEdad(date)}
               </MyText>
               <MyText fontSize={16} fontWeight="500" color={colors.texto_ling}>
                 {documentType} : {document}
               </MyText>
             </View>
+          </View>
+        </View>
+
+        <View style={styles.ColumContainer}>
+          <View style={styles.Colum1}>
+            <MyText fontSize={20}>Número: {phoneNumber}</MyText>
+          </View>
+          <View style={styles.Colum1}>
+            <MyText fontSize={20}>Correo: {email}</MyText>
+          </View>
+          <View style={styles.Colum1}>
+            <MyText fontSize={20}>Dirección: {address}</MyText>
+          </View>
+          <View style={styles.Colum1}>
+            <MyText fontSize={20}>
+              Estado: {state !== 1 ? 'Activo' : 'Inactivo'}
+            </MyText>
           </View>
         </View>
       </View>
@@ -71,4 +97,8 @@ const styles = StyleSheet.create({
   info_1_text_2: {
     gap: 2,
   },
+
+  title: {marginTop: 20, paddingHorizontal: 5},
+  Colum1: {flexDirection: 'row', gap: 10, alignItems: 'center'},
+  ColumContainer: {marginHorizontal: 10, marginTop: 20, gap: 20},
 });

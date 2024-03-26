@@ -46,6 +46,12 @@ const MyInput: React.FC<Props> = ({
     ? {backgroundColor: colors.white}
     : {backgroundColor: 'rgba(255, 255, 255, 0.43)'};
 
+  function capitalizeFirstLetter(sentence: string) {
+    return sentence.charAt(0).toUpperCase() + sentence.slice(1);
+  }
+
+  const Placeholder = capitalizeFirstLetter(placeholder);
+
   return (
     <View style={[styles.container, style, isMini && styles.miniContainer]}>
       {showLabel && (
@@ -59,7 +65,7 @@ const MyInput: React.FC<Props> = ({
         {...textInputProps}
         focusable={true}
         onFocus={!blocked ? falseAction && falseAction : () => null}
-        placeholder={placeholder}
+        placeholder={Placeholder}
         style={[
           styles.input,
           isMini && styles.miniInput,

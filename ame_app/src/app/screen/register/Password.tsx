@@ -89,7 +89,7 @@ const Password = ({}: RoutListTypeProps) => {
                   color={colors.secundario}>
                   segura
                 </MyText>{' '}
-                para tu cuenta {'\n'} como Mínimo 8 caracteres
+                para tu cuenta {'\n'} como mínimo 8 caracteres
               </MyText>
             </View>
           </View>

@@ -93,11 +93,11 @@ const NextButtonArrow: React.FC<Props> = ({
           style={[
             styles.signupContainer,
             {
-              opacity: opacityAnim,
+              opacity: opacityAnim, 
               transform: [{translateY: transitionAnim}],
             },
           ]}>
-          <Text style={styles.signupText}>Registrará</Text>
+          <Text style={styles.signupText}>Registrar</Text>
           <Icon name="arrow-forward" size={24} color="white" />
         </Animated.View>
 

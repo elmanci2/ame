@@ -4,7 +4,7 @@ export function formatDate(dateString: string) {
 
   // Verificar si la fecha es válida
   if (isNaN(inputDate.getTime())) {
-    return {error: 'Fecha no válida'};
+    return false;
   }
 
   // Obtener componentes de la fecha

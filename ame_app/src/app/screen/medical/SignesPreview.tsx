@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import React from 'react';
 import CustomScreen from '../../components/custom/CustomScreen';
 import {DowIndicator} from '../../components/custom/DowIndicator';
