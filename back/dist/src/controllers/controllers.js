@@ -8,8 +8,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.get_history_signes_visitor_user = exports.get_history_signes = exports.deleteReminderUser = exports.getVisitorReminderList = exports.getUserRemindersList = exports.generateReminderUser = exports.generateReminderVisitor = exports.get_signes = exports.getUserInfo = exports.get_history_signes_visitor = exports.search_users = exports.generateVitalSignsVisitor = exports.generateVitalSignsUser = exports.login = exports.get_document_type = exports.get_cities = exports.get_state = exports.get_countries = exports.create_new_user = exports.email_number_validation = exports.otp_validate = void 0;
+exports.get_medicaments = exports.get_history_signes_visitor_user = exports.get_history_signes = exports.deleteReminderUser = exports.getVisitorReminderList = exports.getUserRemindersList = exports.generateReminderUser = exports.generateReminderVisitor = exports.get_signes = exports.getUserInfo = exports.get_history_signes_visitor = exports.search_users = exports.generateVitalSignsVisitor = exports.generateVitalSignsUser = exports.login = exports.get_document_type = exports.get_cities = exports.get_state = exports.get_eps = exports.get_countries = exports.create_new_user = exports.email_number_validation = exports.otp_validate = void 0;
 /* import { generateOTP } from "./util/util";
 import { sendSMS } from "../services/sms/sms"; */
 const util_1 = require("../db/util/util");
@@ -20,6 +23,7 @@ const token_1 = require("./util/token");
 const error_1 = require("../errors/error");
 const models_1 = require("../db/models");
 const sequelize_1 = require("sequelize");
+const medicametos_json_1 = __importDefault(require("../data/medicametos.json"));
 const otp_validate = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     /*   const otp = generateOTP();
     const { phone } = req.body;
@@ -149,6 +153,26 @@ const get_countries = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     });
 });
 exports.get_countries = get_countries;
+const get_eps = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const query = "SELECT * FROM eps";
+    const results = yield (0, util_1.allQueryAsync)(db_1.data_db, query, []);
+    res.send({
+        eps: results,
+    });
+});
+exports.get_eps = get_eps;
+const get_medicaments = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.send({
+        medications: medicametos_json_1.default,
+    });
+});
+exports.get_medicaments = get_medicaments;
+/*
+const get_medicaments_info = async (req: Request, res: Response) => {
+  res.send({
+    medications,
+  });
+}; */
 const get_state = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const query = `SELECT value, label , st FROM states WHERE id_country = ${id};`;

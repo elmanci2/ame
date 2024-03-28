@@ -37,7 +37,6 @@ const add_service = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         const user_info = yield models_1.Users.findOne({
             where: { id_usuario: user_id },
         });
-        console.log(data === null || data === void 0 ? void 0 : data.type);
         if ((data === null || data === void 0 ? void 0 : data.type) === 2) {
             const service_data = Object.assign(Object.assign({}, data), { user_id, status: util_1.service_state.espera, user_name: user_info === null || user_info === void 0 ? void 0 : user_info.lastName, user_photo: user_info === null || user_info === void 0 ? void 0 : user_info.photo });
             const service = yield models_1.Service.create(Object.assign({}, service_data));

@@ -183,12 +183,12 @@ const get_medicaments = async (req: Request, res: Response) => {
     medications,
   });
 };
-
+/* 
 const get_medicaments_info = async (req: Request, res: Response) => {
   res.send({
     medications,
   });
-};
+}; */
 
 const get_state = async (req: Request, res: Response) => {
   const { id } = req.params;

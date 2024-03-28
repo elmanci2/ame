@@ -24,5 +24,15 @@ const utilGet = [
         middlewares: middlewares_1.authentication,
         function: controllers_1.get_document_type,
     },
+    {
+        route: "/get_eps",
+        middlewares: middlewares_1.authentication,
+        function: controllers_1.get_eps,
+    },
+    {
+        route: "/get_medicaments",
+        middlewares: middlewares_1.authentication,
+        function: controllers_1.get_medicaments,
+    },
 ];
 exports.utilGet = utilGet;
