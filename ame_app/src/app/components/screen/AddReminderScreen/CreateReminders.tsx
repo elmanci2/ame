@@ -1,7 +1,4 @@
-import {StyleSheet} from 'react-native';
-import React, {memo, useState} from 'react';
-import ActionBottom from '../../custom/ActionBottom';
-import {GlobalStyle, reminderStyle} from '../../../styles/styles';
+import React, {memo} from 'react';
 import useCreateReminder from '../../../hook/useCreateReminder';
 import {Reminder} from '../../../types/types';
 import {useNavigation} from '@react-navigation/native';
@@ -57,9 +54,3 @@ const CreateReminders = memo(({reminder}: Props) => {
 });
 
 export default CreateReminders;
-
-const styles = StyleSheet.create({
-  actinBtn: {justifyContent: 'center', width: '100%'},
-  ...GlobalStyle,
-  ...reminderStyle,
-});

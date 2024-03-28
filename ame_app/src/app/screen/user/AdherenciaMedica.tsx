@@ -35,7 +35,14 @@ const AdherenciaMedica = ({route}: RoutListTypeProps) => {
           contentContainerStyle={styles.flatList}
           data={reminder}
           renderItem={({item, index}) => (
-            <RowsItem key={index} {...{route: '', text: item.medicamento}} />
+            <RowsItem
+              key={index}
+              {...{
+                route: 'MedicationsPreview',
+                params: {medication: item},
+                text: item.medicamento,
+              }}
+            />
           )}
         />
       )}

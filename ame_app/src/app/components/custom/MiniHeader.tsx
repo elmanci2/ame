@@ -14,7 +14,7 @@ export const MiniHeader = ({navigation}: StackHeaderProps) => {
         color={colors.tertiary}
         size={49}
       />
-      <Logo />
+      <Logo center />
     </View>
   );
 };

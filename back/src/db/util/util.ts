@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import sqlite3, { Database } from "sqlite3";
 
 export const createUserDb = (db: Database) => {

@@ -11,10 +11,10 @@ import {RoutListTypeProps} from '../types/types';
 
 const DropDownPikerScreen = ({route, navigation}: RoutListTypeProps) => {
   const [onFilter, setOnFilter] = useState('');
-  const {data, screen ,select} = route.params;
+  const {data, screen, select} = route.params;
 
   const result = data?.filter((item: {label: string}) => {
-    return item.label.toLowerCase().includes(onFilter.toLowerCase());
+    return item?.label?.toLowerCase()?.includes(onFilter?.toLowerCase());
   });
 
   return (
@@ -55,7 +55,7 @@ const DropDownPikerScreen = ({route, navigation}: RoutListTypeProps) => {
             style={styles.flatList}
             data={result}
             renderItem={({item}) => (
-              <RenderItemDropDown {...{item, navigation, screen ,select}} />
+              <RenderItemDropDown {...{item, navigation, screen, select}} />
             )}
           />
         </View>

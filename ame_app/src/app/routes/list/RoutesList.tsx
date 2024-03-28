@@ -42,6 +42,8 @@ import ActiveServicesPreview from '../../screen/ActiveServicesPreview';
 import ValidateService from '../../screen/user/ValidateService';
 import ServiceActive from '../../screen/ServiceActive';
 import HistorySignes from '../../screen/user/HistorySignes';
+import EditProfile from '../../screen/EditProfile';
+import MedicationsPreview from '../../screen/MedicationsPreview';
 
 const header = {
   header: MiniHeader,
@@ -62,6 +64,22 @@ export const globalRoutes: RoutListType[] = [
   {
     name: 'addReminder',
     components: AddReminderScreen,
+    config: {
+      ...modalScreeConfig,
+    },
+  },
+
+  {
+    name: 'MedicationsPreview',
+    components: MedicationsPreview,
+    config: {
+      ...modalScreeConfig,
+    },
+  },
+
+  {
+    name: 'edit',
+    components: EditProfile,
     config: {
       ...modalScreeConfig,
     },

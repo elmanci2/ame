@@ -7,7 +7,7 @@ import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import {addInfoUser} from '../../redux/InfoSlice';
 import NetInfo from '@react-native-community/netinfo';
 
-export const use_Get_users_info = () => {
+export const use_Get_users_info = async () => {
   const [isConnected, setIsConnected] = useState(false);
   const dispatcher = useDispatch();
 

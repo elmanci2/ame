@@ -29,8 +29,6 @@ const add_service = async (req: Request, res: Response) => {
       where: { id_usuario: user_id },
     });
 
-    console.log(data?.type);
-
     if (data?.type === 2) {
       const service_data = {
         ...data,

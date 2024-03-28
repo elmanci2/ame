@@ -2,10 +2,11 @@ import axios from 'axios';
 import {config} from '../../../config/config';
 import {useSelector} from 'react-redux';
 import {Platform} from 'react-native';
+import {useState} from 'react';
 
 export const useUploadFile = (url: string, file: any, body?: any) => {
   const token = useSelector((state: any) => state.tk);
-
+  const [loading, setLoading] = useState(true);
   const Upload_file = async () => {
     try {
       const formData = new FormData();
@@ -42,6 +43,7 @@ export const useUploadFile = (url: string, file: any, body?: any) => {
 
       // Manejar la respuesta
       console.log('Respuesta del servidor:', response.data);
+      setLoading(false);
       return response.data;
     } catch (error) {
       // Manejar errores
@@ -50,5 +52,5 @@ export const useUploadFile = (url: string, file: any, body?: any) => {
     }
   };
 
-  return {Upload_file};
+  return {Upload_file, loading};
 };

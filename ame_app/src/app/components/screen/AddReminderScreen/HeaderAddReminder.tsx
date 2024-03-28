@@ -9,27 +9,35 @@ import ColorPicker, {Panel3, Preview} from 'reanimated-color-picker';
 import {colors} from '../../../../constants/Constants';
 import {formasMedicamento, unidadesDeMedida} from '../../../../util/util';
 import {Reminder} from '../../../types/types';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {useRoute} from '@react-navigation/native';
+import {useFetch} from '../../../hook/http/useFetch';
+import LoadScreen from '../../../screen/LoadScreen';
+import ErrorScreen from '../../../screen/error/ErrorScreen';
+import DropDownElement from '../../custom/DropDown/DropDownElement';
 
 interface Props {
-  setReminder: React.Dispatch<React.SetStateAction<Reminder>>;
+  setReminder: React.Dispatch<React.SetStateAction<any>>;
   reminder: Reminder;
+  route?: any;
 }
 
 export const HeaderAddReminder = ({setReminder, reminder}: Props) => {
   const [showModal, setShowModal] = useState(false);
-  const route = useRoute<any>();
-  const {medicine} = route?.params || {};
+  const route: any = useRoute();
+  const {select} = route?.params;
 
-  const navigation = useNavigation<any>();
+  const {data, loading, error, refetch}: any = useFetch(
+    'get_medicaments',
+    'get_medicaments',
+  );
 
   useEffect(() => {
     setReminder({
       ...reminder,
-      medicamento: medicine,
+      medicamento: select?.label,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [medicine]);
+  }, [select]);
 
   const onSelectColor = ({hex}: any) => {
     setReminder({
@@ -38,9 +46,32 @@ export const HeaderAddReminder = ({setReminder, reminder}: Props) => {
     });
   };
 
+  console.log(select);
+
+  if (loading) {
+    return <LoadScreen />;
+  } else if (error) {
+    return <ErrorScreen reload={refetch} />;
+  }
+
   return (
     <>
-      <MyInput
+      <MyText
+        fontSize={15}
+        fontWeight="600"
+        color={colors.texto_bold}
+        style={{marginBottom: -10}}>
+        Medicamento
+      </MyText>
+      <DropDownElement
+        {...{
+          data: data?.medications,
+          value: select?.label,
+          screen: 'addReminder',
+          placeholder: '¿Qué buscas?',
+        }}
+      />
+      {/*      <MyInput
         textInputProps={{
           value: medicine,
         }}
@@ -52,6 +83,7 @@ export const HeaderAddReminder = ({setReminder, reminder}: Props) => {
         showAutoComplete
         placeholder="¿Qué buscas?"
       />
+ */}
       <View style={styles.multiInputs}>
         <View style={styles.gap}>
           <MyText fontSize={15} fontWeight="600" color={colors.texto_bold}>

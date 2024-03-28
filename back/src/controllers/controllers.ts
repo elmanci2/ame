@@ -11,6 +11,7 @@ import { Reminder, VitalSigns } from "../types/types";
 import { Errors } from "../errors/error";
 import { Users } from "../db/models";
 import { Op } from "sequelize";
+import medications from "../data/medicametos.json";
 
 const otp_validate = async (req: Request, res: Response) => {
   /*   const otp = generateOTP();
@@ -166,6 +167,26 @@ const get_countries = async (req: Request, res: Response) => {
   const results = await allQueryAsync(data, query, []);
   res.send({
     countries: results,
+  });
+};
+
+const get_eps = async (req: Request, res: Response) => {
+  const query = "SELECT * FROM eps";
+  const results = await allQueryAsync(data, query, []);
+  res.send({
+    eps: results,
+  });
+};
+
+const get_medicaments = async (req: Request, res: Response) => {
+  res.send({
+    medications,
+  });
+};
+
+const get_medicaments_info = async (req: Request, res: Response) => {
+  res.send({
+    medications,
   });
 };
 
@@ -716,6 +737,7 @@ export {
   email_number_validation,
   create_new_user,
   get_countries,
+  get_eps,
   get_state,
   get_cities,
   get_document_type,
@@ -733,4 +755,5 @@ export {
   deleteReminderUser,
   get_history_signes,
   get_history_signes_visitor_user,
+  get_medicaments,
 };

@@ -9,8 +9,11 @@ import {colors, default_image} from '../../../constants/Constants';
 import {MyText} from '../../components/custom/MyText';
 import {useSelector} from 'react-redux';
 import {calcularEdad} from '../../util/ageColculator';
+import NextBottomRegister from '../register/components/NextBottomRegister';
+import {use_Get_users_info} from '../../hook/info/use_Get_users_info';
+import {config} from '../../../config/config';
 
-const UserProfile = ({route}: RoutListTypeProps) => {
+const UserProfile = ({route, navigation}: RoutListTypeProps) => {
   const {title} = route.params;
   const {
     name,
@@ -22,7 +25,15 @@ const UserProfile = ({route}: RoutListTypeProps) => {
     email,
     address,
     state,
+    barrio,
+    lastName,
   }: UserData = useSelector((e: any) => e?.Info?.info);
+  use_Get_users_info();
+  const go = () => {
+    navigation.navigate('edit', {
+      data: {name, photo, address, barrio, lastName},
+    });
+  };
 
   return (
     <CustomScreen>
@@ -36,7 +47,7 @@ const UserProfile = ({route}: RoutListTypeProps) => {
           <View style={styles.imgContainer}>
             <Image
               style={GlobalStyle.img}
-              source={{uri: photo ?? default_image}}
+              source={{uri: config.aws.publicUrl + photo ?? default_image}}
             />
           </View>
           <View style={styles.info_1_text}>
@@ -70,6 +81,10 @@ const UserProfile = ({route}: RoutListTypeProps) => {
               Estado: {state !== 1 ? 'Activo' : 'Inactivo'}
             </MyText>
           </View>
+        </View>
+
+        <View>
+          <NextBottomRegister {...{text: 'Editar', active: true, action: go}} />
         </View>
       </View>
     </CustomScreen>

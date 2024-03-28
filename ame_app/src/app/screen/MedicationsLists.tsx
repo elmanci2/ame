@@ -9,7 +9,7 @@ import {useFetch} from '../hook/http/useFetch';
 import LoadScreen from './LoadScreen';
 
 const apiUrl = 'https://www.datos.gov.co/resource/i7cb-raxc.json';
-const itemsPerPage = 20;
+const itemsPerPage = 1;
 
 export const MedicationsLists = () => {
   const offset = (1 - 1) * itemsPerPage;

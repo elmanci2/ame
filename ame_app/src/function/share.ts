@@ -4,7 +4,7 @@ export const onShare = async () => {
   try {
     const result = await Share.share({
       message:
-        'React Native | A framework for building native apps using React',
+        'Comparte Ame App con tus familiares y amigos para que mejoren su salud',
     });
     if (result.action === Share.sharedAction) {
       if (result.activityType) {

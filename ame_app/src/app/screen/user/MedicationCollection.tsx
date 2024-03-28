@@ -10,6 +10,9 @@ import YesNoComponent from '../../components/custom/YesNoComponent';
 import MyInput from '../../components/custom/MyInput';
 import ActionBottom from '../../components/custom/ActionBottom';
 import useServices from '../../hook/services/useServices';
+import {useFetch} from '../../hook/http/useFetch';
+import LoadScreen from '../LoadScreen';
+import ErrorScreen from '../error/ErrorScreen';
 
 const MedicationCollection = ({route, navigation}: RoutListTypeProps) => {
   const {add} = useServices();
@@ -17,110 +20,18 @@ const MedicationCollection = ({route, navigation}: RoutListTypeProps) => {
   const [photo, setPhoto] = useState<undefined | string>();
   const [coPago, setCoPago] = useState(false);
   const [fileDate, setFileDate] = useState();
-  const [items] = useState([
-    {
-      'Tipo Administradora': 'EPS',
-      value: 'EAS016',
-      Nit: '890904996-1',
-      label: 'Empresas Públicas de Medellín Departamento Médico',
-      Aportes: ' Empresas Públicas de Medellín Departamento Médico',
-    },
-    {
-      'Tipo Administradora': 'EPS',
-      value: 'EAS027',
-      Nit: '800112806-2',
-      label: 'Fondo de Pasivo Social de Ferrocarriles',
-      Aportes: ' Fondo de Ferrocarriles Nacionales de Colombia (EPS)',
-    },
-    {
-      'Tipo Administradora': 'EPS',
-      value: 'EPS001',
-      Nit: '830113831-0',
-      label: 'Aliansalud EPS',
-      Aportes: ' Aliansalud EPS (Antes Colmédica)',
-    },
-    {
-      'Tipo Administradora': 'EPS',
-      value: 'EPS002',
-      Nit: '800130907-4',
-      label: 'Salud Total S.A.',
-      Aportes: ' Salud Total',
-    },
-    {
-      'Tipo Administradora': 'EPS',
-      value: 'EPS005',
-      Nit: '800251440-6',
-      label: 'E.P.S Sanitas',
-      Aportes: ' Sanitas',
-    },
-    {
-      'Tipo Administradora': 'EPS',
-      value: 'EPS008',
-      Nit: '860066942-7',
-      label: 'Compensar Entidad Promotora de Salud',
-      Aportes: ' Compensar',
-    },
-    {
-      'Tipo Administradora': 'EPS',
-      value: 'EPS010',
-      Nit: '800088702-2',
-      label: 'EPS Sura',
-      Aportes: ' EPS Sura',
-    },
-    {
-      'Tipo Administradora': 'EPS',
-      value: 'EPS012',
-      Nit: '890303093-5',
-      label: 'Comfenalco Valle EPS',
-      Aportes: ' Comfenalco Valle',
-    },
-    {
-      'Tipo Administradora': 'EPS',
-      value: 'EPS017',
-      Nit: '830003564-7',
-      label: 'Famisanar',
-      Aportes: ' Famisanar',
-    },
-    {
-      'Tipo Administradora': 'EPS',
-      value: 'EPS018',
-      Nit: '805001157-2',
-      label: 'Servicio Occidental de Salud S.O.S. S.A.',
-      Aportes: ' S.O.S. Servicio Occidental de Salud S.A.',
-    },
-    {
-      'Tipo Administradora': 'EPS',
-      value: 'EPS037',
-      Nit: '900156264-2',
-      label: 'Nueva EPS',
-      Aportes: ' Nueva E.P.S.',
-    },
-    {
-      'Tipo Administradora': 'EPS',
-      value: 'EPS040',
-      Nit: 900604350,
-      label:
-        'Caja de Compensación Familiar de Antioquía - Comfama - Hoy Savia Salud EPS',
-      Aportes: 'Savia Salud',
-    },
-    {
-      'Tipo Administradora': 'EPS',
-      value: 'EPS041',
-      Nit: 900156264,
-      label: 'Nueva EPS S.A. Movilidad',
-      Aportes: 'Nueva EPS Movilidad',
-    },
-    {
-      'Tipo Administradora': 'EPS',
-      value: 'EPS042',
-      Nit: '900226715-3',
-      label:
-        'Cooperativa de Salud y Desarrollo Integral de la Zona Sur Oriental de Cartagena Ltda. Coosalud E.S.S.',
-      Aportes: 'Coosalud EPS',
-    },
-  ]);
+
+  const {data: items, loading, error, refetch} = useFetch('get_eps', 'get_eps');
 
   const [coPagoValue, setCoPagoValue] = useState(0);
+
+  console.log(items);
+
+  if (loading) {
+    return <LoadScreen />;
+  } else if (error) {
+    return <ErrorScreen reload={refetch} />;
+  }
 
   return (
     <CustomScreen>
@@ -145,9 +56,10 @@ const MedicationCollection = ({route, navigation}: RoutListTypeProps) => {
         </MyText>
         <DropDownElement
           {...{
-            data: items,
+            data: items?.eps,
             value: select?.label,
             screen: 'MedicationCollection',
+            placeholder: 'EPS',
           }}
         />
         <MyText

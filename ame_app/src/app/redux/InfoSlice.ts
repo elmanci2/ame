@@ -34,15 +34,9 @@ export const InfoAdd = createSlice({
   reducers: {
     addInfoUser: (state, action) => {
       const newPatient = action.payload;
-      const existingPatient: any = state.info;
 
-      // Check if any property of newPatient is different from existingPatient
-      const isDifferent = Object.keys(newPatient).some(
-        key => newPatient[key] !== existingPatient[key],
-      );
-
-      if (isDifferent) {
-        state.info = {...existingPatient, ...newPatient};
+      if (newPatient) {
+        state.info = {...newPatient};
       } else {
         console.log('La información del paciente no ha cambiado.');
       }
